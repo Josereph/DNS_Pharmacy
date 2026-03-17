@@ -1,56 +1,58 @@
-
 <?php
-
 $pagina_actual = basename($_SERVER['PHP_SELF']);
 $base_url = '/DNS_Pharmacy';
 ?>
 
 <div class="gym-sidebar">
     <div class="logo-area text-center py-4">
-       <img src="<?php echo $base_url; ?>/assets/img/DNS_LOGO.png" style="height:80px;">
+        <img src="<?php echo $base_url; ?>/assets/img/DNS_LOGO.png" style="height:80px;">
     </div>
-    
+
     <nav class="nav flex-column">
-       
-        <a class="nav-link <?php echo ($pagina_actual == 'admin.php') ? 'active' : ''; ?>" href="admin.php">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
+
+        <a class="nav-link <?php echo ($pagina_actual == 'index.php' || $pagina_actual == 'index.php') ? 'active' : ''; ?>" href="index.php">
+            Inicio
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'entrenadores.php') ? 'active' : ''; ?>" href="entrenadores.php">
-            <i class="fas fa-user-tie"></i> Entrenadores
+        <a class="nav-link <?php echo ($pagina_actual == 'usuarios.php') ? 'active' : ''; ?>" href="usuarios.php">
+            Usuarios
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'miembros.php') ? 'active' : ''; ?>" href="miembros.php">
-            <i class="fas fa-users"></i> Miembros
+        <a class="nav-link <?php echo ($pagina_actual == 'proveedores.php') ? 'active' : ''; ?>" href="proveedores.php">
+            Proveedores
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'clasess.php') ? 'active' : ''; ?>" href="clasess.php">
-            <i class="fas fa-chalkboard-teacher"></i> Clases
-        </a>
-        <a class="nav-link <?php echo ($pagina_actual == 'horario_clases.php') ? 'active' : ''; ?>" href="horario_clases.php">
-            <i class="fas fa-clock"></i> Horario Clases
+        <a class="nav-link <?php echo ($pagina_actual == 'productos.php') ? 'active' : ''; ?>" href="productos.php">
+            Productos
         </a>
 
-
-        <a class="nav-link <?php echo ($pagina_actual == 'registroproductos.php') ? 'active' : ''; ?>" href="registroproductos.php">
-            <i class="fas fa-box"></i> Productos
+        <a class="nav-link <?php echo ($pagina_actual == 'compras.php') ? 'active' : ''; ?>" href="compras.php">
+            Registrar Compras
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'planes.php') ? 'active' : ''; ?>" href="planes.php">
-            <i class="fas fa-id-card"></i> Planes
+        <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>" href="historial_ventas.php">
+            Historial de Ventas
+        </a>
+
+        <a class="nav-link <?php echo ($pagina_actual == 'ventas_empleado.php') ? 'active' : ''; ?>" href="ventas_empleado.php">
+            Ventas x Empleado
         </a>
 
         <a class="nav-link <?php echo ($pagina_actual == 'reportes.php') ? 'active' : ''; ?>" href="reportes.php">
-            <i class="fas fa-file-alt"></i> Reportes
+            Reportes
         </a>
 
-     
-
-       
-        <a class="nav-link back-to-home" href="<?php echo $base_url; ?>/index.php">
-            <i class="fas fa-arrow-left"></i> Regresar al inicio
+        <a class="nav-link <?php echo ($pagina_actual == 'asistencia.php') ? 'active' : ''; ?>" href="asistencia.php">
+            Asistencia
         </a>
-       
-         <div class="sidebar-divider"></div>
+
+        <a class="nav-link <?php echo ($pagina_actual == 'perfil_admin.php') ? 'active' : ''; ?>" href="perfil_admin.php">
+            Perfil Admin
+        </a>
+
+        <a class="nav-link back-to-home" href="<?php echo $base_url; ?>/login.php">
+            Cerrar sesión
+        </a>
+
     </nav>
 </div>

@@ -1,74 +1,63 @@
-
-.gym-sidebar{
+.gym-sidebar {
     width: 250px;
     height: 100vh;
-    background: #f4f6f9;
-    border-right: 1px solid #e0e0e0;
+    background: #ffffff;
+    border-right: 3px solid #70ab32;
     position: fixed;
     left: 0;
     top: 0;
     padding-top: 10px;
     font-family: 'Segoe UI', sans-serif;
+    overflow-y: auto;
+    box-shadow: 2px 0 8px rgba(132, 20, 128, 0.08);
 }
 
-
-.logo-area img{
+.logo-area img {
     margin-bottom: 10px;
 }
 
-
-.gym-sidebar .nav-link{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #555;
-    padding: 12px 20px;
+.gym-sidebar .nav-link {
+    display: block;
+    color: #444;
+    padding: 13px 24px;
     font-size: 14px;
-    transition: all .2s ease;
-    border-radius: 8px;
-    margin: 2px 10px;
-}
-
-
-.gym-sidebar .nav-link i{
-    width: 20px;
-    text-align: center;
-}
-
-.gym-sidebar .nav-link:hover{
-    background: #e9ecef;
-    color: #6f42c1;
-}
-
-
-.gym-sidebar .nav-link.active{
-    background: #6f42c1;
-    color: white;
     font-weight: 500;
+    transition: all .2s ease;
+    border-radius: 0;
+    margin: 1px 0;
+    border-left: 3px solid transparent;
+    letter-spacing: 0.01em;
 }
 
-
-.back-to-home{
-    margin-top: 15px;
-    background: #dee2e6;
+.gym-sidebar .nav-link:hover {
+    background: #f5e8f5;
+    color: #841480;
+    border-left: 3px solid #841480;
+    padding-left: 28px;
 }
 
-.back-to-home:hover{
-    background: #ced4da;
-    color: #333;
+.gym-sidebar .nav-link.active {
+    background: #841480;
+    color: #ffffff;
+    font-weight: 600;
+    border-left: 3px solid #70ab32;
+    padding-left: 28px;
 }
 
+.back-to-home {
+    margin-top: 20px;
+    color: #888;
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+}
 
-.sidebar-divider{
-    height: 1px;
-    background: #ddd;
-    margin: 15px 15px;
+.back-to-home:hover {
+    background: #f5f5f5;
+    color: #555;
+    border-left: 3px solid #ccc;
 }
-.main-content{
-    margin-left: 260px;
-    padding: 20px;
-}
-.main-content{
-    margin-left: 260px;  
+
+.main-content {
+    margin-left: 250px;
     padding: 25px;
 }
