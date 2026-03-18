@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS dns_pharmacy
+/*CREATE DATABASE IF NOT EXISTS dns_pharmacy
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
