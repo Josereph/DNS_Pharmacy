@@ -47,25 +47,15 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
         <a class="nav-link <?php echo ($pagina_actual == 'productos.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/productos.php">
             <i class="bi bi-box-seam"></i>
-            Productos
+            Productos y categorias
             <span class="badge-crud">CRUD</span>
         </a>
-
-        <a class="nav-link <?php echo ($pagina_actual == 'categorias.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/categorias.php">
-            <i class="bi bi-tag"></i>
-            Categorías
-            <span class="badge-crud">CRUD</span>
-        </a>
-
-     
      
 
         <a class="nav-link <?php echo ($pagina_actual == 'compras.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/compras.php">
             <i class="bi bi-cart3"></i>
             Inventario
-            <span class="badge-num">23</span>
         </a>
 
    
