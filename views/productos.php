@@ -49,6 +49,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Imagen</th>
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Categoría</th>
@@ -62,7 +63,7 @@
             </thead>
             <tbody id="cuerpoTabla">
                 <tr>
-                    <td colspan="10" class="tabla-vacia">No hay productos registrados.</td>
+                    <td colspan="11" class="tabla-vacia">No hay productos registrados.</td>
                 </tr>
             </tbody>
         </table>
@@ -80,8 +81,9 @@
             <h5 class="modal-titulo" id="tituloModalProducto">Nuevo Producto</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProducto')">&times;</button>
         </div>
-        <form id="formProducto" novalidate>
+        <form id="formProducto" novalidate enctype="multipart/form-data">
             <input type="hidden" id="prod_id" name="id_producto">
+            <input type="hidden" id="prod_imagen_actual" name="imagen_actual">
             <div class="modal-body">
 
                 <div class="form-seccion">Información general</div>
@@ -178,11 +180,26 @@
                     </div>
                 </div>
 
-                <div class="form-seccion">Configuración</div>
+                <div class="form-seccion">Imagen y configuración</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
-                        <label>URL de imagen</label>
-                        <input type="text" id="prod_imagen" name="imagen_url" class="form-input" placeholder="assets/img/productos/imagen.jpg">
+                        <label>Imagen del producto</label>
+                        <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('prod_imagen').click()">
+                            <div class="file-upload-placeholder" id="filePlaceholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Haz clic para seleccionar una imagen</span>
+                                <small>JPG, PNG, WEBP — máx. 2MB</small>
+                            </div>
+                            <div class="img-preview" id="preview-imagen" style="display:none;">
+                                <img id="img-preview-src" src="" alt="Vista previa">
+                                <div class="img-preview-info">
+                                    <span id="img-preview-nombre" class="img-nombre"></span>
+                                    <button type="button" class="btn-quitar-img" onclick="event.stopPropagation(); quitarImagen()">Quitar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="prod_imagen" name="imagen_url" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none;" onchange="previsualizarImagen(this)">
+                        <span class="form-error" id="err_imagen"></span>
                     </div>
                     <div class="form-group-custom checks-group">
                         <label class="check-label">
@@ -233,7 +250,6 @@
             <button class="modal-cerrar" onclick="cerrarModal('modalCategorias')">&times;</button>
         </div>
         <div class="modal-body">
-
             <form id="formCategoria" novalidate>
                 <input type="hidden" id="cat_id" name="id_categoria">
                 <div class="form-row-custom">
