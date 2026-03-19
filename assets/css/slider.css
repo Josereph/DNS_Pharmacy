@@ -1,63 +1,186 @@
 .gym-sidebar {
     width: 250px;
     height: 100vh;
-    background: #ffffff;
-    border-right: 3px solid #70ab32;
+    background: #841480;
+    border-right: none;
     position: fixed;
     left: 0;
     top: 0;
-    padding-top: 10px;
+    padding-top: 0;
     font-family: 'Segoe UI', sans-serif;
     overflow-y: auto;
-    box-shadow: 2px 0 8px rgba(132, 20, 128, 0.08);
+    box-shadow: 4px 0 24px rgba(61, 17, 71, 0.35);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.gym-sidebar::-webkit-scrollbar { width: 0; }
+
+.logo-area {
+    background: #ffffff;
+    padding: 14px 18px;
+    text-align: center;
+    border-bottom: 3px solid #70ab32;
+    flex-shrink: 0;
 }
 
 .logo-area img {
-    margin-bottom: 10px;
+    height: 72px;
+    width: auto;
+    margin-bottom: 0;
+}
+
+.nav-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.30);
+    padding: 16px 20px 5px;
+    pointer-events: none;
+}
+
+.gym-sidebar .nav.flex-column {
+    padding: 6px 0;
+    flex: 1;
 }
 
 .gym-sidebar .nav-link {
-    display: block;
-    color: #444;
-    padding: 13px 24px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all .2s ease;
-    border-radius: 0;
-    margin: 1px 0;
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.65) !important;
+    padding: 9px 14px !important;
+    font-size: 13.5px;
+    font-weight: 400;
+    transition: all .18s ease;
+    margin: 1px 10px;
+    border-radius: 8px;
     border-left: 3px solid transparent;
     letter-spacing: 0.01em;
+    text-decoration: none !important;
+    line-height: 1.4;
+}
+
+.gym-sidebar .nav-link i {
+    font-size: 15px;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    opacity: 0.60;
+    transition: opacity .18s;
+}
+
+.gym-sidebar .nav-link .badge-crud {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: #70ab32;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.gym-sidebar .nav-link .badge-num {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+    flex-shrink: 0;
 }
 
 .gym-sidebar .nav-link:hover {
-    background: #f5e8f5;
-    color: #841480;
-    border-left: 3px solid #841480;
-    padding-left: 28px;
+    background: rgba(255, 255, 255, 0.10) !important;
+    color: #ffffff !important;
+    border-left: 3px solid #70ab32;
+    padding-left: 18px !important;
+    text-decoration: none !important;
+}
+
+.gym-sidebar .nav-link:hover i {
+    opacity: 1;
 }
 
 .gym-sidebar .nav-link.active {
-    background: #841480;
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
     font-weight: 600;
     border-left: 3px solid #70ab32;
-    padding-left: 28px;
+    padding-left: 18px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
 }
 
-.back-to-home {
-    margin-top: 20px;
-    color: #888;
-    border-top: 1px solid #eee;
-    padding-top: 16px;
+.gym-sidebar .nav-link.active i {
+    opacity: 1;
 }
 
-.back-to-home:hover {
-    background: #f5f5f5;
-    color: #555;
-    border-left: 3px solid #ccc;
+.sidebar-profile {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.sidebar-profile .profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+    letter-spacing: .5px;
+}
+
+.sidebar-profile .profile-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-profile .profile-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-profile .profile-role {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.gym-sidebar .nav-link.back-to-home {
+    color: rgba(255, 255, 255, 0.38) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0;
+    margin: 4px 0 0;
+    padding: 12px 20px !important;
+}
+
+.gym-sidebar .nav-link.back-to-home:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #FCA5A5 !important;
+    border-left: 3px solid #FCA5A5 !important;
+    padding-left: 24px !important;
 }
 
 .main-content {
     margin-left: 250px;
     padding: 25px;
+    background: #F7F3FA;
+    min-height: 100vh;
 }

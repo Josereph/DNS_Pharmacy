@@ -1,7 +1,4 @@
-/* =====================
-   FOOTER - DNS Pharmacy
-   Colores: #841480 | #70ab32 | #ffffff
-   ===================== */
+
 
 footer {
   background-color: #ffffff;
@@ -28,7 +25,7 @@ footer {
   border-bottom: 1px solid rgba(132, 20, 128, 0.15);
 }
 
-/* ── Brand ── */
+
 .footer-brand {
   flex: 1.5;
 }
@@ -62,7 +59,6 @@ footer {
   letter-spacing: 0.04em;
 }
 
-/* ── Nav ── */
 .footer-nav {
   flex: 1;
 }
@@ -87,7 +83,7 @@ footer {
   color: #70ab32;
 }
 
-/* ── Contact ── */
+
 .footer-contact {
   flex: 1;
   display: flex;
@@ -101,7 +97,6 @@ footer {
   margin: 0;
 }
 
-/* ── Bottom bar ── */
 .footer-bottom {
   display: flex;
   justify-content: space-between;
@@ -129,7 +124,7 @@ footer {
   font-weight: 600;
 }
 
-/* ── Responsive ── */
+
 @media (max-width: 768px) {
   footer {
     margin-left: 0;
