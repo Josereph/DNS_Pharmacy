@@ -22,7 +22,7 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
     <nav class="nav flex-column">
 
         <!-- ── GESTIÓN ── -->
-        <div class="nav-section-label">Gestión</div>
+      
 
         <a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
            href="<?php echo $base_url; ?>/index.php">
@@ -58,8 +58,8 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
             <span class="badge-crud">CRUD</span>
         </a>
 
-        <!-- ── INVENTARIO ── -->
-        <div class="nav-section-label">Inventario</div>
+     
+     
 
         <a class="nav-link <?php echo ($pagina_actual == 'compras.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/compras.php">
@@ -68,9 +68,7 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
             <span class="badge-num">23</span>
         </a>
 
-        <!-- ── ANÁLISIS ── -->
-        <div class="nav-section-label">Análisis</div>
-
+   
         <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/historial_ventas.php">
             <i class="bi bi-clock-history"></i>
@@ -95,16 +93,14 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
             Asistencia
         </a>
 
-        <!-- ── CUENTA ── -->
-        <div class="nav-section-label">Cuenta</div>
-
+    
         <a class="nav-link <?php echo ($pagina_actual == 'perfil_admin.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/perfil_admin.php">
             <i class="bi bi-gear"></i>
             Perfil Admin
         </a>
 
-        <!-- Cerrar sesión -->
+      
         <a class="nav-link back-to-home" href="<?php echo $base_url; ?>/login.php">
             <i class="bi bi-box-arrow-left"></i>
             Cerrar sesión
@@ -112,7 +108,7 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
 
     </nav>
 
-    <!-- Perfil admin — parte inferior -->
+  
     <div class="sidebar-profile">
         <div class="profile-avatar"><?php echo $admin_ini; ?></div>
         <div class="profile-info">
