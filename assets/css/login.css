@@ -54,7 +54,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-/* PANEL IZQUIERDO */
+/* ── Panel izquierdo ── */
 .login-left {
     position: relative;
     background: linear-gradient(160deg, #78cc2d 0%, #60bb27 30%, #8d2cc8 75%, #9a179b 100%);
@@ -67,11 +67,7 @@ body {
 .login-left .overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        145deg,
-        rgba(255, 255, 255, 0.10),
-        rgba(255, 255, 255, 0.02)
-    );
+    background: linear-gradient(145deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
 }
 
 .brand-content {
@@ -86,15 +82,13 @@ body {
     width: 185px;
     height: 185px;
     background: linear-gradient(145deg, #ffffff, #f4f4f4);
-    border: 4px solid rgba(255, 255, 255, 0.95);
+    border: 4px solid rgba(255,255,255,0.95);
     border-radius: 50%;
     margin: 0 auto 25px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow:
-        0 14px 35px rgba(0, 0, 0, 0.18),
-        inset 0 2px 8px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 14px 35px rgba(0,0,0,0.18), inset 0 2px 8px rgba(255,255,255,0.7);
 }
 
 .brand-logo {
@@ -121,7 +115,7 @@ body {
     height: 4px;
     margin: 0 auto 22px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.88);
+    background: rgba(255,255,255,0.88);
 }
 
 .brand-text {
@@ -130,7 +124,7 @@ body {
     opacity: 0.95;
 }
 
-/* PANEL DERECHO */
+/* ── Panel derecho ── */
 .login-right {
     padding: 60px 52px;
     display: flex;
@@ -139,9 +133,7 @@ body {
     background: #ffffff;
 }
 
-.form-header {
-    margin-bottom: 28px;
-}
+.form-header { margin-bottom: 28px; }
 
 .accent {
     display: inline-block;
@@ -168,6 +160,7 @@ body {
     line-height: 1.6;
 }
 
+/* ── Alertas ── */
 .alert {
     padding: 14px 16px;
     border-radius: 12px;
@@ -182,13 +175,16 @@ body {
     border-color: #a3cfbb;
 }
 
-.login-form {
-    width: 100%;
+.alert-danger {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border-color: #f5b8b8;
 }
 
-.form-group {
-    margin-bottom: 18px;
-}
+/* ── Formulario ── */
+.login-form { width: 100%; }
+
+.form-group { margin-bottom: 18px; }
 
 .form-group label {
     display: block;
@@ -240,9 +236,7 @@ body {
     font-size: 1rem;
 }
 
-.input-wrapper input::placeholder {
-    color: #a6a9b6;
-}
+.input-wrapper input::placeholder { color: #a6a9b6; }
 
 .toggle-password {
     border: none;
@@ -255,12 +249,10 @@ body {
     transition: var(--transition);
 }
 
-.toggle-password:hover {
-    color: var(--purple-dark);
-}
+.toggle-password:hover { color: var(--purple-dark); }
 
 .input-error {
-    border-color: var(--danger);
+    border-color: var(--danger) !important;
     background: #fffafb;
 }
 
@@ -272,6 +264,7 @@ body {
     font-size: 0.87rem;
 }
 
+/* ── Opciones ── */
 .form-options {
     margin: 10px 0 22px;
     display: flex;
@@ -290,9 +283,7 @@ body {
     cursor: pointer;
 }
 
-.remember-me input {
-    accent-color: var(--purple);
-}
+.remember-me input { accent-color: var(--purple); }
 
 .forgot-link {
     color: var(--purple);
@@ -301,10 +292,9 @@ body {
     font-size: 0.94rem;
 }
 
-.forgot-link:hover {
-    text-decoration: underline;
-}
+.forgot-link:hover { text-decoration: underline; }
 
+/* ── Botón ── */
 .btn-login {
     width: 100%;
     height: 58px;
@@ -315,67 +305,35 @@ body {
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
-    box-shadow: 0 12px 24px rgba(118, 198, 42, 0.15), 0 12px 24px rgba(154, 23, 155, 0.18);
+    transition: transform var(--transition), opacity var(--transition);
+    box-shadow: 0 12px 24px rgba(118,198,42,0.15), 0 12px 24px rgba(154,23,155,0.18);
 }
 
-.btn-login span {
-    margin-left: 4px;
-}
+.btn-login span { margin-left: 4px; }
 
 .btn-login:hover {
     transform: translateY(-2px);
     opacity: 0.96;
 }
 
-.login-note {
-    margin-top: 16px;
-    font-size: 0.9rem;
-    color: var(--muted);
-    line-height: 1.6;
-}
-
-/* RESPONSIVE */
+/* ── Responsive ── */
 @media (max-width: 960px) {
     .login-card {
         grid-template-columns: 1fr;
         min-height: auto;
     }
-
     .login-left {
         min-height: 300px;
         padding: 35px 25px;
     }
-
-    .login-right {
-        padding: 40px 24px;
-    }
-
-    .brand-logo-box {
-        width: 130px;
-        height: 130px;
-    }
-
-    .brand-logo {
-        width: 78px;
-    }
+    .login-right { padding: 40px 24px; }
+    .brand-logo-box { width: 130px; height: 130px; }
+    .brand-logo { width: 78px; }
 }
 
 @media (max-width: 540px) {
-    .login-page {
-        padding: 14px;
-    }
-
-    .login-right {
-        padding: 32px 18px;
-    }
-
-    .form-header h2 {
-        font-size: 1.6rem;
-    }
-
-    .form-options {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    .login-page { padding: 14px; }
+    .login-right { padding: 32px 18px; }
+    .form-header h2 { font-size: 1.6rem; }
+    .form-options { flex-direction: column; align-items: flex-start; }
 }

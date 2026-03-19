@@ -16,6 +16,27 @@
 
 <div class="main-content">
 
+    <!-- Stats dashboard -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-lbl">Total productos</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-num" id="statActivos">0</div>
+            <div class="stat-lbl">Activos</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-num" id="statStockBajo">0</div>
+            <div class="stat-lbl">Stock bajo mínimo</div>
+        </div>
+        <div class="stat-card gray">
+            <div class="stat-num" id="statInactivos">0</div>
+            <div class="stat-lbl">Inactivos</div>
+        </div>
+    </div>
+
+    <!-- Header -->
     <div class="page-header">
         <div>
             <h2 class="page-title">Productos</h2>
@@ -27,6 +48,7 @@
         </div>
     </div>
 
+    <!-- Filtros -->
     <div class="filtros-bar">
         <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre o código de barras..." oninput="filtrarTabla()">
         <select id="filtroCategoria" class="filtro-select" onchange="filtrarTabla()">
@@ -44,7 +66,12 @@
         </select>
     </div>
 
+    <!-- Tabla -->
     <div class="tabla-card">
+        <div class="tabla-header-bar">
+            <span>Mostrando <strong id="contadorVisible">0</strong> de <strong id="contadorTotal">0</strong> productos</span>
+            <span>DNS Pharmacy · Inventario</span>
+        </div>
         <table class="tabla-productos" id="tablaProductos">
             <thead>
                 <tr>

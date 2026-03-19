@@ -91,8 +91,7 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
         </a>
 
       
-        <a class="nav-link back-to-home" href="<?php echo $base_url; ?>/login.php">
-            <i class="bi bi-box-arrow-left"></i>
+        <a class="nav-link back-to-home" href="/DNS_Pharmacy/logout.php">
             Cerrar sesión
         </a>
 
