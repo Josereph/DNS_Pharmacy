@@ -52,8 +52,8 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
         </a>
      
 
-        <a class="nav-link <?php echo ($pagina_actual == 'compras.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/compras.php">
+        <a class="nav-link <?php echo ($pagina_actual == 'inventario.php') ? 'active' : ''; ?>"
+           href="<?php echo $views; ?>/inventario.php">
             <i class="bi bi-cart3"></i>
             Inventario
         </a>
