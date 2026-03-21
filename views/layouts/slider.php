@@ -83,6 +83,11 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
             Asistencia
         </a>
 
+        <a class="nav-link-pos" href="<?php echo $views; ?>/pos.php">
+         <i class="bi bi-display"></i>
+         Punto de Venta (POS)
+        </a>
+
     
         <a class="nav-link <?php echo ($pagina_actual == 'perfil_admin.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/perfil_admin.php">

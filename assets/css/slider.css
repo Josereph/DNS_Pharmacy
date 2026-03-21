@@ -184,3 +184,27 @@
     background: #F7F3FA;
     min-height: 100vh;
 }
+
+.nav-link-pos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 10px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #841480, #6a1066);
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.nav-link-pos:hover {
+    opacity: 0.9;
+    color: #ffffff;
+}
+
+.nav-link-pos i {
+    font-size: 16px;
+}
