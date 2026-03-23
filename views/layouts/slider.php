@@ -3,26 +3,20 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
 $base_url = '/DNS_Pharmacy';
 $views = $base_url . '/views';
 
-// Datos del admin (ajusta según tu sesión)
 $admin_nombre = $_SESSION['nombre'] ?? 'Dr. Reyes';
 $admin_rol    = $_SESSION['rol']    ?? 'Admin';
 $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
 ?>
 
-<!-- Bootstrap Icons — cargado aquí para todas las vistas -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <div class="gym-sidebar">
 
-    <!-- Logo — franja blanca -->
     <div class="logo-area">
         <img src="<?php echo $base_url; ?>/assets/img/DNS_LOGO.png" alt="DNS Pharmacy" style="height:72px;">
     </div>
 
     <nav class="nav flex-column">
-
-        <!-- ── GESTIÓN ── -->
-      
 
         <a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
            href="<?php echo $base_url; ?>/index.php">
@@ -50,15 +44,19 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
             Productos y categorias
             <span class="badge-crud">CRUD</span>
         </a>
-     
 
         <a class="nav-link <?php echo ($pagina_actual == 'compras.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/compras.php">
             <i class="bi bi-cart3"></i>
+            Registrar Compras
+        </a>
+
+        <a class="nav-link <?php echo ($pagina_actual == 'inventario.php') ? 'active' : ''; ?>"
+           href="<?php echo $views; ?>/inventario.php">
+            <i class="bi bi-clipboard2-pulse"></i>
             Inventario
         </a>
 
-   
         <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/historial_ventas.php">
             <i class="bi bi-clock-history"></i>
@@ -83,27 +81,17 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
             Asistencia
         </a>
 
-    
         <a class="nav-link <?php echo ($pagina_actual == 'perfil_admin.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/perfil_admin.php">
             <i class="bi bi-gear"></i>
             Perfil Admin
         </a>
 
-      
         <a class="nav-link back-to-home" href="/DNS_Pharmacy/logout.php">
+            <i class="bi bi-box-arrow-left"></i>
             Cerrar sesión
         </a>
 
     </nav>
-
-  
-    <div class="sidebar-profile">
-        <div class="profile-avatar"><?php echo $admin_ini; ?></div>
-        <div class="profile-info">
-            <div class="profile-name"><?php echo htmlspecialchars($admin_nombre); ?></div>
-            <div class="profile-role"><?php echo htmlspecialchars($admin_rol); ?></div>
-        </div>
-    </div>
 
 </div>

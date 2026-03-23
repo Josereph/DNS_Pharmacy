@@ -68,6 +68,10 @@
 <?php include 'layouts/footer.php'; ?>
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)
 <div class="modal-overlay" id="modalUsuario">
     <div class="modal-box modal-grande">
         <div class="modal-header">
@@ -183,4 +187,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="../assets/js/usuarios.js"></script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)
