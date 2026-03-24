@@ -221,8 +221,13 @@ function validarFormulario() {
     if (esNuevo && !pass) {
         document.getElementById('err_password').textContent = 'La contraseña es obligatoria.';
         ok = false;
+<<<<<<< HEAD
     } else if (pass && pass.length < 6) {
         document.getElementById('err_password').textContent = 'Mínimo 6 caracteres.';
+=======
+    } else if (pass && pass.length < 8) {
+        document.getElementById('err_password').textContent = 'Mínimo 8 caracteres.';
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)
         ok = false;
     }
 
@@ -245,8 +250,20 @@ function togglePassword(inputId, btn) {
     }
 }
 
+<<<<<<< HEAD
 function abrirModal(id)  { document.getElementById(id).classList.add('activo'); }
 function cerrarModal(id) { document.getElementById(id).classList.remove('activo'); }
+=======
+function abrirModal(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'flex';
+}
+
+function cerrarModal(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'none';
+}
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)
 
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', function(e) {
@@ -278,4 +295,8 @@ function badgeEstado(estado) {
     return (estado == 1)
         ? `<span class="badge-activo">Activo</span>`
         : `<span class="badge-inactivo">Inactivo</span>`;
+<<<<<<< HEAD
 }s
+=======
+}
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)

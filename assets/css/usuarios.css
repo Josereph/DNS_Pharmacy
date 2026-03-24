@@ -173,10 +173,15 @@
     display: inline-block;
 }
 
+<<<<<<< HEAD
 .rol-admin     { background: #f3e5f5; color: #841480; }
 .rol-cajero    { background: #e3f2fd; color: #1565c0; }
 .rol-bodeguero { background: #fff3e0; color: #e65100; }
 .rol-vendedor  { background: #e8f5e9; color: #2e7d32; }
+=======
+.rol-admin  { background: #f3e5f5; color: #841480; }
+.rol-cajero { background: #e3f2fd; color: #1565c0; }
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)
 
 .badge-activo {
     background: #e6f5e6;
@@ -251,17 +256,24 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.5);
+<<<<<<< HEAD
     z-index: 1050;
+=======
+    z-index: 2000;
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)
     align-items: center;
     justify-content: center;
     padding: 20px;
     box-sizing: border-box;
 }
 
+<<<<<<< HEAD
 .modal-overlay.activo {
     display: flex !important;
 }
 
+=======
+>>>>>>> 30b5ac1 (se creo la vista de inventario, compras y venta por empleado)
 .modal-box {
     background: #ffffff;
     border-radius: 10px;
