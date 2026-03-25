@@ -17,6 +17,7 @@ $base_url = '/DNS_Pharmacy';
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/proveedores.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
 
@@ -24,8 +25,7 @@ $base_url = '/DNS_Pharmacy';
 
 <div class="main-content">
 
-    
-    <div class="page-header">
+    <div class="page-header animate__animated animate__fadeInDown">
         <div>
             <h2 class="page-title">Proveedores</h2>
             <p class="page-subtitle">Gestión del catálogo de proveedores</p>
@@ -37,8 +37,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-  
-    <div class="filtros-bar">
+    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <div class="search-wrap">
             <i class="bi bi-search search-icon"></i>
             <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre, NIT o correo..." oninput="filtrarTabla()">
@@ -50,8 +49,7 @@ $base_url = '/DNS_Pharmacy';
         </select>
     </div>
 
-   
-    <div class="tabla-card">
+    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
         <table class="tabla-productos" id="tablaProveedores">
             <thead>
                 <tr>
@@ -78,10 +76,8 @@ $base_url = '/DNS_Pharmacy';
 
 <?php include 'layouts/footer.php'; ?>
 
-
-
 <div class="modal-overlay" id="modalProveedor">
-    <div class="modal-box modal-grande">
+    <div class="modal-box modal-grande animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalProveedor">Nuevo Proveedor</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProveedor')">&times;</button>
@@ -89,62 +85,50 @@ $base_url = '/DNS_Pharmacy';
         <form id="formProveedor" novalidate>
             <input type="hidden" id="prov_id" name="id_proveedor">
             <div class="modal-body">
-
-              
                 <div class="form-seccion">Información de la empresa</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
                         <label>Nombre de la empresa <span class="req">*</span></label>
-                        <input type="text" id="prov_nombre" name="nombre" class="form-input"
-                               placeholder="Ej. Distribuidora Médica S.A.">
+                        <input type="text" id="prov_nombre" name="nombre" class="form-input" placeholder="Ej. Distribuidora Médica S.A.">
                         <span class="form-error" id="err_nombre"></span>
                     </div>
                     <div class="form-group-custom">
                         <label>Nombre del contacto <span class="req">*</span></label>
-                        <input type="text" id="prov_contacto" name="nombre_contacto" class="form-input"
-                               placeholder="Ej. Juan Pérez">
+                        <input type="text" id="prov_contacto" name="nombre_contacto" class="form-input" placeholder="Ej. Juan Pérez">
                         <span class="form-error" id="err_contacto"></span>
                     </div>
                 </div>
 
-               
                 <div class="form-seccion">Datos de contacto</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
                         <label>Teléfono <span class="req">*</span></label>
-                        <input type="text" id="prov_telefono" name="telefono" class="form-input"
-                               placeholder="Ej. +503 7600-0000">
+                        <input type="text" id="prov_telefono" name="telefono" class="form-input" placeholder="Ej. +503 7600-0000">
                         <span class="form-error" id="err_telefono"></span>
                     </div>
                     <div class="form-group-custom">
                         <label>Correo electrónico <span class="req">*</span></label>
-                        <input type="email" id="prov_correo" name="correo" class="form-input"
-                               placeholder="Ej. contacto@empresa.com">
+                        <input type="email" id="prov_correo" name="correo" class="form-input" placeholder="Ej. contacto@empresa.com">
                         <span class="form-error" id="err_correo"></span>
                     </div>
                 </div>
                 <div class="form-group-custom">
                     <label>Dirección</label>
-                    <input type="text" id="prov_direccion" name="direccion" class="form-input"
-                           placeholder="Ej. Col. Escalón, San Salvador">
+                    <input type="text" id="prov_direccion" name="direccion" class="form-input" placeholder="Ej. Col. Escalón, San Salvador">
                 </div>
 
-               
                 <div class="form-seccion">Datos fiscales</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
                         <label>NIT</label>
-                        <input type="text" id="prov_nit" name="nit" class="form-input"
-                               placeholder="Ej. 0614-010101-001-0">
+                        <input type="text" id="prov_nit" name="nit" class="form-input" placeholder="Ej. 0614-010101-001-0">
                     </div>
                     <div class="form-group-custom">
                         <label>NRC</label>
-                        <input type="text" id="prov_nrc" name="nrc" class="form-input"
-                               placeholder="Ej. 123456-7">
+                        <input type="text" id="prov_nrc" name="nrc" class="form-input" placeholder="Ej. 123456-7">
                     </div>
                 </div>
 
-            
                 <div class="form-seccion">Configuración</div>
                 <div class="form-group-custom checks-group">
                     <label class="check-label">
@@ -152,7 +136,6 @@ $base_url = '/DNS_Pharmacy';
                         <span>Proveedor activo</span>
                     </label>
                 </div>
-
             </div>
             <div class="modal-footer-custom">
                 <button type="button" class="btn-cancelar" onclick="cerrarModal('modalProveedor')">Cancelar</button>
@@ -162,27 +145,21 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-
-
 <div class="modal-overlay" id="modalVerProveedor">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__fadeInUp animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Detalle del Proveedor</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalVerProveedor')">&times;</button>
         </div>
-        <div class="modal-body" id="cuerpoVerProveedor">
-           
-        </div>
+        <div class="modal-body" id="cuerpoVerProveedor"></div>
         <div class="modal-footer-custom">
             <button type="button" class="btn-cancelar" onclick="cerrarModal('modalVerProveedor')">Cerrar</button>
         </div>
     </div>
 </div>
 
-
-
 <div class="modal-overlay" id="modalEliminar">
-    <div class="modal-box modal-chico">
+    <div class="modal-box modal-chico animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Eliminar proveedor</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalEliminar')">&times;</button>
@@ -197,7 +174,6 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
