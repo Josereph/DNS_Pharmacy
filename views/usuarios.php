@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /DNS_Pharmacy/views/Login.php');
+    exit;
+}
+$base_url = '/DNS_Pharmacy';
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -5,6 +13,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/usuarios.css">
@@ -27,12 +36,32 @@
         </div>
     </div>
 
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-lbl">Total usuarios</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-num" id="statActivos">0</div>
+            <div class="stat-lbl">Activos</div>
+        </div>
+        <div class="stat-card purple">
+            <div class="stat-num" id="statAdmins">0</div>
+            <div class="stat-lbl">Administradores</div>
+        </div>
+        <div class="stat-card gray">
+            <div class="stat-num" id="statInactivos">0</div>
+            <div class="stat-lbl">Inactivos</div>
+        </div>
+    </div>
+
     <div class="filtros-bar">
         <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre, correo o teléfono..." oninput="filtrarTabla()">
         <select id="filtroRol" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todos los roles</option>
-            <option value="1">Administrador</option>
-            <option value="2">Cajero</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Empleado">Empleado</option>
         </select>
         <select id="filtroEstado" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todos los estados</option>
@@ -42,7 +71,11 @@
     </div>
 
     <div class="tabla-card">
-        <table class="tabla-productos" id="tablaUsuarios">
+        <div class="tabla-header-bar">
+            <span>Mostrando <strong id="contadorVisible">0</strong> de <strong id="contadorTotal">0</strong> usuarios</span>
+            <span>DNS Pharmacy · Usuarios</span>
+        </div>
+        <table class="tabla-usuarios" id="tablaUsuarios">
             <thead>
                 <tr>
                     <th>#</th>
@@ -56,9 +89,7 @@
                 </tr>
             </thead>
             <tbody id="cuerpoTabla">
-                <tr>
-                    <td colspan="8" class="tabla-vacia">No hay usuarios registrados.</td>
-                </tr>
+                <tr><td colspan="8" class="tabla-vacia">Cargando...</td></tr>
             </tbody>
         </table>
     </div>
@@ -68,13 +99,14 @@
 <?php include 'layouts/footer.php'; ?>
 
 
+<!-- MODAL: NUEVO / EDITAR USUARIO -->
 <div class="modal-overlay" id="modalUsuario">
     <div class="modal-box modal-grande">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalUsuario">Nuevo Usuario</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalUsuario')">&times;</button>
         </div>
-        <form id="formUsuario" novalidate>
+        <form id="formUsuario" novalidate style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
             <input type="hidden" id="usr_id" name="id_usuario">
             <div class="modal-body">
 
@@ -94,7 +126,7 @@
                 <div class="form-row-custom">
                     <div class="form-group-custom">
                         <label>Correo electrónico <span class="req">*</span></label>
-                        <input type="email" id="usr_correo" name="correo" class="form-input" placeholder="Ej. usuario@dnspharmacy.com">
+                        <input type="email" id="usr_correo" name="correo" class="form-input" placeholder="usuario@dnspharmacy.com">
                         <span class="form-error" id="err_correo"></span>
                     </div>
                     <div class="form-group-custom">
@@ -110,14 +142,14 @@
                         <select id="usr_rol" name="id_rol" class="form-input">
                             <option value="">Seleccionar rol</option>
                             <option value="1">Administrador</option>
-                            <option value="2">Cajero</option>
+                            <option value="2">Empleado</option>
                         </select>
                         <span class="form-error" id="err_rol"></span>
                     </div>
                     <div class="form-group-custom">
                         <label id="labelPassword">Contraseña <span class="req">*</span></label>
                         <div class="input-password-wrap">
-                            <input type="password" id="usr_password" name="password_hash" class="form-input" placeholder="Mínimo 8 caracteres">
+                            <input type="password" id="usr_password" name="password_hash" class="form-input" placeholder="Mínimo 6 caracteres">
                             <button type="button" class="btn-toggle-pass" onclick="togglePassword('usr_password', this)">
                                 <i class="bi bi-eye"></i>
                             </button>
@@ -145,7 +177,7 @@
 </div>
 
 
-
+<!-- MODAL: VER DETALLE -->
 <div class="modal-overlay" id="modalVerUsuario">
     <div class="modal-box modal-mediano">
         <div class="modal-header">
@@ -160,7 +192,7 @@
 </div>
 
 
-
+<!-- MODAL: ELIMINAR -->
 <div class="modal-overlay" id="modalEliminar">
     <div class="modal-box modal-chico">
         <div class="modal-header">
