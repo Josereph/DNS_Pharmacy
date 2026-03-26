@@ -89,8 +89,8 @@ $es_pos = ($pagina_actual === 'pos.php');
             Punto de Venta (POS)
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'perfil_admin.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/perfil_admin.php">
+        <a class="nav-link <?php echo ($pagina_actual == 'perfil.php') ? 'active' : ''; ?>"
+           href="<?php echo $views; ?>/perfil.php">
             <i class="bi bi-gear"></i>
             Perfil Admin
         </a>
