@@ -1,0 +1,69 @@
+body {
+    background: #f0f2f5;
+}
+.scan-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.video-container {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 1rem;
+}
+video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.scan-result {
+    margin-top: 1rem;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    display: none;
+}
+.scan-result.success {
+    background: #d4edda;
+    color: #155724;
+    display: block;
+}
+.scan-result.error {
+    background: #f8d7da;
+    color: #721c24;
+    display: block;
+}
+.btn-cerrar {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-cerrar:hover {
+    background: #5a6268;
+    color: white;
+    text-decoration: none;
+}
+.manual-input {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+.manual-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    margin-bottom: 10px;
+}
