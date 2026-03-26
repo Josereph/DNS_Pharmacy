@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -7,9 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/inventario.css">
+    
+   <style>
+        /* Animación  las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -24,8 +43,7 @@ include 'layouts/slider.php';
 
 <div class="main-content">
 
-    <!-- Stats -->
-    <div class="stats-row">
+    <div class="stats-row animate__animated animate__fadeInDown">
         <div class="stat-card">
             <div class="stat-num" id="statTotalCompras">0</div>
             <div class="stat-lbl">Compras registradas</div>
@@ -44,8 +62,7 @@ include 'layouts/slider.php';
         </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="inv-tabs">
+    <div class="inv-tabs animate__animated animate__fadeIn animate__delay-1s">
         <button class="inv-tab active" onclick="cambiarTab(this,'tabStock')">
             <i class="bi bi-boxes"></i> Stock actual
         </button>
@@ -54,8 +71,7 @@ include 'layouts/slider.php';
         </button>
     </div>
 
-    <!-- TAB: STOCK ACTUAL -->
-    <div id="tabStock" class="tab-content active-tab">
+    <div id="tabStock" class="tab-content active-tab animate__animated animate__fadeIn">
         <div class="tab-header">
             <div class="tab-filtros">
                 <input type="text" id="buscadorStock" class="filtro-input" placeholder="Buscar producto..." oninput="filtrarStock()">
@@ -97,8 +113,7 @@ include 'layouts/slider.php';
         </div>
     </div>
 
-    <!-- TAB: HISTORIAL COMPRAS -->
-    <div id="tabHistorial" class="tab-content">
+    <div id="tabHistorial" class="tab-content animate__animated animate__fadeIn">
         <div class="tab-header">
             <div class="tab-filtros">
                 <input type="text" id="buscadorCompras" class="filtro-input" placeholder="Buscar por N° factura o proveedor..." oninput="filtrarCompras()">
@@ -145,16 +160,14 @@ include 'layouts/slider.php';
 <?php include 'layouts/footer.php'; ?>
 
 
-<!-- MODAL: REGISTRAR COMPRA -->
 <div class="modal-overlay" id="modalCompra">
-    <div class="modal-box modal-xl">
+    <div class="modal-box modal-xl animate__animated animate__slideInUp animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo"><i class="bi bi-cart-plus"></i> Registrar Compra</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalCompra')">&times;</button>
         </div>
         <form id="formCompra" novalidate style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
             <div class="modal-body">
-
                 <div class="form-seccion">Datos de la compra</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
@@ -213,7 +226,6 @@ include 'layouts/slider.php';
                     <div class="compra-total-row"><span>IVA (13%)</span><span id="compIva">$0.00</span></div>
                     <div class="compra-total-row compra-total-final"><span>Total</span><span id="compTotal">$0.00</span></div>
                 </div>
-
             </div>
             <div class="modal-footer-custom">
                 <button type="button" class="btn-cancelar" onclick="cerrarModal('modalCompra')">Cancelar</button>
@@ -226,9 +238,8 @@ include 'layouts/slider.php';
 </div>
 
 
-<!-- MODAL: DETALLE COMPRA -->
 <div class="modal-overlay" id="modalDetalle">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo"><i class="bi bi-file-earmark-text"></i> Detalle de compra</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalDetalle')">&times;</button>
@@ -242,7 +253,6 @@ include 'layouts/slider.php';
         </div>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="../assets/js/inventario.js"></script>

@@ -12,10 +12,34 @@ $base_url = '/DNS_Pharmacy';
     <title>Ventas x Empleado - DNS Pharmacy</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/ventas_empleado.css">
+
+    <style>
+       /* Animación  las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -23,15 +47,14 @@ $base_url = '/DNS_Pharmacy';
 
 <div class="main-content">
 
-    <div class="page-header">
+    <div class="page-header animate__animated animate__fadeInDown">
         <div>
             <h2 class="page-title">Ventas x Empleado</h2>
             <p class="page-subtitle">Resumen de ventas agrupadas por empleado</p>
         </div>
     </div>
 
-    <!-- Filtros de período -->
-    <div class="filtros-bar">
+    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <div class="filtro-fecha-wrap">
             <label class="filtro-label">Desde</label>
             <input type="date" id="filtroDesde" class="filtro-input" onchange="filtrarDatos()">
@@ -48,8 +71,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <!-- Stats generales -->
-    <div class="stats-strip">
+    <div class="stats-strip animate__animated animate__zoomIn animate__delay-1s">
         <div class="stat-card">
             <div class="stat-icon stat-purple"><i class="bi bi-people"></i></div>
             <div>
@@ -80,8 +102,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <!-- Tabla por empleado -->
-    <div class="tabla-card">
+    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
         <table class="tabla-productos" id="tablaEmpleados">
             <thead>
                 <tr>
@@ -98,7 +119,7 @@ $base_url = '/DNS_Pharmacy';
             </thead>
             <tbody id="cuerpoTabla">
                 <tr>
-                    <td colspan="9" class="tabla-vacia">No hay ventas en el período seleccionado.</td>
+                    <td colspan="9" class="tabla-vacia">Cargando datos...</td>
                 </tr>
             </tbody>
         </table>
@@ -109,9 +130,8 @@ $base_url = '/DNS_Pharmacy';
 <?php include 'layouts/footer.php'; ?>
 
 
-<!-- MODAL: DETALLE DE VENTAS DEL EMPLEADO -->
 <div class="modal-overlay" id="modalDetalleEmpleado">
-    <div class="modal-box modal-grande">
+    <div class="modal-box modal-grande animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalDetalle">Ventas del empleado</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalDetalleEmpleado')">&times;</button>
@@ -124,9 +144,8 @@ $base_url = '/DNS_Pharmacy';
 </div>
 
 
-<!-- MODAL: DETALLE DE UNA VENTA -->
 <div class="modal-overlay" id="modalDetalleVenta">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalVenta">Detalle de venta</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalDetalleVenta')">&times;</button>
