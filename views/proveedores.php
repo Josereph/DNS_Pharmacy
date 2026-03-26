@@ -78,19 +78,18 @@ $base_url = '/DNS_Pharmacy';
 
 <?php include 'layouts/footer.php'; ?>
 
-
-
+<!-- MODAL PROVEEDOR - CORREGIDO -->
 <div class="modal-overlay" id="modalProveedor">
     <div class="modal-box modal-grande">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalProveedor">Nuevo Proveedor</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProveedor')">&times;</button>
         </div>
-        <form id="formProveedor" novalidate>
+        <form id="formProveedor" novalidate class="modal-form">
             <input type="hidden" id="prov_id" name="id_proveedor">
             <div class="modal-body">
 
-              
+                <!-- Información de la empresa -->
                 <div class="form-seccion">Información de la empresa</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
@@ -107,7 +106,7 @@ $base_url = '/DNS_Pharmacy';
                     </div>
                 </div>
 
-               
+                <!-- Datos de contacto -->
                 <div class="form-seccion">Datos de contacto</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
@@ -129,7 +128,7 @@ $base_url = '/DNS_Pharmacy';
                            placeholder="Ej. Col. Escalón, San Salvador">
                 </div>
 
-               
+                <!-- Datos fiscales -->
                 <div class="form-seccion">Datos fiscales</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
@@ -144,7 +143,7 @@ $base_url = '/DNS_Pharmacy';
                     </div>
                 </div>
 
-            
+                <!-- Configuración -->
                 <div class="form-seccion">Configuración</div>
                 <div class="form-group-custom checks-group">
                     <label class="check-label">
@@ -162,8 +161,7 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-
-
+<!-- MODAL VER PROVEEDOR -->
 <div class="modal-overlay" id="modalVerProveedor">
     <div class="modal-box modal-mediano">
         <div class="modal-header">
@@ -171,7 +169,7 @@ $base_url = '/DNS_Pharmacy';
             <button class="modal-cerrar" onclick="cerrarModal('modalVerProveedor')">&times;</button>
         </div>
         <div class="modal-body" id="cuerpoVerProveedor">
-           
+            <!-- Contenido dinámico -->
         </div>
         <div class="modal-footer-custom">
             <button type="button" class="btn-cancelar" onclick="cerrarModal('modalVerProveedor')">Cerrar</button>
@@ -179,8 +177,7 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-
-
+<!-- MODAL ELIMINAR -->
 <div class="modal-overlay" id="modalEliminar">
     <div class="modal-box modal-chico">
         <div class="modal-header">
@@ -197,7 +194,6 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"></script>

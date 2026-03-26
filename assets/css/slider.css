@@ -18,24 +18,7 @@
     transition: width 0.3s ease, transform 0.3s ease;
 }
 
-/* Scrollbar personalizada - visible */
-.gym-sidebar::-webkit-scrollbar {
-    width: 6px;
-}
-
-.gym-sidebar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-}
-
-.gym-sidebar::-webkit-scrollbar-thumb {
-    background: #70ab32;
-    border-radius: 3px;
-}
-
-.gym-sidebar::-webkit-scrollbar-thumb:hover {
-    background: #5a8a2a;
-}
+.gym-sidebar::-webkit-scrollbar { width: 0; }
 
 /* ── Sidebar oculto ── */
 .gym-sidebar.sidebar-hidden {
@@ -229,19 +212,3 @@ body.sidebar-collapsed .main-content {
 body.sidebar-collapsed .pos-layout {
     margin-left: 0;
 }
-
-/* ── Toast ── */
-.toast { position:fixed; bottom:28px; right:28px; padding:12px 22px; border-radius:8px; font-size:13px; font-weight:500; color:#fff; z-index:9999; opacity:0; transform:translateY(10px); transition:opacity .3s,transform .3s; pointer-events:none; }
-.toast.toast-visible { opacity:1; transform:translateY(0); }
-.toast-ok    { background:#2e7d32; }
-.toast-error { background:#c62828; }
-
-/* ── Modal scroll fix ── */
-.modal-box { max-height:90vh !important; overflow:hidden !important; display:flex !important; flex-direction:column !important; }
-.modal-body { overflow-y:auto !important; flex:1 !important; min-height:0 !important; }
-.modal-footer-custom { flex-shrink:0 !important; }
-
-/* ── Search wrap ── */
-.search-wrap { flex:1; min-width:200px; position:relative; display:flex; align-items:center; }
-.search-icon { position:absolute; left:12px; color:#ce93d8; font-size:14px; pointer-events:none; }
-.search-wrap .filtro-input { padding-left:36px; width:100%; }
