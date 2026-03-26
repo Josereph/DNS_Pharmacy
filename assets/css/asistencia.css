@@ -1,17 +1,14 @@
 /* =====================
    ASISTENCIA - DNS Pharmacy
-   Reutiliza estilos de productos.css
+   Estilos idénticos a productos.css
    ===================== */
-
-/* Importa los estilos base del módulo productos (si quieres, pero mejor copiar lo necesario) */
-/* En lugar de importar, voy a definir las mismas reglas que ya usas en productos */
 
 .main-content {
     background: #f8f7fc;
     min-height: 100vh;
 }
 
-/* Stats row igual a productos */
+/* Stats row */
 .stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -44,7 +41,7 @@
     margin-top: 4px;
 }
 
-/* Header igual a productos */
+/* Header */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -68,6 +65,7 @@
     display: flex;
     gap: 10px;
 }
+
 .btn-nuevo {
     background: linear-gradient(135deg, #841480, #6a1066);
     color: #ffffff;
@@ -89,7 +87,7 @@
     color: #fff;
 }
 
-/* Filtros bar igual */
+/* Filtros */
 .filtros-bar {
     display: flex;
     gap: 10px;
@@ -115,7 +113,7 @@
     border-color: #841480;
 }
 
-/* Tabla card igual */
+/* Tabla */
 .tabla-card {
     background: #ffffff;
     border-radius: 10px;
@@ -174,7 +172,7 @@
     font-size: 14px;
 }
 
-/* Badges específicos para entrada/salida */
+/* Badges asistencia */
 .asistencia-badge-entrada {
     background: #28a745;
     color: white;
@@ -192,7 +190,7 @@
     display: inline-block;
 }
 
-/* Botón QR en tabla (similar a botón de editar) */
+/* Botón QR en tabla */
 .btn-qr {
     background: #6f42c1;
     color: white;
@@ -207,21 +205,22 @@
     background: #5a32a3;
 }
 
-/* Modales iguales a los otros módulos */
+/* Modales */
 .modal-overlay {
     display: none;
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0,0,0,0.55);
-    z-index: 1050;
     align-items: center;
     justify-content: center;
+    z-index: 1050;
     padding: 20px;
-    box-sizing: border-box;
 }
-.modal-overlay.activo {
-    display: flex !important;
+.modal-overlay.show {
+    display: flex;
 }
 .modal-box {
     background: #fff;
@@ -278,6 +277,36 @@
     border-radius: 0 0 10px 10px;
     flex-shrink: 0;
 }
+
+/* Formulario dentro del modal */
+.form-group-custom {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+.form-group-custom label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #555;
+}
+.form-input {
+    padding: 9px 12px;
+    border: 1.5px solid #e8d5e8;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #333;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fdf8fd;
+}
+.form-input:focus {
+    border-color: #841480;
+    background: #fff;
+}
+
 .btn-cancelar {
     background: #fff;
     color: #555;

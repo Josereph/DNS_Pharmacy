@@ -1,115 +1,178 @@
-let scanner = null;
-let scanning = true;
+// Asistencia Scan con jsQR
+let video = null;
+let canvasElement = null;
+let canvasCtx = null;
+let placeholder = null;
+let scanning = false;
+let stream = null;
+let animationId = null;
 
-// Inicializar escáner al cargar la página
+const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+function pad(n) { return String(n).padStart(2,'0'); }
+function actualizarReloj() {
+    const now = new Date();
+    const relojEl = document.getElementById('reloj');
+    const fechaEl = document.getElementById('fecha');
+    if (relojEl) relojEl.innerHTML = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    if (fechaEl) fechaEl.innerHTML = `${dias[now.getDay()]} ${now.getDate()} de ${meses[now.getMonth()]} de ${now.getFullYear()}`;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    initScanner();
-});
-
-function initScanner() {
-    scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
-
-    scanner.addListener('scan', function (content) {
-        if (!scanning) return;
-        scanning = false;
-
-        // Extraer parámetros de la URL
-        let params;
-        try {
-            const url = new URL(content);
-            params = {
-                token: url.searchParams.get('token'),
-                uid: url.searchParams.get('uid')
-            };
-        } catch(e) {
-            // Si no es URL válida, intentar parsear como query string
-            const match = content.match(/[?&]token=([^&]+).*[?&]uid=([^&]+)/);
-            if (match) {
-                params = { token: match[1], uid: match[2] };
-            } else {
-                showResult('QR inválido. No contiene datos de usuario.', 'error');
-                setTimeout(() => { scanning = true; }, 3000);
-                return;
-            }
-        }
-
-        if (!params.token || !params.uid) {
-            showResult('QR inválido. No contiene datos de usuario.', 'error');
-            setTimeout(() => { scanning = true; }, 3000);
-            return;
-        }
-
-        // Enviar al servidor
-        fetch('../controllers/AsistenciaController.php?accion=registrar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `token=${encodeURIComponent(params.token)}&uid=${encodeURIComponent(params.uid)}&origen=qr`
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.ok) {
-                showResult(data.mensaje, 'success');
-            } else {
-                showResult(data.mensaje, 'error');
-            }
-            setTimeout(() => { scanning = true; }, 3000);
-        })
-        .catch(err => {
-            console.error(err);
-            showResult('Error al comunicarse con el servidor.', 'error');
-            setTimeout(() => { scanning = true; }, 3000);
-        });
-    });
-
-    Instascan.Camera.getCameras().then(function (cameras) {
-        if (cameras.length > 0) {
-            // Elegir la cámara trasera si existe (índice 1), si no la primera
-            const camera = cameras.length > 1 ? cameras[1] : cameras[0];
-            scanner.start(camera);
-            document.getElementById('camera-status').innerHTML = '<i class="bi bi-camera-fill"></i> Cámara activa';
-        } else {
-            showResult('No se encontró cámara. Usa el método manual.', 'error');
-        }
-    }).catch(function (e) {
-        console.error(e);
-        showResult('Error al acceder a la cámara. Asegúrate de permitir el acceso.', 'error');
-    });
-}
-
-function showResult(message, type) {
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = message;
-    resultDiv.className = `scan-result ${type}`;
-    resultDiv.style.display = 'block';
-    setTimeout(() => {
-        resultDiv.style.display = 'none';
-    }, 3000);
-}
-
-// Método manual
-function registrarManual() {
-    const manualToken = document.getElementById('manualToken').value.trim();
-    const manualUid = document.getElementById('manualUid').value.trim();
-    if (!manualToken || !manualUid) {
-        alert('Completa ambos campos: Token y ID de usuario');
+    canvasElement = document.getElementById('qr-canvas');
+    if (!canvasElement) {
+        console.error('No se encontró el canvas #qr-canvas');
         return;
     }
+    canvasCtx = canvasElement.getContext('2d', { willReadFrequently: true });
+    placeholder = document.getElementById('camera-placeholder');
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+    // Intentar encender cámara automáticamente
+    encenderCamara();
+});
 
+function encenderCamara() {
+    if (stream) cerrarCamara();
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(s) {
+            stream = s;
+            video = document.createElement('video');
+            video.setAttribute('playsinline', true);
+            video.srcObject = stream;
+            video.play();
+            placeholder.style.display = 'none';
+            canvasElement.style.display = 'block';
+            scanning = true;
+            tick();
+        })
+        .catch(err => {
+            console.error('Error cámara:', err);
+            placeholder.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i><span>Error: no se pudo acceder a la cámara. Verifica permisos.</span>';
+            placeholder.style.display = 'flex';
+            canvasElement.style.display = 'none';
+        });
+}
+
+function cerrarCamara() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+    }
+    if (animationId) cancelAnimationFrame(animationId);
+    scanning = false;
+    canvasElement.style.display = 'none';
+    placeholder.style.display = 'flex';
+    placeholder.innerHTML = '<i class="bi bi-camera-video-off"></i><span>Cámara desactivada</span>';
+    if (video) video = null;
+}
+
+function tick() {
+    if (!scanning || !video || video.readyState !== video.HAVE_ENOUGH_DATA) {
+        animationId = requestAnimationFrame(tick);
+        return;
+    }
+    canvasElement.height = video.videoHeight;
+    canvasElement.width  = video.videoWidth;
+    canvasCtx.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+    scan();
+    animationId = requestAnimationFrame(tick);
+}
+
+function scan() {
+    if (!scanning) return;
+    try {
+        const imageData = canvasCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+        const code = jsQR(imageData.data, canvasElement.width, canvasElement.height);
+        if (code) {
+            scanning = false;
+            procesarQR(code.data);
+            setTimeout(() => { scanning = true; }, 3000);
+        }
+    } catch(e) {
+        console.warn('Error en escaneo:', e);
+    }
+}
+
+function procesarQR(qrData) {
     fetch('../controllers/AsistenciaController.php?accion=registrar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `token=${encodeURIComponent(manualToken)}&uid=${encodeURIComponent(manualUid)}&origen=manual`
+        body: 'qrData=' + encodeURIComponent(qrData)
     })
     .then(res => res.json())
-    .then(data => {
-        showResult(data.mensaje, data.ok ? 'success' : 'error');
-        if (data.ok) {
-            document.getElementById('manualToken').value = '';
-            document.getElementById('manualUid').value = '';
+    .then(res => {
+        if (res.ok) {
+            mostrarModal(res.tipo === 'entrada' ? 'entrada' : 'salida',
+                          res.tipo === 'entrada' ? '✅' : '🚪',
+                          res.tipo === 'entrada' ? 'ENTRADA REGISTRADA' : 'SALIDA REGISTRADA',
+                          res.mensaje,
+                          res.id_usuario);
+        } else {
+            mostrarModal('error', '❌', 'ERROR', res.mensaje, '');
         }
     })
     .catch(err => {
         console.error(err);
-        showResult('Error al registrar.', 'error');
+        mostrarModal('error', '💥', 'ERROR', 'Error de conexión', '');
     });
 }
+
+function registrarManual() {
+    const uid = document.getElementById('manualUid').value.trim();
+    const token = document.getElementById('manualToken').value.trim();
+    if (!uid || !token) {
+        alert('Completa ambos campos (ID y Token)');
+        return;
+    }
+    const jsonData = JSON.stringify({ u: parseInt(uid), t: token });
+    fetch('../controllers/AsistenciaController.php?accion=registrar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'qrData=' + encodeURIComponent(jsonData)
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.ok) {
+            mostrarModal(res.tipo === 'entrada' ? 'entrada' : 'salida',
+                          res.tipo === 'entrada' ? '✅' : '🚪',
+                          res.tipo === 'entrada' ? 'ENTRADA REGISTRADA' : 'SALIDA REGISTRADA',
+                          res.mensaje,
+                          res.id_usuario);
+            document.getElementById('manualUid').value = '';
+            document.getElementById('manualToken').value = '';
+        } else {
+            mostrarModal('error', '❌', 'ERROR', res.mensaje, '');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        mostrarModal('error', '💥', 'ERROR', 'Error de conexión', '');
+    });
+}
+
+let closeTimer = null;
+function mostrarModal(tipo, icono, estado, mensaje, codigo) {
+    clearTimeout(closeTimer);
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-box');
+    modal.className = 'modal-box ' + tipo;
+    document.getElementById('modalIcon').innerHTML = icono;
+    document.getElementById('modalEstado').innerHTML = estado;
+    document.getElementById('modalMensaje').innerHTML = mensaje;
+    document.getElementById('modalCodigo').innerHTML = codigo ? "ID: " + codigo : '';
+    overlay.classList.add('show');
+    closeTimer = setTimeout(() => {
+        overlay.classList.remove('show');
+    }, 3000);
+}
+
+function cerrarModal() {
+    document.getElementById('modal-overlay').classList.remove('show');
+    clearTimeout(closeTimer);
+}
+
+window.encenderCamara = encenderCamara;
+window.cerrarCamara = cerrarCamara;
+window.registrarManual = registrarManual;
+window.cerrarModal = cerrarModal;

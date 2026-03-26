@@ -1,36 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Tomar Asistencia - DNS Pharmacy</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/css/asistencia_scan.css">
 </head>
 <body>
-<div class="scan-container">
-    <h4 class="text-center"><i class="bi bi-upc-scan"></i> Escanear código QR</h4>
-    <p class="text-muted text-center">Coloca tu código QR frente a la cámara</p>
-    <div class="video-container">
-        <video id="preview" autoplay playsinline></video>
-    </div>
-    <div id="result" class="scan-result"></div>
-    <div class="text-center mt-3">
-        <a href="asistencia.php" class="btn-cerrar"><i class="bi bi-arrow-left"></i> Volver</a>
+
+<div class="scan-card">
+    <div class="scan-header">
+        <h1><i class="bi bi-upc-scan"></i> Escanear QR</h1>
     </div>
 
-    <!-- Alternativa manual si la cámara no funciona -->
-    <div class="manual-input">
-        <hr>
-        <p class="text-center text-muted"><i class="bi bi-info-circle"></i> Si la cámara no funciona, usa el método manual:</p>
-        <input type="text" id="manualToken" placeholder="Token del QR (código)">
-        <input type="text" id="manualUid" placeholder="ID del usuario">
-        <button class="btn-cerrar" style="background:#28a745;" onclick="registrarManual()">Registrar manual</button>
+    <div class="clock-panel">
+        <div class="reloj" id="reloj">00:00:00</div>
+        <div class="fecha" id="fecha"></div>
+    </div>
+
+    <div class="camera-area">
+        <div class="camera-container">
+            <canvas id="qr-canvas" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
+            <div id="camera-placeholder" class="camera-placeholder">
+                <i class="bi bi-camera-video-off"></i>
+                <span>Esperando cámara...</span>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="encenderCamara()"><i class="bi bi-camera-fill"></i> Activar cámara</button>
+            <button class="btn btn-outline" onclick="cerrarCamara()"><i class="bi bi-power"></i> Apagar</button>
+            <a href="asistencia.php" class="btn btn-outline"><i class="bi bi-arrow-left"></i> Volver</a>
+        </div>
+    </div>
+
+    <div class="manual-section">
+        <div class="manual-title"><i class="bi bi-pencil-square"></i> Registro manual</div>
+        <div class="manual-inputs">
+            <input type="text" id="manualUid" class="manual-input" placeholder="ID del usuario">
+            <input type="text" id="manualToken" class="manual-input" placeholder="Token del QR">
+            <button class="btn btn-primary" onclick="registrarManual()"><i class="bi bi-check-lg"></i> Registrar</button>
+        </div>
+        <div class="text-muted" style="font-size: 0.7rem; color: #94a3b8; text-align: center;">
+            <i class="bi bi-info-circle"></i> Usa este método si la cámara no funciona
+        </div>
     </div>
 </div>
 
-<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<!-- Modal resultado -->
+<div id="modal-overlay" class="modal-overlay">
+    <div class="modal-box" id="modal-box">
+        <div class="modal-icon" id="modalIcon">✅</div>
+        <div class="modal-estado" id="modalEstado">Registrado</div>
+        <div class="modal-mensaje" id="modalMensaje"></div>
+        <div class="modal-codigo" id="modalCodigo"></div>
+        <button class="modal-btn" onclick="cerrarModal()">Cerrar</button>
+    </div>
+</div>
+
+<script src="../assets/js/jsqr.min.js"></script>
 <script src="../assets/js/asistencia_scan.js"></script>
 </body>
 </html>

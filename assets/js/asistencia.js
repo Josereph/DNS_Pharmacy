@@ -1,12 +1,9 @@
 // Módulo Asistencia - DNS Pharmacy
-
-// Cargar todo al inicio
 document.addEventListener('DOMContentLoaded', function() {
     cargarReporte();
     cargarUsuarios();
     cargarHistorial();
 
-    // Eventos para filtros
     document.getElementById('fechaDesde').addEventListener('change', cargarHistorial);
     document.getElementById('fechaHasta').addEventListener('change', cargarHistorial);
     document.getElementById('filtroUsuario').addEventListener('change', cargarHistorial);
@@ -31,13 +28,21 @@ function cargarUsuarios() {
         .then(res => res.json())
         .then(data => {
             if (data.ok) {
-                const select = document.getElementById('filtroUsuario');
-                select.innerHTML = '<option value="">Todos los usuarios</option>';
+                const selectFiltro = document.getElementById('filtroUsuario');
+                selectFiltro.innerHTML = '<option value="">Todos los usuarios</option>';
+                const selectGenerar = document.getElementById('selectUsuarioQR');
+                selectGenerar.innerHTML = '<option value="">Seleccionar usuario</option>';
+
                 data.datos.forEach(user => {
-                    const option = document.createElement('option');
-                    option.value = user.id_usuario;
-                    option.textContent = `${user.nombre} ${user.apellido} (${user.correo})`;
-                    select.appendChild(option);
+                    const optionFiltro = document.createElement('option');
+                    optionFiltro.value = user.id_usuario;
+                    optionFiltro.textContent = `${user.nombre} ${user.apellido} (${user.correo})`;
+                    selectFiltro.appendChild(optionFiltro);
+
+                    const optionGenerar = document.createElement('option');
+                    optionGenerar.value = user.id_usuario;
+                    optionGenerar.textContent = `${user.nombre} ${user.apellido} (${user.correo})`;
+                    selectGenerar.appendChild(optionGenerar);
                 });
             }
         })
@@ -63,12 +68,12 @@ function cargarHistorial() {
                 data.datos.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${row.fecha}</td>
-                        <td>${row.nombre} ${row.apellido}</td>
-                        <td><span class="asistencia-badge-entrada">${row.hora_entrada}</span></td>
-                        <td>${row.hora_salida ? `<span class="asistencia-badge-salida">${row.hora_salida}</span>` : '—'}</td>
-                        <td>${row.origen === 'qr' ? '<i class="bi bi-upc-scan"></i> QR' : '<i class="bi bi-pencil"></i> Manual'}</td>
-                        <td><button class="btn-qr" onclick="generarQR(${row.id_usuario}, '${escapeHtml(row.nombre)} ${escapeHtml(row.apellido)}')"><i class="bi bi-qr-code"></i> QR</button></td>
+                          <td>${row.fecha}</td>
+                          <td>${row.nombre} ${row.apellido}</td>
+                          <td><span class="asistencia-badge-entrada">${row.hora_entrada}</span></td>
+                          <td>${row.hora_salida ? `<span class="asistencia-badge-salida">${row.hora_salida}</span>` : '—'}</td>
+                          <td>${row.origen === 'qr' ? '<i class="bi bi-upc-scan"></i> QR' : '<i class="bi bi-pencil"></i> Manual'}</td>
+                          <td><button class="btn-qr" onclick="generarQR(${row.id_usuario}, '${escapeHtml(row.nombre)} ${escapeHtml(row.apellido)}')"><i class="bi bi-qr-code"></i> QR</button></td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -77,6 +82,27 @@ function cargarHistorial() {
             }
         })
         .catch(err => console.error('Error cargando historial:', err));
+}
+
+function abrirModalGenerarQR() {
+    const select = document.getElementById('selectUsuarioQR');
+    if (select.options.length <= 1) {
+        cargarUsuarios();
+    }
+    abrirModal('modalGenerarQR');
+}
+
+function generarQRDesdeSelect() {
+    const select = document.getElementById('selectUsuarioQR');
+    const userId = select.value;
+    if (!userId) {
+        alert('Por favor selecciona un usuario');
+        return;
+    }
+    const selectedOption = select.options[select.selectedIndex];
+    const nombre = selectedOption.textContent.split(' (')[0];
+    generarQR(userId, nombre);
+    cerrarModal('modalGenerarQR');
 }
 
 function generarQR(userId, nombre) {
