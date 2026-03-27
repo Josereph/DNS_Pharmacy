@@ -5,7 +5,7 @@
 .main-content { background: #f8f7fc; min-height: 100vh; }
 
 /* ── Stats ── */
-.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
 .stat-card { background:#fff; border-radius:8px; border:1px solid #eee; padding:14px 16px; box-shadow:0 1px 4px rgba(132,20,128,.06); border-left:4px solid #841480; }
 .stat-card.green  { border-left-color:#70ab32; }
 .stat-card.orange { border-left-color:#f57c00; }
@@ -19,19 +19,16 @@
 .inv-tabs { display:flex; gap:6px; margin-bottom:16px; }
 .inv-tab { padding:9px 20px; border-radius:6px; border:1.5px solid #e8d5e8; background:#fff; color:#841480; font-size:13px; font-weight:500; cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:6px; }
 .inv-tab.active, .inv-tab:hover { background:#841480; color:#fff; border-color:#841480; }
-
 .tab-content { display:none; }
 .tab-content.active-tab { display:block; }
 
 /* ── Tab header ── */
 .tab-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
 .tab-filtros { display:flex; gap:8px; flex:1; flex-wrap:wrap; }
-
 .filtro-input { flex:1; min-width:180px; padding:8px 14px; border:1.5px solid #e8d5e8; border-radius:6px; font-size:13px; color:#444; outline:none; background:#fdf8fd; }
 .filtro-input:focus { border-color:#841480; }
 .filtro-select { padding:8px 14px; border:1.5px solid #e8d5e8; border-radius:6px; font-size:13px; color:#444; background:#fdf8fd; cursor:pointer; outline:none; }
 .filtro-select:focus { border-color:#841480; }
-
 .btn-nueva-compra { background:linear-gradient(135deg,#841480,#6a1066); color:#fff; border:none; padding:9px 18px; border-radius:6px; font-size:13px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:6px; transition:opacity .2s; white-space:nowrap; }
 .btn-nueva-compra:hover { opacity:.9; }
 
@@ -40,7 +37,6 @@
 .tabla-header-bar { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:linear-gradient(135deg,#841480 0%,#5a0e58 100%); }
 .tabla-header-bar span { font-size:12px; color:rgba(255,255,255,.8); }
 .tabla-header-bar strong { color:#fff; }
-
 .tabla-inv { width:100%; border-collapse:collapse; font-size:13px; }
 .tabla-inv thead tr { background:#f5e8f5; }
 .tabla-inv th { padding:11px 14px; text-align:left; font-size:11px; font-weight:600; color:#841480; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid #e8d5e8; }
@@ -81,7 +77,9 @@
 .modal-titulo  { font-size:15px; font-weight:600; color:#fff; margin:0; display:flex; align-items:center; gap:8px; }
 .modal-cerrar  { background:none; border:none; font-size:22px; color:rgba(255,255,255,.8); cursor:pointer; }
 .modal-cerrar:hover { color:#fff; }
-.modal-body    { padding:20px; overflow-y:auto; flex:1; }
+.modal-body    { padding:20px !important; overflow-y:auto !important; flex:1 !important; min-height:0 !important; }
+.modal-body::-webkit-scrollbar { width:6px; }
+.modal-body::-webkit-scrollbar-thumb { background:#841480; border-radius:3px; }
 .modal-footer-custom { display:flex; justify-content:flex-end; gap:10px; padding:14px 20px; border-top:1px solid #f0e6f0; background:#fff; border-radius:0 0 10px 10px; flex-shrink:0; }
 
 /* ── Formulario ── */
@@ -92,7 +90,6 @@
 .req { color:#c62828; }
 .form-input { padding:9px 12px; border:1.5px solid #e8d5e8; border-radius:6px; font-size:13px; color:#333; outline:none; transition:border .2s; width:100%; box-sizing:border-box; background:#fdf8fd; }
 .form-input:focus { border-color:#841480; background:#fff; }
-.form-input.input-error { border-color:#c62828; }
 .form-error { font-size:11px; color:#c62828; min-height:14px; display:block; }
 
 /* ── Tabla detalle compra ── */
@@ -102,20 +99,46 @@
 .tabla-compra-detalle th { padding:10px 12px; font-size:11px; font-weight:600; color:#841480; text-transform:uppercase; letter-spacing:.04em; border-bottom:2px solid #e8d5e8; white-space:nowrap; }
 .tabla-compra-detalle td { padding:8px 10px; border-bottom:1px solid #f8f5ff; vertical-align:middle; }
 .tabla-compra-detalle tbody tr:last-child td { border-bottom:none; }
-
 .fila-select { width:100%; padding:7px 10px; border:1.5px solid #e8d5e8; border-radius:6px; font-size:12px; color:#333; background:#fdf8fd; outline:none; }
 .fila-select:focus { border-color:#841480; }
 .fila-input { width:100%; padding:7px 10px; border:1.5px solid #e8d5e8; border-radius:6px; font-size:12px; color:#333; background:#fdf8fd; outline:none; box-sizing:border-box; }
 .fila-input:focus { border-color:#841480; }
 .fila-subtotal { font-size:13px; font-weight:600; color:#70ab32; white-space:nowrap; }
-
 .btn-add-prod { background:#70ab32; color:#fff; border:none; border-radius:5px; padding:3px 10px; font-size:11px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:4px; }
 .btn-add-prod:hover { opacity:.9; }
 .btn-del-fila { background:none; border:none; color:#ddd; font-size:16px; cursor:pointer; transition:color .15s; padding:4px; }
 .btn-del-fila:hover { color:#c62828; }
 
+/* ── IVA Toggle ── */
+.iva-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #fdf5fd;
+    border-radius: 6px;
+    border: 1px solid #e8d5e8;
+    margin-bottom: 8px;
+}
+
+.iva-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #841480;
+    margin: 0;
+}
+
+.switch { position:relative; display:inline-block; width:36px; height:20px; margin:0; }
+.switch input { opacity:0; width:0; height:0; }
+.slider-switch { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#ddd; border-radius:20px; transition:.3s; }
+.slider-switch:before { position:absolute; content:""; height:14px; width:14px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.3s; }
+.switch input:checked + .slider-switch { background:#841480; }
+.switch input:checked + .slider-switch:before { transform:translateX(16px); }
+
+.iva-row { transition:opacity .2s; }
+
 /* ── Totales compra ── */
-.compra-totales { display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding:12px 0 4px; border-top:1px solid #f0e6f0; margin-top:8px; }
+.compra-totales { display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding:8px 0 4px; border-top:1px solid #f0e6f0; }
 .compra-total-row { display:flex; gap:20px; font-size:13px; color:#888; }
 .compra-total-final { font-size:16px; font-weight:700; color:#841480; padding-top:6px; border-top:1px dashed #e8d5e8; }
 
@@ -141,33 +164,13 @@
 .toast-ok    { background:#2e7d32; }
 .toast-error { background:#c62828; }
 
-/* ── Print ── */
+/* Print */
 @media print {
     body * { visibility:hidden; }
     .detalle-print, .detalle-print * { visibility:visible; }
     .detalle-print { position:fixed; top:0; left:0; width:100%; }
 }
 
-/* ── Fix scroll modal — todos los modales ── */
-.modal-box {
-    max-height: 90vh !important;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-.modal-body {
-    overflow-y: auto !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-    -webkit-overflow-scrolling: touch;
-}
-
-.modal-footer-custom {
-    flex-shrink: 0 !important;
-    background: #ffffff;
-}
-
-/* ── Responsive ── */
+/* Responsive */
 @media (max-width:900px) { .stats-row { grid-template-columns:repeat(2,1fr); } }
-@media (max-width:768px) { .form-row-custom { grid-template-columns:1fr; } .modal-xl,.modal-mediano { max-width:100%; } .modal-box { max-height: 95vh !important; } }
+@media (max-width:768px) { .form-row-custom { grid-template-columns:1fr; } .modal-xl,.modal-mediano { max-width:100%; } .modal-box { max-height:95vh; } }

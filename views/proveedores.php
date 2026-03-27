@@ -76,14 +76,15 @@ $base_url = '/DNS_Pharmacy';
 <?php include 'layouts/footer.php'; ?>
 
 
-<!-- MODAL: NUEVO / EDITAR PROVEEDOR -->
+<!-- MODAL: NUEVO / EDITAR PROVEEDOR - CORREGIDO -->
 <div class="modal-overlay" id="modalProveedor">
     <div class="modal-box modal-grande">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalProveedor">Nuevo Proveedor</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProveedor')">&times;</button>
         </div>
-        <form id="formProveedor" novalidate>
+        <!-- AGREGADA LA CLASE modal-form -->
+        <form id="formProveedor" novalidate class="modal-form">
             <input type="hidden" id="prov_id" name="id_proveedor">
             <div class="modal-body">
 
