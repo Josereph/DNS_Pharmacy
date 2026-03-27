@@ -9,12 +9,11 @@ $base_url = '/DNS_Pharmacy';
 <!doctype html>
 <html lang="es">
 <head>
-    <title>Historial de Ventas - DNS Pharmacy</title>
+    <title>Reportes de Ventas - DNS Pharmacy</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -51,8 +50,8 @@ $base_url = '/DNS_Pharmacy';
 
     <div class="page-header animate__animated animate__fadeInDown">
         <div>
-            <h2 class="page-title">Historial de Ventas</h2>
-            <p class="page-subtitle">Consulta general con filtro por empleado</p>
+            <h2 class="page-title">Centro de Reportes de Ventas</h2>
+            <p class="page-subtitle">Gestión integral de ingresos y desempeño de empleados</p>
         </div>
     </div>
 
@@ -74,30 +73,21 @@ $base_url = '/DNS_Pharmacy';
 
     <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
 
+    <div class="filtros-bar mt-3">
         <div class="filtro-fecha-wrap">
             <label class="filtro-label">Desde</label>
-            <input type="date" id="filtroDesde" class="filtro-input" onchange="filtrarDatos()">
+            <input type="date" id="filtroDesde" class="filtro-input" onchange="filtrarTodo()">
         </div>
-
         <div class="filtro-fecha-wrap">
             <label class="filtro-label">Hasta</label>
-            <input type="date" id="filtroHasta" class="filtro-input" onchange="filtrarDatos()">
+            <input type="date" id="filtroHasta" class="filtro-input" onchange="filtrarTodo()">
         </div>
-
-        <div class="filtro-fecha-wrap">
-            <label class="filtro-label">Empleado</label>
-            <select id="filtroEmpleado" class="filtro-input" onchange="filtrarDatos()">
-                <option value="">Todos</option>
-            </select>
-        </div>
-
         <div class="filtros-accesos-rapidos">
             <button class="btn-periodo" onclick="setPeriodo('hoy')">Hoy</button>
-            <button class="btn-periodo" onclick="setPeriodo('semana')">Esta semana</button>
-            <button class="btn-periodo" onclick="setPeriodo('mes')">Este mes</button>
+            <button class="btn-periodo" onclick="setPeriodo('semana')">Semana</button>
+            <button class="btn-periodo" onclick="setPeriodo('mes')">Mes</button>
             <button class="btn-periodo" onclick="setPeriodo('todo')">Todo</button>
         </div>
-
     </div>
 
     <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">

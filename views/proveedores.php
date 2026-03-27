@@ -31,7 +31,7 @@ $base_url = '/DNS_Pharmacy';
             <p class="page-subtitle">Gestión del catálogo de proveedores</p>
         </div>
         <div class="header-actions">
-            <button class="btn-nuevo" onclick="abrirModalProveedor()">
+            <button class="btn-nuevo" onclick="nuevaProveedor()">
                 <i class="bi bi-plus-lg"></i> Nuevo Proveedor
             </button>
         </div>
@@ -40,7 +40,8 @@ $base_url = '/DNS_Pharmacy';
     <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <div class="search-wrap">
             <i class="bi bi-search search-icon"></i>
-            <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre, NIT o correo..." oninput="filtrarTabla()">
+            <input type="text" id="buscador" class="filtro-input"
+                   placeholder="Buscar por nombre, NIT o correo..." oninput="filtrarTabla()">
         </div>
         <select id="filtroEstado" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todos los estados</option>
@@ -59,14 +60,13 @@ $base_url = '/DNS_Pharmacy';
                     <th>Teléfono</th>
                     <th>Correo</th>
                     <th>NIT</th>
-                    <th>NRC</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="cuerpoTabla">
                 <tr>
-                    <td colspan="9" class="tabla-vacia">No hay proveedores registrados.</td>
+                    <td colspan="8" class="tabla-vacia">Cargando proveedores...</td>
                 </tr>
             </tbody>
         </table>
