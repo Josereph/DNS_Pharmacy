@@ -17,6 +17,26 @@ $base_url = '/DNS_Pharmacy';
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/usuarios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        /* Animación  las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -24,7 +44,7 @@ $base_url = '/DNS_Pharmacy';
 
 <div class="main-content">
 
-    <div class="page-header">
+    <div class="page-header animate__animated animate__fadeInDown">
         <div>
             <h2 class="page-title">Usuarios</h2>
             <p class="page-subtitle">Gestión de usuarios del sistema</p>
@@ -36,8 +56,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-row">
+    <div class="stats-row animate__animated animate__zoomIn animate__delay-1s">
         <div class="stat-card">
             <div class="stat-num" id="statTotal">0</div>
             <div class="stat-lbl">Total usuarios</div>
@@ -56,7 +75,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <div class="filtros-bar">
+    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre, correo o teléfono..." oninput="filtrarTabla()">
         <select id="filtroRol" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todos los roles</option>
@@ -70,7 +89,7 @@ $base_url = '/DNS_Pharmacy';
         </select>
     </div>
 
-    <div class="tabla-card">
+    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
         <div class="tabla-header-bar">
             <span>Mostrando <strong id="contadorVisible">0</strong> de <strong id="contadorTotal">0</strong> usuarios</span>
             <span>DNS Pharmacy · Usuarios</span>
@@ -99,9 +118,8 @@ $base_url = '/DNS_Pharmacy';
 <?php include 'layouts/footer.php'; ?>
 
 
-<!-- MODAL: NUEVO / EDITAR USUARIO -->
 <div class="modal-overlay" id="modalUsuario">
-    <div class="modal-box modal-grande">
+    <div class="modal-box modal-grande animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalUsuario">Nuevo Usuario</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalUsuario')">&times;</button>
@@ -114,7 +132,7 @@ $base_url = '/DNS_Pharmacy';
                 <div class="form-row-custom">
                     <div class="form-group-custom">
                         <label>Nombre <span class="req">*</span></label>
-                        <input type="text" id="usr_nombre" name="nombre" class="form-input" placeholder="Ej. Carlos">
+                        <input type="text" id="usr_nombre" name="nombre" class="form-input" placeholder="Ej. Juan">
                         <span class="form-error" id="err_nombre"></span>
                     </div>
                     <div class="form-group-custom">
@@ -176,10 +194,8 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-
-<!-- MODAL: VER DETALLE -->
 <div class="modal-overlay" id="modalVerUsuario">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__fadeInUp animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Detalle del Usuario</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalVerUsuario')">&times;</button>
@@ -191,10 +207,8 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-
-<!-- MODAL: ELIMINAR -->
 <div class="modal-overlay" id="modalEliminar">
-    <div class="modal-box modal-chico">
+    <div class="modal-box modal-chico animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Eliminar usuario</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalEliminar')">&times;</button>
@@ -209,7 +223,6 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

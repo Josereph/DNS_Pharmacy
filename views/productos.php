@@ -17,6 +17,26 @@ $base_url = '/DNS_Pharmacy';
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/productos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        /* Animación las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -24,8 +44,7 @@ $base_url = '/DNS_Pharmacy';
 
 <div class="main-content">
 
-    <!-- Stats dashboard -->
-    <div class="stats-row">
+    <div class="stats-row animate__animated animate__fadeInDown">
         <div class="stat-card">
             <div class="stat-num" id="statTotal">0</div>
             <div class="stat-lbl">Total productos</div>
@@ -44,8 +63,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <!-- Header -->
-    <div class="page-header">
+    <div class="page-header animate__animated animate__fadeIn animate__delay-1s">
         <div>
             <h2 class="page-title">Productos</h2>
             <p class="page-subtitle">Gestión del catálogo de productos</p>
@@ -56,8 +74,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <!-- Filtros -->
-    <div class="filtros-bar">
+    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre o código de barras..." oninput="filtrarTabla()">
         <select id="filtroCategoria" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todas las categorías</option>
@@ -74,8 +91,7 @@ $base_url = '/DNS_Pharmacy';
         </select>
     </div>
 
-    <!-- Tabla -->
-    <div class="tabla-card">
+    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
         <div class="tabla-header-bar">
             <span>Mostrando <strong id="contadorVisible">0</strong> de <strong id="contadorTotal">0</strong> productos</span>
             <span>DNS Pharmacy · Inventario</span>
@@ -109,9 +125,8 @@ $base_url = '/DNS_Pharmacy';
 <?php include 'layouts/footer.php'; ?>
 
 
-<!-- MODAL: PRODUCTO -->
 <div class="modal-overlay" id="modalProducto">
-    <div class="modal-box modal-grande">
+    <div class="modal-box modal-grande animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalProducto">Nuevo Producto</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProducto')">&times;</button>
@@ -120,7 +135,6 @@ $base_url = '/DNS_Pharmacy';
             <input type="hidden" id="prod_id" name="id_producto">
             <input type="hidden" id="prod_imagen_actual" name="imagen_actual">
             <div class="modal-body">
-
                 <div class="form-seccion">Información general</div>
                 <div class="form-row-custom">
                     <div class="form-group-custom">
@@ -247,7 +261,6 @@ $base_url = '/DNS_Pharmacy';
                         </label>
                     </div>
                 </div>
-
             </div>
             <div class="modal-footer-custom">
                 <button type="button" class="btn-cancelar" onclick="cerrarModal('modalProducto')">Cancelar</button>
@@ -257,10 +270,8 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-
-<!-- MODAL: CONFIRMAR ELIMINAR PRODUCTO -->
 <div class="modal-overlay" id="modalEliminar">
-    <div class="modal-box modal-chico">
+    <div class="modal-box modal-chico animate__animated animate__headShake">
         <div class="modal-header">
             <h5 class="modal-titulo">Eliminar producto</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalEliminar')">&times;</button>
@@ -276,10 +287,8 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-
-<!-- MODAL: CATEGORÍAS -->
 <div class="modal-overlay" id="modalCategorias">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__fadeInDown animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Gestión de Categorías</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalCategorias')">&times;</button>
@@ -309,9 +318,7 @@ $base_url = '/DNS_Pharmacy';
                     </div>
                 </div>
             </form>
-
             <hr class="separador-cat">
-
             <table class="tabla-categorias" id="tablaCategorias">
                 <thead>
                     <tr>
@@ -323,71 +330,11 @@ $base_url = '/DNS_Pharmacy';
                     </tr>
                 </thead>
                 <tbody id="cuerpoTablaCategoria">
-                    <tr>
-                        <td>1</td><td>Analgésicos</td><td>Medicamentos para aliviar dolor</td>
-                        <td><span class="badge-activo">Activo</span></td>
-                        <td>
-                            <button class="btn-accion btn-editar" onclick="editarCategoria(1,'Analgésicos','Medicamentos para aliviar dolor',1)">Editar</button>
-                            <button class="btn-accion btn-eliminar-sm" onclick="confirmarEliminarCategoria(1,'Analgésicos')">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td><td>Antibióticos</td><td>Medicamentos para infecciones bacterianas</td>
-                        <td><span class="badge-activo">Activo</span></td>
-                        <td>
-                            <button class="btn-accion btn-editar" onclick="editarCategoria(2,'Antibióticos','Medicamentos para infecciones bacterianas',1)">Editar</button>
-                            <button class="btn-accion btn-eliminar-sm" onclick="confirmarEliminarCategoria(2,'Antibióticos')">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td><td>Vitaminas</td><td>Suplementos vitamínicos</td>
-                        <td><span class="badge-activo">Activo</span></td>
-                        <td>
-                            <button class="btn-accion btn-editar" onclick="editarCategoria(3,'Vitaminas','Suplementos vitamínicos',1)">Editar</button>
-                            <button class="btn-accion btn-eliminar-sm" onclick="confirmarEliminarCategoria(3,'Vitaminas')">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td><td>Jarabes</td><td>Medicamentos líquidos orales</td>
-                        <td><span class="badge-activo">Activo</span></td>
-                        <td>
-                            <button class="btn-accion btn-editar" onclick="editarCategoria(4,'Jarabes','Medicamentos líquidos orales',1)">Editar</button>
-                            <button class="btn-accion btn-eliminar-sm" onclick="confirmarEliminarCategoria(4,'Jarabes')">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td><td>Higiene personal</td><td>Productos de aseo e higiene</td>
-                        <td><span class="badge-activo">Activo</span></td>
-                        <td>
-                            <button class="btn-accion btn-editar" onclick="editarCategoria(5,'Higiene personal','Productos de aseo e higiene',1)">Editar</button>
-                            <button class="btn-accion btn-eliminar-sm" onclick="confirmarEliminarCategoria(5,'Higiene personal')">Eliminar</button>
-                        </td>
-                    </tr>
-                </tbody>
+                    </tbody>
             </table>
         </div>
     </div>
 </div>
-
-
-<!-- MODAL: CONFIRMAR ELIMINAR CATEGORÍA -->
-<div class="modal-overlay" id="modalEliminarCategoria">
-    <div class="modal-box modal-chico">
-        <div class="modal-header">
-            <h5 class="modal-titulo">Eliminar categoría</h5>
-            <button class="modal-cerrar" onclick="cerrarModal('modalEliminarCategoria')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p class="eliminar-texto">¿Estás seguro que deseas eliminar la categoría <strong id="nombreEliminarCat"></strong>?</p>
-            <p class="eliminar-aviso">Los productos asociados quedarán sin categoría.</p>
-        </div>
-        <div class="modal-footer-custom">
-            <button type="button" class="btn-cancelar" onclick="cerrarModal('modalEliminarCategoria')">Cancelar</button>
-            <button type="button" class="btn-eliminar" id="btnConfirmarEliminarCat">Sí, eliminar</button>
-        </div>
-    </div>
-</div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

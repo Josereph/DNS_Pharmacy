@@ -1,0 +1,285 @@
+/* =====================
+   ASISTENCIA SCAN - DNS Pharmacy
+   Estilo consistente con el sistema
+   ===================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f7fc;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Contenedor principal */
+.scan-card {
+    max-width: 550px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(132, 20, 128, 0.08);
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+/* Header */
+.scan-header {
+    background: linear-gradient(135deg, #841480, #6a1066);
+    padding: 20px 24px;
+    text-align: center;
+    border-bottom: 3px solid #70ab32;
+}
+.scan-header h1 {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.scan-header h1 i {
+    font-size: 1.3rem;
+}
+
+/* Reloj y fecha */
+.clock-panel {
+    background: #ffffff;
+    padding: 20px 16px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+.reloj {
+    font-size: 3.2rem;
+    font-weight: 700;
+    font-family: 'Inter', monospace;
+    letter-spacing: 2px;
+    color: #1e293b;
+    line-height: 1.2;
+}
+.fecha {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+/* Cámara */
+.camera-area {
+    padding: 16px;
+    background: #f8f7fc;
+}
+.camera-container {
+    position: relative;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#qr-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+.camera-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #1e1e2f;
+    color: #aaa;
+    font-size: 0.9rem;
+    gap: 12px;
+}
+.camera-placeholder i {
+    font-size: 2.5rem;
+    color: #70ab32;
+}
+
+/* Botones */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 16px 0 0;
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: #f1f5f9;
+    color: #334155;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #841480, #6a1066);
+    color: white;
+    box-shadow: 0 2px 6px rgba(132,20,128,0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
+}
+.btn-outline {
+    background: white;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+}
+.btn-outline:hover {
+    background: #f8fafc;
+    border-color: #841480;
+}
+.btn-danger {
+    background: #fff1f0;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+.btn-danger:hover {
+    background: #fee2e2;
+}
+
+/* Panel manual */
+.manual-section {
+    padding: 16px 20px 20px;
+    border-top: 1px solid #eef2ff;
+    background: #ffffff;
+}
+.manual-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.manual-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.manual-input {
+    flex: 1;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: 0.2s;
+}
+.manual-input:focus {
+    border-color: #841480;
+    box-shadow: 0 0 0 2px rgba(132,20,128,0.1);
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 20px;
+}
+.modal-overlay.show {
+    display: flex;
+}
+.modal-box {
+    background: #fff;
+    border-radius: 20px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    animation: fadeInModal 0.2s ease;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+}
+.modal-box.entrada {
+    border-top: 5px solid #28a745;
+}
+.modal-box.salida {
+    border-top: 5px solid #fd7e14;
+}
+.modal-box.error {
+    border-top: 5px solid #dc3545;
+}
+.modal-icon {
+    font-size: 3rem;
+    padding-top: 25px;
+}
+.modal-estado {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 12px 0 6px;
+}
+.modal-mensaje {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 16px;
+    padding: 0 20px;
+}
+.modal-codigo {
+    font-size: 0.7rem;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+.modal-btn {
+    background: #f1f5f9;
+    color: #334155;
+    border: none;
+    padding: 10px 0;
+    width: 100%;
+    font-weight: 500;
+    cursor: pointer;
+    border-top: 1px solid #e9ecef;
+    transition: 0.2s;
+}
+.modal-btn:hover {
+    background: #e9ecef;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .reloj {
+        font-size: 2.4rem;
+    }
+    .btn {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+    }
+}
