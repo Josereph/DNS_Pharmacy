@@ -86,24 +86,16 @@ include 'layouts/slider.php';
                 <i class="bi bi-plus-circle"></i> Registrar Compra
             </button>
         </div>
-
         <div class="tabla-card">
             <div class="tabla-header-bar">
                 <span>Stock actual — <strong id="contadorStock">0</strong> productos</span>
                 <span>DNS Pharmacy · Inventario</span>
             </div>
-            <table class="tabla-inv" id="tablaStock">
+            <table class="tabla-inv">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Producto</th>
-                        <th>Categoría</th>
-                        <th>Código</th>
-                        <th>Stock actual</th>
-                        <th>Stock mínimo</th>
-                        <th>P. Compra</th>
-                        <th>P. Venta</th>
-                        <th>Estado</th>
+                        <th>#</th><th>Producto</th><th>Categoría</th><th>Código</th>
+                        <th>Stock actual</th><th>Stock mínimo</th><th>P. Compra</th><th>P. Venta</th><th>Estado</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpoStock">
@@ -127,25 +119,16 @@ include 'layouts/slider.php';
                 <i class="bi bi-plus-circle"></i> Registrar Compra
             </button>
         </div>
-
         <div class="tabla-card">
             <div class="tabla-header-bar">
                 <span>Historial — <strong id="contadorCompras">0</strong> compras</span>
                 <span>DNS Pharmacy · Inventario</span>
             </div>
-            <table class="tabla-inv" id="tablaCompras">
+            <table class="tabla-inv">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>N° Factura</th>
-                        <th>Proveedor</th>
-                        <th>Fecha</th>
-                        <th>Productos</th>
-                        <th>Subtotal</th>
-                        <th>IVA</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>#</th><th>N° Factura</th><th>Proveedor</th><th>Fecha</th>
+                        <th>Productos</th><th>Subtotal</th><th>IVA</th><th>Total</th><th>Estado</th><th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpoCompras">
@@ -206,13 +189,8 @@ include 'layouts/slider.php';
                     <table class="tabla-compra-detalle">
                         <thead>
                             <tr>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Costo unitario</th>
-                                <th>N° Lote</th>
-                                <th>Fecha venc.</th>
-                                <th>Subtotal</th>
-                                <th></th>
+                                <th>Producto</th><th>Cantidad</th><th>Costo unitario</th>
+                                <th>N° Lote</th><th>Fecha venc.</th><th>Subtotal</th><th></th>
                             </tr>
                         </thead>
                         <tbody id="detalleCompra"></tbody>
@@ -221,9 +199,18 @@ include 'layouts/slider.php';
 
                 <span class="form-error" id="err_productos"></span>
 
+                <!-- Toggle IVA -->
+                <div class="iva-toggle" style="margin-top:12px;">
+                    <span class="iva-label">Aplicar IVA (13%)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleIvaCompra" onchange="calcularTotalesCompra()">
+                        <span class="slider-switch"></span>
+                    </label>
+                </div>
+
                 <div class="compra-totales">
                     <div class="compra-total-row"><span>Subtotal</span><span id="compSubtotal">$0.00</span></div>
-                    <div class="compra-total-row"><span>IVA (13%)</span><span id="compIva">$0.00</span></div>
+                    <div class="compra-total-row iva-row" id="ivaRowCompra"><span>IVA (13%)</span><span id="compIva">$0.00</span></div>
                     <div class="compra-total-row compra-total-final"><span>Total</span><span id="compTotal">$0.00</span></div>
                 </div>
             </div>

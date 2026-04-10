@@ -921,7 +921,22 @@ function renderLegend(containerId, labels, colores, valores) {
    EXPORTAR PDF
 ════════════════════════════════════════════════════════════ */
 function exportarPDF() {
-    window.print();
+    const periodo = document.getElementById('filtroPeriodo').value;
+    let url = '/DNS_Pharmacy/controllers/ExportarReportePDF.php?periodo=' + periodo;
+ 
+    // Si es período personalizado, pasar las fechas
+    if (periodo === 'custom') {
+        const desde = document.getElementById('fechaDesde').value;
+        const hasta = document.getElementById('fechaHasta').value;
+        if (!desde || !hasta) {
+            alert('Selecciona el rango de fechas personalizado antes de exportar.');
+            return;
+        }
+        url += '&desde=' + desde + '&hasta=' + hasta;
+    }
+ 
+    // Abrir en nueva pestaña — mPDF enviará el PDF como descarga
+    window.open(url, '_blank');
 }
 
 /* ════════════════════════════════════════════════════════════

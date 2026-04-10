@@ -22,40 +22,36 @@ include 'layouts/slider.php';
 
 <div class="main-content pos-layout">
 
-    <!-- ══ PANEL IZQUIERDO: Búsqueda y catálogo ══ -->
+    <!-- ══ PANEL IZQUIERDO ══ -->
     <div class="pos-left">
 
-        <!-- Topbar del POS -->
         <div class="pos-topbar">
             <div class="pos-topbar-left">
                 <span class="pos-title">Punto de Venta</span>
                 <span class="pos-date" id="posDate"></span>
             </div>
             <div class="pos-topbar-right">
-                <div class="turno-badge" id="turnoBadge">
+                <div class="turno-badge">
                     <i class="bi bi-circle-fill"></i>
                     <span>Turno activo</span>
                 </div>
             </div>
         </div>
 
-        <!-- Búsqueda y escaneo -->
         <div class="pos-search-row">
             <div class="pos-search-box">
                 <i class="bi bi-search"></i>
                 <input type="text" id="buscadorPos" placeholder="Buscar producto por nombre o código de barras..." autocomplete="off" oninput="buscarProducto()">
-                <button class="btn-scan" id="btnScan" title="Escanear código de barras">
+                <button class="btn-scan" title="Escanear código">
                     <i class="bi bi-upc-scan"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Tabs de categorías -->
         <div class="pos-cats" id="posCats">
-            <button class="cat-tab active" data-cat="">Todos</button>
+            <button class="cat-tab active" data-cat="" onclick="filtrarCategoria(this, '')">Todos</button>
         </div>
 
-        <!-- Grid de productos -->
         <div class="pos-grid" id="posGrid">
             <div class="pos-loading">
                 <i class="bi bi-arrow-repeat"></i>
@@ -65,10 +61,9 @@ include 'layouts/slider.php';
 
     </div>
 
-    <!-- ══ PANEL DERECHO: Carrito ══ -->
+    <!-- ══ PANEL DERECHO — CARRITO ══ -->
     <div class="pos-right">
 
-        <!-- Header carrito -->
         <div class="cart-header">
             <div class="cart-title">
                 <i class="bi bi-cart3"></i>
@@ -80,7 +75,6 @@ include 'layouts/slider.php';
             </button>
         </div>
 
-        <!-- Lista de items -->
         <div class="cart-items" id="cartItems">
             <div class="cart-empty">
                 <i class="bi bi-cart-x"></i>
@@ -88,13 +82,20 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <!-- Totales -->
         <div class="cart-totals">
             <div class="total-row">
                 <span>Subtotal</span>
                 <span id="totalSubtotal">$0.00</span>
             </div>
-            <div class="total-row">
+            <!-- Toggle IVA -->
+            <div class="iva-toggle">
+                <span class="iva-label">Aplicar IVA (13%)</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleIva" onchange="calcularTotales()">
+                    <span class="slider-switch"></span>
+                </label>
+            </div>
+            <div class="total-row iva-row" id="ivaRow">
                 <span>IVA (13%)</span>
                 <span id="totalIva">$0.00</span>
             </div>
@@ -104,7 +105,6 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <!-- Método de pago -->
         <div class="pay-section">
             <div class="pay-label">Método de pago</div>
             <div class="pay-btns">
@@ -116,14 +116,9 @@ include 'layouts/slider.php';
                     <i class="bi bi-credit-card"></i>
                     Tarjeta
                 </button>
-                <button class="pay-btn" data-metodo="transferencia" onclick="seleccionarMetodo(this)">
-                    <i class="bi bi-phone"></i>
-                    Digital
-                </button>
             </div>
         </div>
 
-        <!-- Monto recibido y cambio -->
         <div class="pay-calc" id="payCalc">
             <div class="pay-calc-row">
                 <label>Monto recibido</label>
@@ -135,14 +130,12 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <!-- Botón cobrar -->
-        <button class="btn-cobrar" id="btnCobrar" onclick="procesarVenta()">
+        <button class="btn-cobrar" id="btnCobrar" onclick="procesarVenta()" disabled>
             <i class="bi bi-receipt"></i>
             Confirmar y generar ticket
         </button>
 
     </div>
-
 </div>
 
 <!-- MODAL: TICKET -->
@@ -178,12 +171,10 @@ include 'layouts/slider.php';
         <div class="modal-footer-custom">
             <button class="btn-cancelar" onclick="cerrarModalTicket()">Cerrar</button>
             <button class="btn-imprimir" onclick="imprimirTicket()">
-                <i class="bi bi-printer"></i>
-                Imprimir
+                <i class="bi bi-printer"></i> Imprimir
             </button>
             <button class="btn-guardar" onclick="nuevaVenta()">
-                <i class="bi bi-plus-circle"></i>
-                Nueva venta
+                <i class="bi bi-plus-circle"></i> Nueva venta
             </button>
         </div>
     </div>

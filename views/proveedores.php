@@ -82,7 +82,8 @@ $base_url = '/DNS_Pharmacy';
             <h5 class="modal-titulo" id="tituloModalProveedor">Nuevo Proveedor</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProveedor')">&times;</button>
         </div>
-        <form id="formProveedor" novalidate>
+        <!-- AGREGADA LA CLASE modal-form -->
+        <form id="formProveedor" novalidate class="modal-form">
             <input type="hidden" id="prov_id" name="id_proveedor">
             <div class="modal-body">
                 <div class="form-seccion">Información de la empresa</div>

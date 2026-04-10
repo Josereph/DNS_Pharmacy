@@ -65,12 +65,6 @@ $es_pos = ($pagina_actual === 'pos.php');
             Historial Ventas
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'ventas_empleado.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/ventas_empleado.php">
-            <i class="bi bi-person-lines-fill"></i>
-            Ventas x Empleado
-        </a>
-
         <a class="nav-link <?php echo ($pagina_actual == 'reportes.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/reportes.php">
             <i class="bi bi-bar-chart-line"></i>

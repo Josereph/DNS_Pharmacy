@@ -15,27 +15,27 @@ $base_url = '/DNS_Pharmacy';
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/slider.css">
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/footer.css">
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/historial_ventas.css">
-    
+
     <style>
-       /* Animación  las Cards al pasar el mouse */
         .stat-card {
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
         }
+
         .stat-card:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
         }
-        /* Efecto sutil para la tabla */
+
         .tabla-card {
             transition: transform 0.3s ease;
         }
+
         .tabla-card:hover {
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
@@ -44,101 +44,105 @@ $base_url = '/DNS_Pharmacy';
 
 <body>
 
-<?php include 'layouts/slider.php'; ?>
+    <?php include 'layouts/slider.php'; ?>
 
-<div class="main-content">
+    <div class="main-content">
 
-    <div class="page-header animate__animated animate__fadeInDown">
-        <div>
-            <h2 class="page-title">Centro de Reportes de Ventas</h2>
-            <p class="page-subtitle">Gestión integral de ingresos y desempeño de empleados</p>
-        </div>
-    </div>
-
-    <div class="stats-strip animate__animated animate__zoomIn animate__delay-1s">
-        <div class="stat-card">
+        <div class="page-header animate__animated animate__fadeInDown">
             <div>
-                <div class="stat-valor" id="statTickets">0</div>
-                <div class="stat-label">Total tickets</div>
+                <h2 class="page-title">Centro de Reportes de Ventas</h2>
+                <p class="page-subtitle">Gestión integral de ingresos y desempeño de empleados</p>
             </div>
         </div>
 
-        <div class="stat-card">
-            <div>
-                <div class="stat-valor" id="statTotal">$0.00</div>
-                <div class="stat-label">Total vendido</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
-
-    <div class="filtros-bar mt-3">
-        <div class="filtro-fecha-wrap">
-            <label class="filtro-label">Desde</label>
-            <input type="date" id="filtroDesde" class="filtro-input" onchange="filtrarTodo()">
-        </div>
-        <div class="filtro-fecha-wrap">
-            <label class="filtro-label">Hasta</label>
-            <input type="date" id="filtroHasta" class="filtro-input" onchange="filtrarTodo()">
-        </div>
-        <div class="filtros-accesos-rapidos">
-            <button class="btn-periodo" onclick="setPeriodo('hoy')">Hoy</button>
-            <button class="btn-periodo" onclick="setPeriodo('semana')">Semana</button>
-            <button class="btn-periodo" onclick="setPeriodo('mes')">Mes</button>
-            <button class="btn-periodo" onclick="setPeriodo('todo')">Todo</button>
-        </div>
-    </div>
-
-    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
-        <table class="tabla-productos">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Ticket</th>
-                    <th>Empleado</th>
-                    <th>Fecha</th>
-                    <th>Subtotal</th>
-                    <th>Impuesto</th>
-                    <th>Total</th>
-                    <th>Método</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody id="cuerpoTabla">
-                <tr>
-                    <td colspan="9" class="tabla-vacia">Cargando ventas...</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-</div>
-
-<?php include 'layouts/footer.php'; ?>
-
-<div class="modal fade" id="detalleVentaModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content animate__animated animate__zoomIn animate__faster">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-receipt"></i> Detalle de Venta</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="detalleVentaBody">
+        <div class="stats-strip animate__animated animate__zoomIn animate__delay-1s">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-valor" id="statTickets">0</div>
+                    <div class="stat-label">Total tickets</div>
                 </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-valor" id="statTotal">$0.00</div>
+                    <div class="stat-label">Total vendido</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filtros-bar mt-3 animate__animated animate__fadeIn animate__delay-1s">
+            <div class="filtro-fecha-wrap">
+                <label class="filtro-label">Desde</label>
+                <input type="date" id="filtroDesde" class="filtro-input" onchange="filtrarTodo()">
+            </div>
+
+            <div class="filtro-fecha-wrap">
+                <label class="filtro-label">Hasta</label>
+                <input type="date" id="filtroHasta" class="filtro-input" onchange="filtrarTodo()">
+            </div>
+
+            <div class="filtros-accesos-rapidos">
+                <button class="btn-periodo" onclick="setPeriodo('hoy')">Hoy</button>
+                <button class="btn-periodo" onclick="setPeriodo('semana')">Semana</button>
+                <button class="btn-periodo" onclick="setPeriodo('mes')">Mes</button>
+                <button class="btn-periodo" onclick="setPeriodo('todo')">Todo</button>
+            </div>
+        </div>
+
+        <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
+            <table class="tabla-productos">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ticket</th>
+                        <th>Empleado</th>
+                        <th>Fecha</th>
+                        <th>Subtotal</th>
+                        <th>Impuesto</th>
+                        <th>Total</th>
+                        <th>Método</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="cuerpoTabla">
+                    <tr>
+                        <td colspan="9" class="tabla-vacia">Cargando ventas...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <?php include 'layouts/footer.php'; ?>
+
+    <div class="modal fade" id="detalleVentaModal" tabindex="-1" role="dialog" aria-labelledby="detalleVentaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content animate__animated animate__zoomIn animate__faster">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalleVentaModalLabel">
+                        <i class="bi bi-receipt"></i> Detalle de Venta
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body" id="detalleVentaBody">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="../assets/js/historial_ventas.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="<?php echo $base_url; ?>/assets/js/historial_ventas.js"></script>
 
 </body>
 </html>

@@ -1,12 +1,13 @@
 /* =====================
    INVENTARIO.JS - DNS Pharmacy
+   IVA opcional
    ===================== */
 
 const INV_CONTROLLER  = '/DNS_Pharmacy/controllers/InventarioController.php';
 const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/ProductoController.php';
 
-var productosLista   = [];
-var filaContador     = 0;
+var productosLista = [];
+var filaContador   = 0;
 
 /* ══════════════════════════════════════════
    INIT
@@ -20,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('comp_fecha').value = new Date().toISOString().split('T')[0];
 });
 
-/* ── Tabs ── */
 function cambiarTab(btn, tabId) {
     document.querySelectorAll('.inv-tab').forEach(function(b) { b.classList.remove('active'); });
     document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active-tab'); });
@@ -65,17 +65,11 @@ function renderizarStock(prods) {
     }
 
     tbody.innerHTML = prods.map(function(p, i) {
-        var stock  = parseInt(p.stock_actual);
-        var minimo = parseInt(p.stock_minimo);
+        var stock = parseInt(p.stock_actual), minimo = parseInt(p.stock_minimo);
         var badge, cls, estadoKey;
-
-        if (stock <= 0) {
-            badge = '<span class="badge-agotado">Agotado</span>'; cls = 'stock-cero'; estadoKey = 'agotado';
-        } else if (stock <= minimo) {
-            badge = '<span class="badge-bajo">Stock bajo</span>'; cls = 'stock-bajo'; estadoKey = 'bajo';
-        } else {
-            badge = '<span class="badge-ok">OK</span>'; cls = 'stock-ok'; estadoKey = 'ok';
-        }
+        if (stock <= 0)     { badge = '<span class="badge-agotado">Agotado</span>'; cls = 'stock-cero'; estadoKey = 'agotado'; }
+        else if (stock <= minimo) { badge = '<span class="badge-bajo">Stock bajo</span>'; cls = 'stock-bajo'; estadoKey = 'bajo'; }
+        else                { badge = '<span class="badge-ok">OK</span>'; cls = 'stock-ok'; estadoKey = 'ok'; }
 
         return '<tr data-nombre="' + p.nombre.toLowerCase() + '" data-estado-stock="' + estadoKey + '">'
              + '<td>' + (i+1) + '</td>'
@@ -86,20 +80,17 @@ function renderizarStock(prods) {
              + '<td>' + minimo + '</td>'
              + '<td>$' + parseFloat(p.precio_compra).toFixed(2) + '</td>'
              + '<td class="td-precio-venta">$' + parseFloat(p.precio_venta).toFixed(2) + '</td>'
-             + '<td>' + badge + '</td>'
-             + '</tr>';
+             + '<td>' + badge + '</td></tr>';
     }).join('');
 }
 
 function filtrarStock() {
-    var q      = document.getElementById('buscadorStock').value.toLowerCase();
+    var q = document.getElementById('buscadorStock').value.toLowerCase();
     var estado = document.getElementById('filtroEstadoStock').value;
-    var filas  = document.querySelectorAll('#cuerpoStock tr[data-nombre]');
+    var filas = document.querySelectorAll('#cuerpoStock tr[data-nombre]');
     var visible = 0;
-
     filas.forEach(function(fila) {
-        var ok = (!q      || fila.dataset.nombre.includes(q))
-              && (!estado || fila.dataset.estadoStock === estado);
+        var ok = (!q || fila.dataset.nombre.includes(q)) && (!estado || fila.dataset.estadoStock === estado);
         fila.style.display = ok ? '' : 'none';
         if (ok) visible++;
     });
@@ -107,7 +98,7 @@ function filtrarStock() {
 }
 
 /* ══════════════════════════════════════════
-   HISTORIAL COMPRAS
+   HISTORIAL
 ══════════════════════════════════════════ */
 function cargarHistorial() {
     fetch(INV_CONTROLLER + '?accion=listar')
@@ -141,25 +132,23 @@ function renderizarHistorial(compras) {
              + '<td>' + c.fecha_compra + '</td>'
              + '<td>' + (c.num_productos || 0) + ' productos</td>'
              + '<td>$' + parseFloat(c.subtotal).toFixed(2) + '</td>'
-             + '<td>$' + parseFloat(c.impuesto).toFixed(2) + '</td>'
+             + '<td>' + (parseFloat(c.impuesto) > 0 ? '$' + parseFloat(c.impuesto).toFixed(2) : '<span style="color:#bbb">Sin IVA</span>') + '</td>'
              + '<td style="font-weight:600;color:#841480">$' + parseFloat(c.total).toFixed(2) + '</td>'
              + '<td>' + badge + '</td>'
              + '<td>'
              + '<button class="btn-accion btn-ver" onclick="verDetalle(' + c.id_compra + ')">Ver</button>'
              + (c.estado === 'registrada' ? '<button class="btn-accion btn-anu" onclick="anularCompra(' + c.id_compra + ')">Anular</button>' : '')
-             + '</td>'
-             + '</tr>';
+             + '</td></tr>';
     }).join('');
 }
 
 function filtrarCompras() {
-    var q      = document.getElementById('buscadorCompras').value.toLowerCase();
+    var q = document.getElementById('buscadorCompras').value.toLowerCase();
     var estado = document.getElementById('filtroEstadoCompra').value;
-    var filas  = document.querySelectorAll('#cuerpoCompras tr[data-factura]');
+    var filas = document.querySelectorAll('#cuerpoCompras tr[data-factura]');
     var visible = 0;
-
     filas.forEach(function(fila) {
-        var ok = (!q      || fila.dataset.factura.includes(q) || fila.dataset.proveedor.includes(q))
+        var ok = (!q || fila.dataset.factura.includes(q) || fila.dataset.proveedor.includes(q))
               && (!estado || fila.dataset.estado === estado);
         fila.style.display = ok ? '' : 'none';
         if (ok) visible++;
@@ -206,6 +195,7 @@ function limpiarFormCompra() {
         if (el) el.textContent = '';
     });
     filaContador = 0;
+    document.getElementById('toggleIvaCompra').checked = false;
     calcularTotalesCompra();
     document.getElementById('comp_fecha').value = new Date().toISOString().split('T')[0];
 }
@@ -213,7 +203,6 @@ function limpiarFormCompra() {
 function agregarFilaProducto() {
     filaContador++;
     var id = 'fila_' + filaContador;
-
     var opciones = '<option value="">Seleccionar producto</option>'
         + productosLista.map(function(p) {
             return '<option value="' + p.id_producto + '" data-precio="' + p.precio_compra + '">' + p.nombre + '</option>';
@@ -224,9 +213,9 @@ function agregarFilaProducto() {
     fila.innerHTML =
         '<td><select class="fila-select" onchange="autocompletarPrecio(\'' + id + '\');calcularSubtotalFila(\'' + id + '\')">' + opciones + '</select></td>'
       + '<td><input type="number" class="fila-input fila-cantidad" min="1" value="1" style="width:70px" oninput="calcularSubtotalFila(\'' + id + '\')"></td>'
-      + '<td><input type="number" class="fila-input fila-costo"    min="0" step="0.01" style="width:90px" oninput="calcularSubtotalFila(\'' + id + '\')" placeholder="$0.00"></td>'
-      + '<td><input type="text"   class="fila-input fila-lote"     style="width:90px"  placeholder="Opcional"></td>'
-      + '<td><input type="date"   class="fila-input fila-venc"     style="width:120px"></td>'
+      + '<td><input type="number" class="fila-input fila-costo" min="0" step="0.01" style="width:90px" oninput="calcularSubtotalFila(\'' + id + '\')" placeholder="$0.00"></td>'
+      + '<td><input type="text" class="fila-input fila-lote" style="width:90px" placeholder="Opcional"></td>'
+      + '<td><input type="date" class="fila-input fila-venc" style="width:120px"></td>'
       + '<td><span class="fila-subtotal">$0.00</span></td>'
       + '<td><button type="button" class="btn-del-fila" onclick="eliminarFila(\'' + id + '\')"><i class="bi bi-x-circle"></i></button></td>';
 
@@ -234,14 +223,12 @@ function agregarFilaProducto() {
 }
 
 function autocompletarPrecio(id) {
-    var fila   = document.getElementById(id);
+    var fila = document.getElementById(id);
     var select = fila.querySelector('.fila-select');
     var costo  = fila.querySelector('.fila-costo');
     if (select.value) {
         var opt = select.options[select.selectedIndex];
-        if (opt.dataset.precio && !costo.value) {
-            costo.value = parseFloat(opt.dataset.precio).toFixed(2);
-        }
+        if (opt.dataset.precio && !costo.value) costo.value = parseFloat(opt.dataset.precio).toFixed(2);
     }
 }
 
@@ -252,23 +239,31 @@ function eliminarFila(id) {
 }
 
 function calcularSubtotalFila(id) {
-    var fila     = document.getElementById(id);
+    var fila = document.getElementById(id);
     var cantidad = parseFloat(fila.querySelector('.fila-cantidad').value) || 0;
     var costo    = parseFloat(fila.querySelector('.fila-costo').value)    || 0;
     fila.querySelector('.fila-subtotal').textContent = '$' + (cantidad * costo).toFixed(2);
     calcularTotalesCompra();
 }
 
+/* IVA opcional en compras */
 function calcularTotalesCompra() {
     var subtotal = 0;
     document.querySelectorAll('.fila-subtotal').forEach(function(el) {
         subtotal += parseFloat(el.textContent.replace('$','')) || 0;
     });
-    var iva   = subtotal * 0.13;
-    var total = subtotal + iva;
+
+    var aplicaIva = document.getElementById('toggleIvaCompra').checked;
+    var iva       = aplicaIva ? subtotal * 0.13 : 0;
+    var total     = subtotal + iva;
+
     document.getElementById('compSubtotal').textContent = '$' + subtotal.toFixed(2);
-    document.getElementById('compIva').textContent      = '$' + iva.toFixed(2);
+    document.getElementById('compIva').textContent      = aplicaIva ? '$' + iva.toFixed(2) : '$0.00';
     document.getElementById('compTotal').textContent    = '$' + total.toFixed(2);
+
+    // Atenuar fila IVA si no aplica
+    var ivaRow = document.getElementById('ivaRowCompra');
+    if (ivaRow) ivaRow.style.opacity = aplicaIva ? '1' : '0.4';
 }
 
 document.getElementById('formCompra').addEventListener('submit', function(e) {
@@ -301,9 +296,10 @@ document.getElementById('formCompra').addEventListener('submit', function(e) {
     if (items.length === 0) { document.getElementById('err_productos').textContent = 'Agrega al menos un producto.'; valido = false; }
     if (!valido) return;
 
-    var subtotal = parseFloat(document.getElementById('compSubtotal').textContent.replace('$',''));
-    var iva      = parseFloat(document.getElementById('compIva').textContent.replace('$',''));
-    var total    = parseFloat(document.getElementById('compTotal').textContent.replace('$',''));
+    var subtotal  = parseFloat(document.getElementById('compSubtotal').textContent.replace('$',''));
+    var iva       = parseFloat(document.getElementById('compIva').textContent.replace('$',''));
+    var total     = parseFloat(document.getElementById('compTotal').textContent.replace('$',''));
+    var aplicaIva = document.getElementById('toggleIvaCompra').checked;
 
     var fd = new FormData();
     fd.append('accion',         'guardar_compra');
@@ -314,6 +310,7 @@ document.getElementById('formCompra').addEventListener('submit', function(e) {
     fd.append('subtotal',       subtotal.toFixed(2));
     fd.append('impuesto',       iva.toFixed(2));
     fd.append('total',          total.toFixed(2));
+    fd.append('aplica_iva',     aplicaIva ? '1' : '0');
     fd.append('items',          JSON.stringify(items));
 
     var btn = document.querySelector('#formCompra .btn-guardar');
@@ -338,7 +335,7 @@ document.getElementById('formCompra').addEventListener('submit', function(e) {
 });
 
 /* ══════════════════════════════════════════
-   DETALLE COMPRA
+   DETALLE
 ══════════════════════════════════════════ */
 function verDetalle(id) {
     fetch(INV_CONTROLLER + '?accion=detalle&id=' + id)
@@ -351,12 +348,13 @@ function verDetalle(id) {
 }
 
 function renderizarDetalle(d) {
+    var tieneIva = parseFloat(d.compra.impuesto) > 0;
     var html = '<div class="detalle-print" id="detallePrintArea">'
         + '<h3><i class="bi bi-receipt"></i> Compra #' + d.compra.id_compra + '</h3>'
         + '<div class="det-meta">'
-        + '<div><strong>N° Factura:</strong> ' + d.compra.numero_factura + '</div>'
-        + '<div><strong>Proveedor:</strong> '  + (d.compra.nombre_proveedor || '—') + '</div>'
-        + '<div><strong>Fecha:</strong> '       + d.compra.fecha_compra + '</div>'
+        + '<div><strong>N° Factura:</strong> '  + d.compra.numero_factura + '</div>'
+        + '<div><strong>Proveedor:</strong> '   + (d.compra.nombre_proveedor || '—') + '</div>'
+        + '<div><strong>Fecha:</strong> '        + d.compra.fecha_compra + '</div>'
         + '<div><strong>Registrado por:</strong> ' + (d.compra.nombre_usuario || '—') + '</div>'
         + (d.compra.observaciones ? '<div><strong>Obs:</strong> ' + d.compra.observaciones + '</div>' : '')
         + '</div>'
@@ -372,7 +370,7 @@ function renderizarDetalle(d) {
         + '</tbody></table>'
         + '<div class="det-totales">'
         + '<div>Subtotal: $' + parseFloat(d.compra.subtotal).toFixed(2) + '</div>'
-        + '<div>IVA (13%): $' + parseFloat(d.compra.impuesto).toFixed(2) + '</div>'
+        + (tieneIva ? '<div>IVA (13%): $' + parseFloat(d.compra.impuesto).toFixed(2) + '</div>' : '<div style="color:#aaa">Sin IVA aplicado</div>')
         + '<div class="det-total-final">TOTAL: $' + parseFloat(d.compra.total).toFixed(2) + '</div>'
         + '</div></div>';
 
@@ -397,15 +395,8 @@ function anularCompra(id) {
 /* ══════════════════════════════════════════
    UTILIDADES
 ══════════════════════════════════════════ */
-function abrirModal(id) {
-    document.getElementById(id).classList.add('activo');
-    document.body.style.overflow = 'hidden';
-}
-
-function cerrarModal(id) {
-    document.getElementById(id).classList.remove('activo');
-    document.body.style.overflow = '';
-}
+function abrirModal(id) { document.getElementById(id).classList.add('activo'); document.body.style.overflow = 'hidden'; }
+function cerrarModal(id) { document.getElementById(id).classList.remove('activo'); document.body.style.overflow = ''; }
 
 document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
     overlay.addEventListener('click', function(e) {
