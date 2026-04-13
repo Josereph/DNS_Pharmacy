@@ -1,165 +1,260 @@
+/* =====================
+   HISTORIAL_VENTAS.JS - DNS Pharmacy
+   ===================== */
 
-let empleados = [
-    { id_usuario: 1, id_rol: 1, nombre: 'Carlos', apellido: 'Pérez' },
-    { id_usuario: 2, id_rol: 2, nombre: 'María', apellido: 'López' },
-    { id_usuario: 3, id_rol: 2, nombre: 'Juan', apellido: 'Martínez' }
-];
+const HV_CONTROLLER = '/DNS_Pharmacy/controllers/HistorialVentasController.php';
 
-let ventas = [
-    { id_venta: 1, id_usuario: 2, numero_ticket: 'VTA-0001', fecha_venta: '2026-03-20 09:15:00', subtotal: 45.00, impuesto: 5.85, total: 50.85, metodo_pago: 'efectivo' },
-    { id_venta: 2, id_usuario: 2, numero_ticket: 'VTA-0002', fecha_venta: '2026-03-20 11:30:00', subtotal: 26.55, impuesto: 3.45, total: 30.00, metodo_pago: 'tarjeta' },
-    { id_venta: 3, id_usuario: 3, numero_ticket: 'VTA-0003', fecha_venta: '2026-03-21 14:00:00', subtotal: 80.00, impuesto: 10.40, total: 90.40, metodo_pago: 'efectivo' },
-    { id_venta: 4, id_usuario: 1, numero_ticket: 'VTA-0004', fecha_venta: '2026-03-22 10:00:00', subtotal: 106.20, impuesto: 13.80, total: 120.00, metodo_pago: 'transferencia' }
-];
+var ventasData = [];
 
-const roles = { 1: 'Administrador', 2: 'Cajero' };
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    
-    const fechaHoy = new Date().toISOString().split('T')[0];
-    const inputHasta = document.getElementById('filtroHasta');
-    if(inputHasta) inputHasta.value = fechaHoy;
-    
-  
-    filtrarTodo();
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function() {
+    setPeriodo('todo');
 });
 
-function filtrarTodo() {
-    const desde = document.getElementById('filtroDesde')?.value;
-    const hasta = document.getElementById('filtroHasta')?.value;
+/* ══════════════════════════════════════════
+   PERIODOS RÁPIDOS
+══════════════════════════════════════════ */
+function setPeriodo(periodo) {
+    document.querySelectorAll('.btn-periodo').forEach(function(b) { b.classList.remove('activo'); });
+    event.target.classList.add('activo');
 
-    const filtradas = ventas.filter(v => {
-        const fechaV = v.fecha_venta.split(' ')[0];
-        return (!desde || fechaV >= desde) && (!hasta || fechaV <= hasta);
-    });
+    var hoy   = new Date();
+    var desde = new Date();
+    var hasta = new Date();
 
-    renderTablaGeneral(filtradas);
-    renderTablaEmpleados(filtradas);
-}
-
-function renderTablaGeneral(lista) {
-    const tbody = document.getElementById('cuerpoTablaGeneral');
-    if (!tbody) return;
-
-    let totalAcumulado = 0;
-
-    if (lista.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center">No se encontraron ventas.</td></tr>';
-        document.getElementById('statTicketsGeneral').textContent = "0";
-        document.getElementById('statTotalGeneral').textContent = "$0.00";
+    if (periodo === 'hoy') {
+        desde = hoy;
+        hasta = hoy;
+    } else if (periodo === 'semana') {
+        var dia = hoy.getDay();
+        desde.setDate(hoy.getDate() - (dia === 0 ? 6 : dia - 1));
+        hasta = hoy;
+    } else if (periodo === 'mes') {
+        desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+        hasta = hoy;
+    } else {
+        document.getElementById('filtroDesde').value = '';
+        document.getElementById('filtroHasta').value = '';
+        cargarVentas('', '');
         return;
     }
 
-    tbody.innerHTML = lista.map((v, i) => {
-        totalAcumulado += v.total;
-        const emp = empleados.find(e => e.id_usuario === v.id_usuario);
-        const iniciales = emp ? `${emp.nombre[0]}${emp.apellido[0]}` : '??';
-        
-        return `
-            <tr>
-                <td>${i + 1}</td>
-                <td><span class="td-ticket">${v.numero_ticket}</span></td>
-                <td>
-                    <div class="td-empleado">
-                        <div class="emp-avatar">${iniciales}</div>
-                        <strong>${emp ? emp.nombre + ' ' + emp.apellido : 'Usuario Eliminado'}</strong>
-                    </div>
-                </td>
-                <td>${v.fecha_venta}</td>
-                <td>$${v.subtotal.toFixed(2)}</td>
-                <td>$${v.impuesto.toFixed(2)}</td>
-                <td class="td-total">$${v.total.toFixed(2)}</td>
-                <td><span class="badge-metodo metodo-${v.metodo_pago}">${v.metodo_pago.toUpperCase()}</span></td>
-                <td><button class="btn btn-sm btn-outline-primary" onclick="verDetalleVenta(${v.id_venta})">Ver</button></td>
-            </tr>`;
+    var desdeStr = formatFecha(desde);
+    var hastaStr = formatFecha(hasta);
+    document.getElementById('filtroDesde').value = desdeStr;
+    document.getElementById('filtroHasta').value = hastaStr;
+    cargarVentas(desdeStr, hastaStr);
+}
+
+function filtrarDatos() {
+    var desde = document.getElementById('filtroDesde').value;
+    var hasta = document.getElementById('filtroHasta').value;
+    cargarVentas(desde, hasta);
+}
+
+function formatFecha(d) {
+    return d.getFullYear() + '-'
+        + String(d.getMonth() + 1).padStart(2, '0') + '-'
+        + String(d.getDate()).padStart(2, '0');
+}
+
+/* ══════════════════════════════════════════
+   CARGAR VENTAS
+══════════════════════════════════════════ */
+function cargarVentas(desde, hasta) {
+    var url = HV_CONTROLLER + '?accion=listar';
+    if (desde) url += '&desde=' + desde;
+    if (hasta) url += '&hasta=' + hasta;
+
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            ventasData = res.datos;
+            renderizarTabla(ventasData);
+            calcularStats(ventasData);
+        })
+        .catch(function(e) { console.error('Error:', e); });
+}
+
+/* ══════════════════════════════════════════
+   STATS
+══════════════════════════════════════════ */
+function calcularStats(ventas) {
+    var tickets  = ventas.length;
+    var total    = ventas.reduce(function(s, v) { return s + parseFloat(v.total); }, 0);
+    var iva      = ventas.reduce(function(s, v) { return s + parseFloat(v.impuesto); }, 0);
+    var promedio = tickets > 0 ? total / tickets : 0;
+
+    document.getElementById('statTickets').textContent  = tickets;
+    document.getElementById('statTotal').textContent    = '$' + total.toFixed(2);
+    document.getElementById('statIva').textContent      = '$' + iva.toFixed(2);
+    document.getElementById('statPromedio').textContent = '$' + promedio.toFixed(2);
+}
+
+/* ══════════════════════════════════════════
+   RENDERIZAR TABLA
+══════════════════════════════════════════ */
+function renderizarTabla(ventas) {
+    var tbody = document.getElementById('cuerpoTabla');
+
+    actualizarContador(ventas.length, ventasData.length);
+
+    if (!ventas || ventas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="tabla-vacia">No hay ventas en el período seleccionado.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = ventas.map(function(v, i) {
+        var ini    = iniciales(v.nombre_empleado || '');
+        var metodo = badgeMetodo(v.metodo_pago);
+        var estado = v.estado === 'completada'
+            ? '<span class="badge-completada">Completada</span>'
+            : '<span class="badge-anulada">Anulada</span>';
+
+        return '<tr data-metodo="' + v.metodo_pago + '" data-estado="' + v.estado + '">'
+             + '<td>' + (i+1) + '</td>'
+             + '<td><span class="td-ticket">' + esc(v.numero_ticket) + '</span></td>'
+             + '<td><div class="td-empleado">'
+             + '<div class="emp-avatar">' + ini + '</div>'
+             + '<div class="emp-info"><strong>' + esc(v.nombre_empleado || '—') + '</strong></div>'
+             + '</div></td>'
+             + '<td>' + formatearFechaLegible(v.fecha_venta) + '</td>'
+             + '<td>$' + parseFloat(v.subtotal).toFixed(2) + '</td>'
+             + '<td>' + (parseFloat(v.impuesto) > 0 ? '$' + parseFloat(v.impuesto).toFixed(2) : '<span style="color:#bbb">—</span>') + '</td>'
+             + '<td class="td-total">$' + parseFloat(v.total).toFixed(2) + '</td>'
+             + '<td>' + metodo + '</td>'
+             + '<td>' + estado + '</td>'
+             + '<td><button class="btn-accion btn-ver" onclick="verDetalle(' + v.id_venta + ')"><i class="bi bi-eye"></i> Ver</button></td>'
+             + '</tr>';
     }).join('');
 
- 
-    document.getElementById('statTicketsGeneral').textContent = lista.length;
-    document.getElementById('statTotalGeneral').textContent = `$${totalAcumulado.toFixed(2)}`;
+    // Aplicar filtro de método si hay uno seleccionado
+    filtrarPorMetodo();
 }
 
-
-function renderTablaEmpleados(listaVentas) {
-    const tbody = document.getElementById('cuerpoTablaEmpleados');
-    if (!tbody) return;
-
-    const resumen = {};
-    let granTotal = 0;
-
-    listaVentas.forEach(v => {
-        granTotal += v.total;
-        if (!resumen[v.id_usuario]) {
-            const emp = empleados.find(e => e.id_usuario === v.id_usuario);
-            resumen[v.id_usuario] = { 
-                ...emp, 
-                n_tickets: 0, 
-                monto_total: 0, 
-                ultimo_ticket: v.numero_ticket 
-            };
-        }
-        resumen[v.id_usuario].n_tickets++;
-        resumen[v.id_usuario].monto_total += v.total;
+function filtrarPorMetodo() {
+    var metodo = document.getElementById('filtroMetodo').value;
+    var filas  = document.querySelectorAll('#cuerpoTabla tr[data-metodo]');
+    var visible = 0;
+    filas.forEach(function(fila) {
+        var ok = !metodo || fila.dataset.metodo === metodo;
+        fila.style.display = ok ? '' : 'none';
+        if (ok) visible++;
     });
-
-    const dataFinal = Object.values(resumen);
-
-
-    if(document.getElementById('statEmpleadosActivos')) document.getElementById('statEmpleadosActivos').textContent = dataFinal.length;
-    if(document.getElementById('statTotalVentasEmp')) document.getElementById('statTotalVentasEmp').textContent = `$${granTotal.toFixed(2)}`;
-
-    if (dataFinal.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No hay actividad de empleados.</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = dataFinal.map((e, i) => `
-        <tr>
-            <td>${i + 1}</td>
-            <td>
-                <div class="td-empleado">
-                    <div class="emp-avatar">${e.nombre[0]}${e.apellido[0]}</div>
-                    <strong>${e.nombre} ${e.apellido}</strong>
-                </div>
-            </td>
-            <td><span class="badge badge-light" style="color:#841480; background:#f5e8f5">${roles[e.id_rol]}</span></td>
-            <td class="text-center">${e.n_tickets}</td>
-            <td class="text-center td-total">$${e.monto_total.toFixed(2)}</td>
-            <td><span class="td-ticket">${e.ultimo_ticket}</span></td>
-            <td class="text-center"><button class="btn btn-sm btn-success" onclick="verDetalleEmpleado(${e.id_usuario})">Detalle</button></td>
-        </tr>`).join('');
+    actualizarContador(visible, filas.length);
 }
 
-
-function setPeriodo(periodo) {
-    const hoy = new Date();
-    const format = (d) => d.toISOString().split('T')[0];
-    
-    let fechaDesde = format(hoy);
-    let fechaHasta = format(hoy);
-
-    if (periodo === 'semana') {
-        const sieteDias = new Date();
-        sieteDias.setDate(hoy.getDate() - 7);
-        fechaDesde = format(sieteDias);
-    } else if (periodo === 'mes') {
-        fechaDesde = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
-    } else if (periodo === 'todo') {
-        fechaDesde = '';
-        fechaHasta = '';
-    }
-
-    document.getElementById('filtroDesde').value = fechaDesde;
-    document.getElementById('filtroHasta').value = fechaHasta;
-    
-   
-    document.querySelectorAll('.btn-periodo').forEach(btn => btn.classList.remove('activo'));
-    if (event) event.target.classList.add('activo');
-
-    filtrarTodo();
+function actualizarContador(visible, total) {
+    var cv = document.getElementById('contadorVisible');
+    var ct = document.getElementById('contadorTotal');
+    if (cv) cv.textContent = visible;
+    if (ct) ct.textContent = total;
 }
 
+/* ══════════════════════════════════════════
+   VER DETALLE
+══════════════════════════════════════════ */
+function verDetalle(id) {
+    fetch(HV_CONTROLLER + '?accion=detalle&id=' + id)
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) { mostrarToast(res.mensaje, 'error'); return; }
+            renderizarDetalle(res.datos);
+            abrirModal('modalDetalle');
+        });
+}
 
-function verDetalleVenta(id) { alert("Consultando Ticket ID: " + id); }
-function verDetalleEmpleado(id) { alert("Consultando Reporte Empleado ID: " + id); }
+function renderizarDetalle(d) {
+    var v        = d.venta;
+    var tieneIva = parseFloat(v.impuesto) > 0;
+
+    var html = '<div class="detalle-venta-header">'
+             + '<div><div class="detalle-ticket">' + esc(v.numero_ticket) + '</div>'
+             + '<div style="margin-top:4px">' + badgeMetodo(v.metodo_pago) + '</div></div>'
+             + '<div class="detalle-meta">'
+             + '<div><strong>Cajero:</strong> ' + esc(v.nombre_empleado || '—') + '</div>'
+             + '<div><strong>Fecha:</strong> '  + formatearFechaLegible(v.fecha_venta) + '</div>'
+             + '<div><strong>Estado:</strong> ' + (v.estado === 'completada' ? '<span class="badge-completada">Completada</span>' : '<span class="badge-anulada">Anulada</span>') + '</div>'
+             + '</div></div>'
+             + '<table class="detalle-tabla">'
+             + '<thead><tr><th>Producto</th><th class="td-r">Cant.</th><th class="td-r">P. Unit.</th><th class="td-r">Subtotal</th></tr></thead>'
+             + '<tbody>'
+             + d.detalle.map(function(item) {
+                 return '<tr>'
+                      + '<td>' + esc(item.nombre_producto) + '</td>'
+                      + '<td class="td-r">' + item.cantidad + '</td>'
+                      + '<td class="td-r">$' + parseFloat(item.precio_unitario).toFixed(2) + '</td>'
+                      + '<td class="td-r">$' + parseFloat(item.subtotal).toFixed(2) + '</td>'
+                      + '</tr>';
+               }).join('')
+             + '</tbody></table>'
+             + '<div class="detalle-totales">'
+             + '<div>Subtotal: $' + parseFloat(v.subtotal).toFixed(2) + '</div>'
+             + (tieneIva ? '<div>IVA (13%): $' + parseFloat(v.impuesto).toFixed(2) + '</div>' : '')
+             + '<div class="detalle-total-final">TOTAL: $' + parseFloat(v.total).toFixed(2) + '</div>'
+             + (v.metodo_pago === 'efectivo' ? '<div style="color:#888;font-size:12px">Recibido: $' + parseFloat(v.monto_recibido).toFixed(2) + ' | Cambio: $' + parseFloat(v.cambio).toFixed(2) + '</div>' : '')
+             + '</div>';
+
+    document.getElementById('cuerpoDetalle').innerHTML = html;
+}
+
+function imprimirDetalle() { window.print(); }
+
+/* ══════════════════════════════════════════
+   UTILIDADES
+══════════════════════════════════════════ */
+function abrirModal(id) {
+    document.getElementById(id).classList.add('activo');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModal(id) {
+    document.getElementById(id).classList.remove('activo');
+    document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) { overlay.classList.remove('activo'); document.body.style.overflow = ''; }
+    });
+});
+
+function badgeMetodo(metodo) {
+    var mapa = {
+        'efectivo':     '<span class="badge-efectivo">Efectivo</span>',
+        'tarjeta':      '<span class="badge-tarjeta">Tarjeta</span>',
+        'transferencia': '<span class="badge-transferencia">Digital</span>'
+    };
+    return mapa[metodo] || '<span>' + esc(metodo) + '</span>';
+}
+
+function iniciales(nombre) {
+    var partes = nombre.trim().split(' ');
+    return partes.length >= 2
+        ? (partes[0].charAt(0) + partes[1].charAt(0)).toUpperCase()
+        : nombre.charAt(0).toUpperCase();
+}
+
+function formatearFechaLegible(fecha) {
+    if (!fecha) return '—';
+    var d = new Date(fecha);
+    if (isNaN(d)) return fecha;
+    return d.toLocaleDateString('es-SV', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function mostrarToast(mensaje, tipo) {
+    var toast = document.getElementById('toast');
+    if (!toast) { toast = document.createElement('div'); toast.id = 'toast'; document.body.appendChild(toast); }
+    toast.textContent = mensaje;
+    toast.className   = 'toast toast-' + (tipo || 'ok');
+    toast.classList.add('toast-visible');
+    setTimeout(function() { toast.classList.remove('toast-visible'); }, 3500);
+}
