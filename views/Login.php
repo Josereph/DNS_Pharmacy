@@ -99,13 +99,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtAcceso->close();
                 $conn2->close();
 
-                // Redirigir según rol
-                if ($usuario['rol'] === 'Administrador') {
-                    header('Location: /DNS_Pharmacy/index.php');
-                } else {
-                    header('Location: /DNS_Pharmacy/index.php');
-                }
-                exit;
+                
+                    // Redirigir según rol
+                    if ($usuario['rol'] === 'Administrador') {
+                        header('Location: /DNS_Pharmacy/index.php');
+                    } elseif ($usuario['rol'] === 'Empleado') {
+                        header('Location: /DNS_Pharmacy/views/pos.php');
+                    } else {
+                        header('Location: /DNS_Pharmacy/index.php');
+                    }
+                    exit; 
+                
             }
         }
     }

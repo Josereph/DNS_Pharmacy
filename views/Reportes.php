@@ -1,3 +1,17 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /DNS_Pharmacy/views/Login.php');
+    exit;
+}
+
+$base_url = '/DNS_Pharmacy';
+$views = $base_url . '/views';
+include 'layouts/slider.php';
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -13,14 +27,7 @@
 </head>
 <body>
 
-<?php
-session_start();
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
-    exit;
-}
-include 'layouts/slider.php';
-?>
+
 
 <div class="main-content">
 
