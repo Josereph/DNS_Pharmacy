@@ -82,11 +82,22 @@ include 'layouts/slider.php';
             </div>
         </div>
 
+        <!-- Totales -->
         <div class="cart-totals">
             <div class="total-row">
                 <span>Subtotal</span>
                 <span id="totalSubtotal">$0.00</span>
             </div>
+
+            <!-- Descuento aplicado -->
+            <div class="total-row descuento-row" id="descuentoRow" style="display:none;">
+                <span class="descuento-label">
+                    <i class="bi bi-tag-fill"></i>
+                    Descuento <span id="descuentoDesc"></span>
+                </span>
+                <span id="totalDescuento" class="descuento-val">-$0.00</span>
+            </div>
+
             <!-- Toggle IVA -->
             <div class="iva-toggle">
                 <span class="iva-label">Aplicar IVA (13%)</span>
@@ -105,6 +116,15 @@ include 'layouts/slider.php';
             </div>
         </div>
 
+        <!-- Botón descuento -->
+        <div class="descuento-btn-wrap">
+            <button class="btn-descuento" id="btnDescuento" onclick="abrirModalDescuento()" disabled>
+                <i class="bi bi-tag"></i>
+                Aplicar descuento
+            </button>
+        </div>
+
+        <!-- Método de pago -->
         <div class="pay-section">
             <div class="pay-label">Método de pago</div>
             <div class="pay-btns">
@@ -115,6 +135,10 @@ include 'layouts/slider.php';
                 <button class="pay-btn" data-metodo="tarjeta" onclick="seleccionarMetodo(this)">
                     <i class="bi bi-credit-card"></i>
                     Tarjeta
+                </button>
+                <button class="pay-btn" data-metodo="transferencia" onclick="seleccionarMetodo(this)">
+                    <i class="bi bi-phone"></i>
+                    Digital
                 </button>
             </div>
         </div>
@@ -138,7 +162,82 @@ include 'layouts/slider.php';
     </div>
 </div>
 
-<!-- MODAL: TICKET -->
+
+<!-- ══ MODAL: DESCUENTO ══ -->
+<div class="modal-overlay" id="modalDescuento">
+    <div class="modal-box modal-descuento">
+        <div class="modal-header">
+            <h5 class="modal-titulo"><i class="bi bi-tag-fill"></i> Aplicar Descuento</h5>
+            <button class="modal-cerrar" onclick="cerrarModalDescuento()">&times;</button>
+        </div>
+        <div class="modal-body">
+
+            <!-- Tipo de descuento -->
+            <div class="descuento-tipo-tabs">
+                <button class="tipo-tab active" data-tipo="porcentaje" onclick="seleccionarTipoDescuento(this, 'porcentaje')">
+                    <i class="bi bi-percent"></i>
+                    Porcentaje
+                </button>
+                <button class="tipo-tab" data-tipo="monto" onclick="seleccionarTipoDescuento(this, 'monto')">
+                    <i class="bi bi-currency-dollar"></i>
+                    Monto fijo
+                </button>
+            </div>
+
+            <!-- Input descuento -->
+            <div class="descuento-input-wrap">
+                <div class="descuento-prefix" id="descuentoPrefix">%</div>
+                <input type="number" id="inputDescuento" class="descuento-input"
+                       placeholder="0" min="0" step="0.01"
+                       oninput="previsualizarDescuento()">
+            </div>
+
+            <span class="form-error" id="errDescuento"></span>
+
+            <!-- Preview cálculo -->
+            <div class="descuento-preview" id="descuentoPreview">
+                <div class="preview-row">
+                    <span>Subtotal original</span>
+                    <span id="prevSubtotal">$0.00</span>
+                </div>
+                <div class="preview-row descuento-preview-val">
+                    <span id="prevDescLabel">Descuento (0%)</span>
+                    <span id="prevDescMonto" class="text-descuento">-$0.00</span>
+                </div>
+                <div class="preview-divider"></div>
+                <div class="preview-row preview-total">
+                    <span>Subtotal con descuento</span>
+                    <span id="prevTotal">$0.00</span>
+                </div>
+            </div>
+
+            <!-- Accesos rápidos porcentaje -->
+            <div class="descuento-rapidos" id="rapidosPorcentaje">
+                <span class="rapidos-label">Accesos rápidos</span>
+                <div class="rapidos-btns">
+                    <button onclick="aplicarRapido(5)">5%</button>
+                    <button onclick="aplicarRapido(10)">10%</button>
+                    <button onclick="aplicarRapido(15)">15%</button>
+                    <button onclick="aplicarRapido(20)">20%</button>
+                    <button onclick="aplicarRapido(25)">25%</button>
+                    <button onclick="aplicarRapido(50)">50%</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer-custom">
+            <button class="btn-cancelar" onclick="quitarDescuento()">
+                <i class="bi bi-x"></i> Quitar descuento
+            </button>
+            <button class="btn-aplicar-desc" onclick="confirmarDescuento()">
+                <i class="bi bi-check-lg"></i> Aplicar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══ MODAL: TICKET ══ -->
 <div class="modal-overlay" id="modalTicket">
     <div class="modal-box modal-ticket">
         <div class="modal-header">
