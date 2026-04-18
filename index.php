@@ -5,20 +5,21 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: /DNS_Pharmacy/views/Login.php');
     exit;
 }
-// SOLO ADMIN puede entrar
+
 if ($_SESSION['usuario_rol'] !== 'Administrador') {
     header('Location: /DNS_Pharmacy/views/pos.php');
     exit;
 }
+
+$admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
 ?>
 <!doctype html>
 <html lang="es">
 <head>
-    <title>Dashboard - DNS Pharmacy</title>
+    <title>Inicio - DNS Pharmacy</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/slider.css">
     <link rel="stylesheet" href="assets/css/footer.css">
     <link rel="stylesheet" href="assets/css/index.css">
@@ -29,86 +30,123 @@ if ($_SESSION['usuario_rol'] !== 'Administrador') {
 
 <div class="main-content">
 
-    <!-- Bienvenida estilo sistema -->
-    <div class="dashboard-header">
-        <h2 class="dashboard-title">
-            Bienvenida, <?php echo $_SESSION['usuario_nombre']; ?> 👋
-        </h2>
-        <p class="dashboard-subtitle">
-            Panel principal del sistema DNS Pharmacy
-        </p>
+    <!-- Bienvenida -->
+    <div class="dash-welcome">
+        <div class="dash-welcome-left">
+            <div class="dash-greeting">Bienvenido de vuelta,</div>
+            <div class="dash-name"><?php echo htmlspecialchars($admin_nombre); ?> 👋</div>
+            <div class="dash-sub">Panel de administración — DNS Pharmacy</div>
+        </div>
+        <div class="dash-welcome-right">
+            <div class="dash-fecha-dia">Hoy es</div>
+            <div class="dash-fecha-hora" id="dashHora">--:--</div>
+            <div class="dash-fecha-completa" id="dashFecha">cargando...</div>
+        </div>
     </div>
 
-    <!-- Tarjetas estilo moderno -->
-    <div class="dashboard-cards">
+    <!-- Banner farmacéutico -->
+    <div class="dash-banner">
+        <div class="dash-banner-icon"><i class="bi bi-capsule"></i></div>
+        <div class="dash-banner-text">
+            <h4>DNS Pharmacy — Drug Network Supply</h4>
+            <p>Sistema de gestión farmacéutica · San Salvador, El Salvador · contacto@dnspharmacy.com</p>
+        </div>
+        <div class="dash-banner-badge"><i class="bi bi-shield-check"></i> Sistema activo</div>
+    </div>
 
-        <div class="dashboard-card">
-            <div class="card-icon purple"><i class="bi bi-receipt"></i></div>
+    <!-- Stats -->
+    <div class="dash-stats-grid">
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon icon-purple"><i class="bi bi-receipt"></i></div>
             <div>
-                <h4>Ventas hoy</h4>
-                <p class="card-value">$0.00</p>
+                <div class="dash-stat-val" id="statVentasHoy">—</div>
+                <div class="dash-stat-label">Ventas hoy</div>
+                <div class="dash-stat-sub" id="statVentasSub">$0.00 recaudado</div>
             </div>
         </div>
-
-        <div class="dashboard-card">
-            <div class="card-icon green"><i class="bi bi-cash"></i></div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon icon-green"><i class="bi bi-boxes"></i></div>
             <div>
-                <h4>Ingresos</h4>
-                <p class="card-value">$0.00</p>
+                <div class="dash-stat-val" id="statProductos">—</div>
+                <div class="dash-stat-label">Productos activos</div>
+                <div class="dash-stat-sub" id="statProductosSub">en catálogo</div>
             </div>
         </div>
-
-        <div class="dashboard-card">
-            <div class="card-icon orange"><i class="bi bi-box"></i></div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon icon-amber"><i class="bi bi-exclamation-triangle"></i></div>
             <div>
-                <h4>Productos</h4>
-                <p class="card-value">--</p>
+                <div class="dash-stat-val" id="statStockBajo">—</div>
+                <div class="dash-stat-label">Stock bajo</div>
+                <div class="dash-stat-sub">requieren atención</div>
             </div>
         </div>
-
-        <div class="dashboard-card">
-            <div class="card-icon red"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon icon-blue"><i class="bi bi-people"></i></div>
             <div>
-                <h4>Stock bajo</h4>
-                <p class="card-value">--</p>
+                <div class="dash-stat-val" id="statUsuarios">—</div>
+                <div class="dash-stat-label">Usuarios activos</div>
+                <div class="dash-stat-sub">en el sistema</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventas recientes + Stock bajo -->
+    <div class="dash-row">
+
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div class="dash-card-title"><i class="bi bi-clock-history"></i> Ventas recientes</div>
+                <a href="views/historial_ventas.php" class="dash-card-link">Ver todas <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Ticket</th>
+                        <th>Empleado</th>
+                        <th>Total</th>
+                        <th>Método</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody id="dashVentasRecientes">
+                    <tr><td colspan="5" class="dash-table-empty">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div class="dash-card-title"><i class="bi bi-exclamation-circle"></i> Productos con stock bajo</div>
+                <a href="views/inventario.php" class="dash-card-link">Ver inventario <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div id="dashStockBajo">
+                <div class="dash-empty">Cargando...</div>
             </div>
         </div>
 
     </div>
 
-    <!-- Acciones rápidas (adaptadas por rol) -->
-    <div class="dashboard-actions">
-
-        <h3>Acciones rápidas</h3>
-
-        <div class="actions-grid">
-
-            <!-- TODOS -->
-            <a href="views/pos.php" class="action-card">
-                <i class="bi bi-display"></i>
-                <span>Ir al POS</span>
-            </a>
-
-            <a href="views/perfil.php" class="action-card">
-                <i class="bi bi-person"></i>
-                <span>Mi perfil</span>
-            </a>
-
-            <!-- SOLO ADMIN -->
-            <?php if ($_SESSION['usuario_rol'] === 'Administrador'): ?>
-
-            <a href="views/productos.php" class="action-card">
-                <i class="bi bi-box-seam"></i>
-                <span>Productos</span>
-            </a>
-
-            <a href="views/reportes.php" class="action-card">
-                <i class="bi bi-bar-chart"></i>
-                <span>Reportes</span>
-            </a>
-
-            <?php endif; ?>
-
+    <!-- Compras recientes -->
+    <div class="dash-row-full">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div class="dash-card-title"><i class="bi bi-cart3"></i> Compras recientes</div>
+                <a href="views/compras.php" class="dash-card-link">Ver todas <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>N° Documento</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="dashComprasRecientes">
+                    <tr><td colspan="5" class="dash-table-empty">Cargando...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -116,5 +154,8 @@ if ($_SESSION['usuario_rol'] !== 'Administrador') {
 
 <?php include 'views/layouts/footer.php'; ?>
 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="assets/js/index.js"></script>
 </body>
 </html>

@@ -1,82 +1,369 @@
-.dashboard-header {
-    margin-bottom: 25px;
+/* =====================
+   INDEX / INICIO - DNS Pharmacy
+   ===================== */
+
+/* Bienvenida */
+.dash-welcome {
+    background: linear-gradient(135deg, #841480 0%, #5a1068 100%);
+    border-radius: 12px;
+    padding: 30px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(132, 20, 128, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
-.dashboard-title {
+.dash-welcome::before {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+}
+
+.dash-welcome::after {
+    content: '';
+    position: absolute;
+    right: 60px; bottom: -60px;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: rgba(112, 171, 50, 0.15);
+}
+
+.dash-welcome-left { position: relative; z-index: 1; }
+
+.dash-greeting {
+    font-size: 13px;
+    opacity: .75;
+    margin-bottom: 4px;
+}
+
+.dash-name {
     font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -.3px;
+}
+
+.dash-sub {
+    font-size: 13px;
+    opacity: .65;
+}
+
+.dash-welcome-right {
+    position: relative;
+    z-index: 1;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.dash-fecha-dia {
+    font-size: 13px;
+    opacity: .65;
+    margin-bottom: 2px;
+}
+
+.dash-fecha-hora {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.dash-fecha-completa {
+    font-size: 12px;
+    opacity: .55;
+    margin-top: 4px;
+    text-transform: capitalize;
+}
+
+/* Stats */
+.dash-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.dash-stat-card {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(132, 20, 128, 0.05);
+    transition: box-shadow .2s, transform .2s;
+}
+
+.dash-stat-card:hover {
+    box-shadow: 0 6px 20px rgba(132, 20, 128, 0.12);
+    transform: translateY(-2px);
+}
+
+.dash-stat-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+}
+
+.icon-purple { background: #f5e8f5; color: #841480; }
+.icon-green  { background: #e8f5e9; color: #2e7d32; }
+.icon-amber  { background: #fff3e0; color: #e65100; }
+.icon-blue   { background: #e3f2fd; color: #1565c0; }
+.icon-red    { background: #fce4ec; color: #c62828; }
+
+.dash-stat-val {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2a1a38;
+    line-height: 1;
+    margin-bottom: 3px;
+}
+
+.dash-stat-label {
+    font-size: 12.5px;
     font-weight: 600;
+    color: #666;
+    margin-bottom: 2px;
 }
 
-.dashboard-subtitle {
-    color: #777;
+.dash-stat-sub {
+    font-size: 11px;
+    color: #aaa;
 }
 
-.dashboard-cards {
+/* Fila de tablas */
+.dash-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
-.dashboard-card {
-    background: #fff;
-    border-radius: 14px;
-    padding: 18px;
+.dash-row-full {
+    margin-bottom: 16px;
+}
+
+.dash-card {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(132, 20, 128, 0.05);
+    overflow: hidden;
+}
+
+.dash-card-header {
     display: flex;
     align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    justify-content: space-between;
+    padding: 15px 18px 12px;
+    border-bottom: 1px solid #f5f5f5;
 }
 
-.card-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
+.dash-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a1a38;
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 20px;
+    gap: 7px;
 }
 
-.purple { background: #7b1fa2; }
-.green { background: #2e7d32; }
-.orange { background: #ef6c00; }
-.red { background: #c62828; }
+.dash-card-title i { color: #841480; }
 
-.card-value {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.dashboard-actions h3 {
-    margin-bottom: 15px;
-}
-
-.actions-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-}
-
-.action-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
+.dash-card-link {
+    font-size: 12px;
+    color: #841480;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+}
+
+.dash-card-link:hover { opacity: .7; text-decoration: none; color: #841480; }
+
+/* Tabla */
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.dash-table thead tr { background: #f9f5fb; }
+
+.dash-table th {
+    padding: 9px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #841480;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    white-space: nowrap;
+}
+
+.dash-table tbody tr {
+    border-bottom: 1px solid #f9f5fb;
+    transition: background .15s;
+}
+
+.dash-table tbody tr:last-child { border-bottom: none; }
+.dash-table tbody tr:hover { background: #fdf5fd; }
+
+.dash-table td {
+    padding: 10px 14px;
+    color: #444;
+    vertical-align: middle;
+}
+
+.dash-table-empty {
+    text-align: center;
+    color: #bbb;
+    padding: 28px !important;
+    font-size: 13px;
+}
+
+/* Stock bajo */
+.stock-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    border-bottom: 1px solid #f9f5fb;
+    transition: background .15s;
+}
+
+.stock-item:last-child { border-bottom: none; }
+.stock-item:hover { background: #fdf5fd; }
+
+.stock-item-nombre {
+    font-size: 13px;
+    font-weight: 500;
     color: #333;
-    transition: 0.2s;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
-.action-card:hover {
-    background: #7b1fa2;
+.stock-item-cat {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 1px;
+}
+
+.stock-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.stock-num { font-size: 13px; font-weight: 700; }
+.stock-num.bajo    { color: #e65100; }
+.stock-num.critico { color: #c62828; }
+.stock-num.agotado { color: #c62828; }
+
+.stock-bar-bg {
+    width: 50px; height: 4px;
+    background: #eee; border-radius: 99px; overflow: hidden;
+}
+
+.stock-bar-fill { height: 100%; border-radius: 99px; }
+.bar-bajo    { background: #ff9800; }
+.bar-critico { background: #f44336; }
+.bar-agotado { background: #f44336; }
+
+/* Badges */
+.dash-ticket {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #841480;
+    background: #f5e8f5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.badge-completada { background: #e6f5e6; color: #2e7d32; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-pendiente  { background: #fff3e0; color: #e65100; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-anulada    { background: #fce4ec; color: #c62828; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+
+.badge-metodo { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; display: inline-block; }
+.metodo-efectivo      { background: #e6f5e6; color: #2e7d32; }
+.metodo-tarjeta       { background: #e3f2fd; color: #1565c0; }
+.metodo-transferencia { background: #fff3e0; color: #e65100; }
+
+.dash-empty {
+    text-align: center;
+    color: #bbb;
+    padding: 28px;
+    font-size: 13px;
+}
+
+/* Banner farmacéutico */
+.dash-banner {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(132, 20, 128, 0.05);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.dash-banner-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #841480, #5a1068);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: #ffffff; flex-shrink: 0;
+}
+
+.dash-banner-text h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2a1a38;
+    margin: 0 0 4px;
+}
+
+.dash-banner-text p {
+    font-size: 12.5px;
+    color: #888;
+    margin: 0;
+}
+
+.dash-banner-badge {
+    margin-left: auto;
+    background: #70ab32;
     color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
 }
 
-.action-card i {
-    font-size: 22px;
-    display: block;
-    margin-bottom: 8px;
+/* Responsive */
+@media (max-width: 1100px) {
+    .dash-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .dash-row { grid-template-columns: 1fr; }
+    .dash-welcome { flex-direction: column; gap: 16px; }
+    .dash-welcome-right { text-align: left; }
+    .dash-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+    .dash-stats-grid { grid-template-columns: 1fr; }
 }
