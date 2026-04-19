@@ -310,6 +310,7 @@ function togglePass(id, btn) {
         btn.innerHTML = '<i class="bi bi-eye"></i>';
     }
 }
+
 document.querySelectorAll('.form-input').forEach(input => {
     input.addEventListener('input', () => {
         const error = input.closest('.form-group-custom')?.querySelector('.form-error');

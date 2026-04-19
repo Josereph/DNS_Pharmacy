@@ -142,3 +142,123 @@ footer {
     gap: 4px;
   }
 }
+/* CONTENEDOR */
+.devcore-hover {
+  position: relative;
+  cursor: pointer;
+  color: #00c3ff;
+  font-weight: bold;
+}
+
+/* MODAL OCULTO */
+.devcore-modal {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1e2f;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+/* FLECHITA */
+.devcore-modal::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: #1e1e2f transparent transparent transparent;
+}
+
+/* TITULO */
+.devcore-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* LISTA */
+.devcore-modal ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.devcore-modal li {
+  padding: 3px 0;
+  font-size: 14px;
+}
+
+/* 🔥 EFECTO HOVER */
+.devcore-hover:hover .devcore-modal {
+  opacity: 1;
+   z-index: 9999; 
+  visibility: visible;
+}
+.devcore-hover {
+  position: relative;
+  display: inline-block; /* 🔥 clave */
+  cursor: pointer;
+  color: #00c3ff;
+  font-weight: bold;
+}
+.footer-bottom {
+  position: relative;
+  overflow: visible; /* 🔥 ESTO LO ARREGLA */
+}
+
+/* 🔥 ASEGURAR QUE NADA LO CORTE */
+body, html {
+  overflow-x: visible !important;
+}
+
+/* MUY IMPORTANTE si usas sidebar */
+.main-content {
+  overflow: visible !important;
+}
+
+/* FOOTER */
+footer {
+  position: relative;
+  z-index: 1;
+  overflow: visible !important;
+}
+
+/* CONTENEDOR DEVCORE */
+.devcore-hover {
+  position: relative;
+  display: inline-block;
+  z-index: 9999;
+}
+
+/* MODAL */
+.devcore-modal {
+  position: absolute;
+  bottom: 140%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+
+  opacity: 0;
+  visibility: hidden;
+
+  z-index: 99999;
+
+  transition: all 0.25s ease;
+}
+
+/* HOVER REAL */
+.devcore-hover:hover .devcore-modal {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) scale(1);
+}

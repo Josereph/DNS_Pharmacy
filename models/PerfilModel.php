@@ -45,7 +45,7 @@ class PerfilModel {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function actualizarPerfil($id_usuario, $nombre, $apellido, $correo, $telefono) {
+    public function actualizarPerfil($id_usuario, $nombre, $apellido, $telefono) {
         $sql  = "UPDATE usuarios
                  SET nombre = ?, apellido = ?, correo = ?, telefono = ?
                  WHERE id_usuario = ?";
