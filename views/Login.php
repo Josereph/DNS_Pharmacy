@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $conn2->close();
 
                 // Redirigir a pantalla de bienvenida
-                header('Location: /DNS_Pharmacy/views/bienvenida.php');
+                header('Location: /DNS_Pharmacy/views/Bienvenida.php');
                 exit;
             }
         }

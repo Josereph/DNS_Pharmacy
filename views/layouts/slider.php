@@ -85,8 +85,8 @@ $es_pos = ($pagina_actual === 'pos.php');
 
        
 
-        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'pos.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/pos.php">
+        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'Pos.php') ? 'active' : ''; ?>"
+           href="<?php echo $views; ?>/Pos.php">
             <i class="bi bi-display"></i>
             Punto de Venta (POS)
         </a>
