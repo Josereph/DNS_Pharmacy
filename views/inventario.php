@@ -43,7 +43,11 @@ include 'layouts/slider.php';
 
 <div class="main-content">
 
+<<<<<<< HEAD
     <div class="stats-row animate__animated animate__fadeInDown">
+=======
+    <div class="stats-row">
+>>>>>>> FrontEnd1
         <div class="stat-card">
             <div class="stat-num" id="statTotalCompras">0</div>
             <div class="stat-lbl">Compras registradas</div>
@@ -62,7 +66,11 @@ include 'layouts/slider.php';
         </div>
     </div>
 
+<<<<<<< HEAD
     <div class="inv-tabs animate__animated animate__fadeIn animate__delay-1s">
+=======
+    <div class="inv-tabs">
+>>>>>>> FrontEnd1
         <button class="inv-tab active" onclick="cambiarTab(this,'tabStock')">
             <i class="bi bi-boxes"></i> Stock actual
         </button>
@@ -71,7 +79,12 @@ include 'layouts/slider.php';
         </button>
     </div>
 
+<<<<<<< HEAD
     <div id="tabStock" class="tab-content active-tab animate__animated animate__fadeIn">
+=======
+    <!-- TAB: STOCK -->
+    <div id="tabStock" class="tab-content active-tab">
+>>>>>>> FrontEnd1
         <div class="tab-header">
             <div class="tab-filtros">
                 <input type="text" id="buscadorStock" class="filtro-input" placeholder="Buscar producto..." oninput="filtrarStock()">
@@ -105,7 +118,12 @@ include 'layouts/slider.php';
         </div>
     </div>
 
+<<<<<<< HEAD
     <div id="tabHistorial" class="tab-content animate__animated animate__fadeIn">
+=======
+    <!-- TAB: HISTORIAL -->
+    <div id="tabHistorial" class="tab-content">
+>>>>>>> FrontEnd1
         <div class="tab-header">
             <div class="tab-filtros">
                 <input type="text" id="buscadorCompras" class="filtro-input" placeholder="Buscar por N° factura o proveedor..." oninput="filtrarCompras()">

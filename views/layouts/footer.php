@@ -35,7 +35,23 @@
 
     <div class="footer-bottom">
       <p class="footer-copy">© 2025 DNS Pharmacy. Todos los derechos reservados.</p>
-      <p class="footer-devcore">Desarrollado por <span>DevCore</span></p>
+      <p class="footer-devcore">
+  Desarrollado por 
+  <span class="devcore-hover">
+    DevCore
+
+    <div class="devcore-modal">
+      <p class="devcore-title">Equipo DevCore</p>
+      <ul>
+        <li>Lisseth Portillo</li>
+        <li>Nombre 2</li>
+        <li>Nombre 3</li>
+        <li>Nombre 4</li>
+      </ul>
+    </div>
+
+  </span>
+</p>
     </div>
 
   </div>

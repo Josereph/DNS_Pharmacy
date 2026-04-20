@@ -105,13 +105,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtAcceso->close();
                 $conn2->close();
 
-                // Redirigir según rol
-                if ($usuario['rol'] === 'Administrador') {
-                    header('Location: /DNS_Pharmacy/index.php');
-                } else {
-                    header('Location: /DNS_Pharmacy/index.php');
-                }
-                exit;
+                
+                    // Redirigir según rol
+                    if ($usuario['rol'] === 'Administrador') {
+                        header('Location: /DNS_Pharmacy/index.php');
+                    } elseif ($usuario['rol'] === 'Empleado') {
+                        header('Location: /DNS_Pharmacy/views/pos.php');
+                    } else {
+                        header('Location: /DNS_Pharmacy/index.php');
+                    }
+                    exit; 
+                
             }
         }
     }
@@ -202,7 +206,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="checkbox" name="remember">
                         <span>Recordarme</span>
                     </label>
-                    <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    <a href="recuperar_password.php" class="forgot-link">¿Olvidaste tu contraseña?</a>
+
                 </div>
 
                 <button type="submit" class="btn-login">

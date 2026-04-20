@@ -7,6 +7,8 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Usuario';
 $admin_rol    = $_SESSION['usuario_rol']    ?? 'Sin rol';
 $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
 
+$rol = $_SESSION['usuario_rol'] ?? '';
+
 // En el POS el sidebar arranca oculto
 $es_pos = ($pagina_actual === 'pos.php');
 ?>
@@ -26,12 +28,15 @@ $es_pos = ($pagina_actual === 'pos.php');
 
     <nav class="nav flex-column">
 
-        <a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
-           href="<?php echo $base_url; ?>/index.php">
-            <i class="bi bi-house-door"></i>
-            Inicio
-        </a>
+        <?php if ($rol === 'Administrador'): ?>
+<a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
+   href="<?php echo $base_url; ?>/index.php">
+    <i class="bi bi-house-door"></i>
+    Inicio
+</a>
+<?php endif; ?>
 
+        <?php if ($rol === 'Administrador'): ?>
         <a class="nav-link <?php echo ($pagina_actual == 'usuarios.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/usuarios.php">
             <i class="bi bi-people"></i>
@@ -59,12 +64,6 @@ $es_pos = ($pagina_actual === 'pos.php');
             Inventario
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/historial_ventas.php">
-            <i class="bi bi-clock-history"></i>
-            Historial Ventas
-        </a>
-
         <a class="nav-link <?php echo ($pagina_actual == 'reportes.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/Estadisticas.php">
             <i class="bi bi-bar-chart-line"></i>
@@ -76,6 +75,15 @@ $es_pos = ($pagina_actual === 'pos.php');
             <i class="bi bi-calendar-check"></i>
             Asistencia
         </a>
+
+        <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>"
+   href="<?php echo $views; ?>/historial_ventas.php">
+    <i class="bi bi-clock-history"></i>
+    Historial Ventas
+</a>
+        <?php endif; ?>
+
+       
 
         <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'pos.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/pos.php">

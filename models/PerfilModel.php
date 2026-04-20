@@ -10,34 +10,74 @@ class PerfilModel {
     }
 
     public function obtenerPerfil($id_usuario) {
-        $sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
+        $sql  = "SELECT id_usuario, id_rol, nombre, apellido, correo,
+                        telefono, estado, ultimo_acceso, created_at, foto_perfil
+                 FROM usuarios WHERE id_usuario = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $id_usuario);
+        $stmt->bind_param('i', $id_usuario);
         $stmt->execute();
-        $result = $stmt->get_result();
-
-        return $result->fetch_assoc();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     public function obtenerVentas($id_usuario) {
-        $sql = "SELECT * FROM ventas WHERE id_usuario = ? ORDER BY fecha_venta DESC";
+        $sql  = "SELECT id_venta, id_usuario, numero_ticket, fecha_venta,
+                        subtotal, impuesto, total, monto_recibido, cambio,
+                        metodo_pago, estado, observaciones, created_at, updated_at
+                 FROM ventas
+                 WHERE id_usuario = ?
+                 ORDER BY fecha_venta DESC";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $id_usuario);
+        $stmt->bind_param('i', $id_usuario);
         $stmt->execute();
-        $result = $stmt->get_result();
-
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
     public function obtenerDetalle($id_venta) {
-        $sql = "SELECT nombre, cantidad, precio_unitario, subtotal 
-                FROM detalle_venta 
-                WHERE id_venta = ?";
+        $sql  = "SELECT dv.id_detalle_venta, dv.id_venta, dv.id_producto,
+                        dv.id_lote, dv.cantidad, dv.precio_unitario, dv.subtotal,
+                        p.nombre
+                 FROM detalle_venta dv
+                 INNER JOIN productos p ON dv.id_producto = p.id_producto
+                 WHERE dv.id_venta = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $id_venta);
+        $stmt->bind_param('i', $id_venta);
         $stmt->execute();
-        $result = $stmt->get_result();
-
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function actualizarPerfil($id_usuario, $nombre, $apellido, $telefono) {
+        $sql  = "UPDATE usuarios
+                 SET nombre = ?, apellido = ?, correo = ?, telefono = ?
+                 WHERE id_usuario = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('ssssi', $nombre, $apellido, $correo, $telefono, $id_usuario);
+        $stmt->execute();
+        return $stmt->affected_rows >= 0;
+    }
+
+    public function obtenerHash($id_usuario) {
+        $sql  = "SELECT password_hash FROM usuarios WHERE id_usuario = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $id_usuario);
+        $stmt->execute();
+        $row  = $stmt->get_result()->fetch_assoc();
+        return $row['password_hash'] ?? null;
+    }
+
+    public function actualizarPassword($id_usuario, $nuevo_hash) {
+        $sql  = "UPDATE usuarios SET password_hash = ? WHERE id_usuario = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('si', $nuevo_hash, $id_usuario);
+        $stmt->execute();
+        return $stmt->affected_rows > 0;
+    }
+
+    public function actualizarFoto($id_usuario, $filename) {
+        $sql  = "UPDATE usuarios SET foto_perfil = ? WHERE id_usuario = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('si', $filename, $id_usuario);
+        $stmt->execute();
+        return $stmt->affected_rows >= 0;
+    }
+    
 }
