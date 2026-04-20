@@ -1,3 +1,5 @@
+
+
 <?php
 /**
  * ExportarReportePDF.php — DNS Pharmacy
@@ -545,3 +547,4 @@ $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 $nombreArchivo = 'DNS_Pharmacy_Reporte_' . date('Y-m-d') . '.pdf';
 
 $mpdf->Output($nombreArchivo, 'D');   // 'D' = fuerza descarga, 'I' = abre en navegador
+

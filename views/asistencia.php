@@ -67,7 +67,7 @@
         </div>
         <table class="tabla-productos" id="tablaAsistencia">
             <thead>
-                32
+                
                     <th>Fecha</th>
                     <th>Usuario</th>
                     <th>Entrada</th>

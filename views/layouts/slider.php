@@ -66,7 +66,7 @@ $es_pos = ($pagina_actual === 'pos.php');
         </a>
 
         <a class="nav-link <?php echo ($pagina_actual == 'reportes.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/reportes.php">
+           href="<?php echo $views; ?>/Estadisticas.php">
             <i class="bi bi-bar-chart-line"></i>
             Reportes
         </a>
