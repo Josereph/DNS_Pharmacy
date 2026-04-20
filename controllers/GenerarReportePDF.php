@@ -86,25 +86,27 @@ $conn = conectar();
 $css = '
 body{font-family: DejaVuSansCondensed, sans-serif; font-size:9pt; color:#334155;}
 h1{font-size:18pt; margin:0 0 4px; color:#0f172a;}
-h2{font-size:12pt; margin:18px 0 8px; color:#0f172a; border-bottom:2px solid #dc2626; padding-bottom:5px;}
+h2{font-size:12pt; margin:18px 0 8px; color:#0f172a; border-bottom:2px solid #841480; padding-bottom:5px;}
 p{font-size:8.5pt; margin:0 0 4px; color:#64748b;}
 .small{font-size:7.5pt; color:#94a3b8;}
-.kpi-box{display:inline-block; width:31%; margin-right:2%; padding:12px; border-radius:8px; vertical-align:top;}
+.kpi-box{padding:12px; border-radius:8px;}
+.kpi-wrapper{width:100%; border-collapse:collapse; margin-bottom:15px;}
+.kpi-wrapper td{vertical-align:top;}
 .kpi-title{font-size:7.5pt; color:#64748b;}
 .kpi-value{font-size:17pt; font-weight:bold; color:#0f172a;}
-.bg-blue{background:#eff6ff; border-left:4px solid #2563eb;}
-.bg-green{background:#f0fdf4; border-left:4px solid #16a34a;}
-.bg-orange{background:#fff7ed; border-left:4px solid #ea580c;}
+.bg-purple{background:#f3e8f3; border-left:4px solid #841480;}
+.bg-green{background:#eef6e8; border-left:4px solid #70ab32;}
+.bg-orange{background:#fff1e6; border-left:4px solid #f57c00;}
 .bg-red{background:#fef2f2; border-left:4px solid #dc2626;}
 .data-table{width:100%; border-collapse:collapse; margin-top:10px; font-size:8pt;}
 .data-table th{background:#f8fafc; color:#64748b; text-transform:uppercase; font-size:7pt; padding:7px 9px; border-bottom:1px solid #e2e8f0; text-align:left;}
 .data-table td{padding:7px 9px; border-bottom:1px solid #f1f5f9;}
 .data-table tbody tr:nth-child(even) td{background:#fcfcfd;}
 .badge{display:inline-block; padding:2px 7px; border-radius:10px; font-size:7pt; font-weight:bold;}
-.badge-ok{background:#dcfce7; color:#166534;}
-.badge-warning{background:#ffedd5; color:#9a3412;}
+.badge-ok{background:#eef6e8; color:#3b6a12;}
+.badge-warning{background:#fff1e6; color:#a14b00;}
 .badge-danger{background:#fee2e2; color:#991b1b;}
-.badge-info{background:#dbeafe; color:#1d4ed8;}
+.badge-info{background:#f3e8f3; color:#5b0d58;}
 .badge-secondary{background:#e2e8f0; color:#334155;}
 .empty{padding:16px; text-align:center; color:#94a3b8; font-style:italic;}
 ';
@@ -168,18 +170,24 @@ function generarReporteVentas(mysqli $conn, string $desde, string $hasta, string
     ob_start(); ?>
     <?= buildHeaderHtml('Reporte de ventas', $labelPeriodo) ?>
 
-    <div class="kpi-box bg-blue">
-        <div class="kpi-title">Ventas realizadas</div>
-        <div class="kpi-value"><?= (int)$resumen['total_ventas'] ?></div>
-    </div>
-    <div class="kpi-box bg-green">
-        <div class="kpi-title">Ingresos totales</div>
-        <div class="kpi-value"><?= fmtMoney($resumen['total_ingresos']) ?></div>
-    </div>
-    <div class="kpi-box bg-orange" style="margin-right:0;">
-        <div class="kpi-title">Ticket promedio</div>
-        <div class="kpi-value"><?= fmtMoney($resumen['ticket_promedio']) ?></div>
-    </div>
+    <table class="kpi-wrapper">
+        <tr>
+            <td width="32%" class="kpi-box bg-purple">
+                <div class="kpi-title">Ventas realizadas</div>
+                <div class="kpi-value"><?= (int)$resumen['total_ventas'] ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="32%" class="kpi-box bg-green">
+                <div class="kpi-title">Ingresos totales</div>
+                <div class="kpi-value"><?= fmtMoney($resumen['total_ingresos']) ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="32%" class="kpi-box bg-orange">
+                <div class="kpi-title">Ticket promedio</div>
+                <div class="kpi-value"><?= fmtMoney($resumen['ticket_promedio']) ?></div>
+            </td>
+        </tr>
+    </table>
 
     <h2>Detalle de ventas</h2>
     <table class="data-table">
@@ -254,14 +262,19 @@ function generarReporteCompras(mysqli $conn, string $desde, string $hasta, strin
     ob_start(); ?>
     <?= buildHeaderHtml('Reporte de compras', $labelPeriodo) ?>
 
-    <div class="kpi-box bg-blue">
-        <div class="kpi-title">Compras registradas</div>
-        <div class="kpi-value"><?= (int)$resumen['total_compras'] ?></div>
-    </div>
-    <div class="kpi-box bg-green">
-        <div class="kpi-title">Monto total comprado</div>
-        <div class="kpi-value"><?= fmtMoney($resumen['monto_total']) ?></div>
-    </div>
+    <table class="kpi-wrapper">
+        <tr>
+            <td width="49%" class="kpi-box bg-purple">
+                <div class="kpi-title">Compras registradas</div>
+                <div class="kpi-value"><?= (int)$resumen['total_compras'] ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="49%" class="kpi-box bg-green">
+                <div class="kpi-title">Monto total comprado</div>
+                <div class="kpi-value"><?= fmtMoney($resumen['monto_total']) ?></div>
+            </td>
+        </tr>
+    </table>
 
     <h2>Historial de compras</h2>
     <table class="data-table">
@@ -323,18 +336,24 @@ function generarReporteInventario(mysqli $conn, string $desde, string $hasta, st
     ob_start(); ?>
     <?= buildHeaderHtml('Reporte de inventario', $labelPeriodo) ?>
 
-    <div class="kpi-box bg-green">
-        <div class="kpi-title">Stock suficiente</div>
-        <div class="kpi-value"><?= (int)$resumen['ok'] ?></div>
-    </div>
-    <div class="kpi-box bg-orange">
-        <div class="kpi-title">Stock bajo</div>
-        <div class="kpi-value"><?= (int)$resumen['bajo'] ?></div>
-    </div>
-    <div class="kpi-box bg-red" style="margin-right:0;">
-        <div class="kpi-title">Agotados</div>
-        <div class="kpi-value"><?= (int)$resumen['agotado'] ?></div>
-    </div>
+    <table class="kpi-wrapper">
+        <tr>
+            <td width="32%" class="kpi-box bg-green">
+                <div class="kpi-title">Stock suficiente</div>
+                <div class="kpi-value"><?= (int)$resumen['ok'] ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="32%" class="kpi-box bg-orange">
+                <div class="kpi-title">Stock bajo</div>
+                <div class="kpi-value"><?= (int)$resumen['bajo'] ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="32%" class="kpi-box bg-red">
+                <div class="kpi-title">Agotados</div>
+                <div class="kpi-value"><?= (int)$resumen['agotado'] ?></div>
+            </td>
+        </tr>
+    </table>
 
     <h2>Productos bajo mínimo o agotados</h2>
     <table class="data-table">
@@ -536,6 +555,183 @@ function generarReporteProductos(mysqli $conn, string $desde, string $hasta, str
     return ob_get_clean();
 }
 
+function generarReporteFinanciero(mysqli $conn, string $desde, string $hasta, string $labelPeriodo): string {
+    // 1. Ingresos y Gastos Totales
+    $stmtUtil = $conn->prepare("
+        SELECT 
+            ROUND(SUM(dv.subtotal), 2) AS ingresos_ventas,
+            ROUND(SUM(p.precio_compra * dv.cantidad), 2) AS costo_ventas,
+            ROUND(SUM(dv.subtotal) - SUM(p.precio_compra * dv.cantidad), 2) AS utilidad_neta,
+            ROUND((SUM(dv.subtotal) - SUM(p.precio_compra * dv.cantidad)) / NULLIF(SUM(dv.subtotal),0) * 100, 1) AS margen_pct
+        FROM detalle_venta dv
+        INNER JOIN ventas v ON v.id_venta = dv.id_venta
+        INNER JOIN productos p ON p.id_producto = dv.id_producto
+        WHERE DATE(v.fecha_venta) BETWEEN ? AND ? AND v.estado = 'completada'
+    ");
+    $stmtUtil->bind_param('ss', $desde, $hasta);
+    $stmtUtil->execute();
+    $utilidad = $stmtUtil->get_result()->fetch_assoc();
+    $stmtUtil->close();
+
+    // 2. Flujo de Caja
+    $stmtFlujo = $conn->prepare("
+        SELECT fecha, SUM(ingresos) AS ingresos, SUM(gastos) AS gastos
+        FROM (
+            SELECT DATE(fecha_venta) AS fecha, total AS ingresos, 0 AS gastos
+            FROM ventas WHERE DATE(fecha_venta) BETWEEN ? AND ? AND estado = 'completada'
+            UNION ALL
+            SELECT fecha_compra AS fecha, 0 AS ingresos, total AS gastos
+            FROM compras WHERE fecha_compra BETWEEN ? AND ? AND estado = 'registrada'
+        ) flujos
+        GROUP BY fecha ORDER BY fecha
+    ");
+    $stmtFlujo->bind_param('ssss', $desde, $hasta, $desde, $hasta);
+    $stmtFlujo->execute();
+    $flujos = $stmtFlujo->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmtFlujo->close();
+
+    ob_start(); ?>
+    <?= buildHeaderHtml('Reporte Financiero (Flujo de Caja)', $labelPeriodo) ?>
+
+    <table class="kpi-wrapper">
+        <tr>
+            <td width="23.5%" class="kpi-box bg-green">
+                <div class="kpi-title">Ingresos Totales</div>
+                <div class="kpi-value"><?= fmtMoney($utilidad['ingresos_ventas'] ?? 0) ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="23.5%" class="kpi-box bg-orange">
+                <div class="kpi-title">Costo de Ventas</div>
+                <div class="kpi-value"><?= fmtMoney($utilidad['costo_ventas'] ?? 0) ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="23.5%" class="kpi-box bg-purple">
+                <div class="kpi-title">Utilidad Bruta</div>
+                <div class="kpi-value"><?= fmtMoney($utilidad['utilidad_neta'] ?? 0) ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="23.5%" class="kpi-box bg-green" style="border-left-color: #0f172a;">
+                <div class="kpi-title">Margen Promedio</div>
+                <div class="kpi-value"><?= number_format($utilidad['margen_pct'] ?? 0, 1) ?>%</div>
+            </td>
+        </tr>
+    </table>
+
+    <h2>Detalle de Flujo de Caja</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Ingresos (Ventas)</th>
+                <th>Gastos (Compras)</th>
+                <th>Balance Diario</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if (empty($flujos)): ?>
+            <tr><td colspan="4" class="empty">Sin movimientos para el período seleccionado.</td></tr>
+        <?php else: 
+            $totalIngresos = 0; $totalGastos = 0;
+            foreach ($flujos as $f): 
+                $balance = (float)$f['ingresos'] - (float)$f['gastos'];
+                $totalIngresos += (float)$f['ingresos'];
+                $totalGastos += (float)$f['gastos'];
+        ?>
+            <tr>
+                <td><?= date('d/m/Y', strtotime($f['fecha'])) ?></td>
+                <td style="color:#16a34a; font-weight:bold;">+ <?= fmtMoney($f['ingresos']) ?></td>
+                <td style="color:#ea580c; font-weight:bold;">- <?= fmtMoney($f['gastos']) ?></td>
+                <td><strong style="color:<?= $balance >= 0 ? '#16a34a' : '#dc2626' ?>"><?= fmtMoney($balance) ?></strong></td>
+            </tr>
+        <?php endforeach; ?>
+            <tr style="background:#f1f5f9;">
+                <td><strong>TOTALES</strong></td>
+                <td style="color:#16a34a; font-weight:bold;">+ <?= fmtMoney($totalIngresos) ?></td>
+                <td style="color:#ea580c; font-weight:bold;">- <?= fmtMoney($totalGastos) ?></td>
+                <td><strong style="color:<?= ($totalIngresos - $totalGastos) >= 0 ? '#16a34a' : '#dc2626' ?>"><?= fmtMoney($totalIngresos - $totalGastos) ?></strong></td>
+            </tr>
+        <?php endif; ?>
+        </tbody>
+    </table>
+    <?php
+    return ob_get_clean();
+}
+
+function generarReporteVencimientos(mysqli $conn, string $labelPeriodo): string {
+    $res = $conn->query("
+        SELECT 
+            SUM(DATEDIFF(fecha_vencimiento, CURDATE()) > 90) AS vigentes,
+            SUM(DATEDIFF(fecha_vencimiento, CURDATE()) BETWEEN 0 AND 90) AS proximos,
+            SUM(DATEDIFF(fecha_vencimiento, CURDATE()) < 0) AS vencidos
+        FROM detalle_compra
+        WHERE fecha_vencimiento IS NOT NULL
+    ");
+    $estado = $res->fetch_assoc();
+
+    $resLotes = $conn->query("
+        SELECT dc.numero_lote, p.nombre AS producto, DATE_FORMAT(dc.fecha_vencimiento,'%d/%m/%Y') AS fecha_vencimiento,
+               DATEDIFF(dc.fecha_vencimiento, CURDATE()) AS dias_restantes,
+               dc.cantidad
+        FROM detalle_compra dc
+        INNER JOIN productos p ON p.id_producto = dc.id_producto
+        WHERE dc.fecha_vencimiento IS NOT NULL AND DATEDIFF(dc.fecha_vencimiento, CURDATE()) <= 90
+        ORDER BY dias_restantes ASC
+    ");
+    $lotes = $resLotes->fetch_all(MYSQLI_ASSOC);
+
+    ob_start(); ?>
+    <?= buildHeaderHtml('Reporte de Vencimientos', 'Todo el inventario actual') ?>
+
+    <table class="kpi-wrapper">
+        <tr>
+            <td width="32%" class="kpi-box bg-green">
+                <div class="kpi-title">Lotes Vigentes (>90 días)</div>
+                <div class="kpi-value"><?= (int)$estado['vigentes'] ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="32%" class="kpi-box bg-orange">
+                <div class="kpi-title">Próximos a Vencer</div>
+                <div class="kpi-value"><?= (int)$estado['proximos'] ?></div>
+            </td>
+            <td width="2%"></td>
+            <td width="32%" class="kpi-box bg-red">
+                <div class="kpi-title">Lotes Vencidos</div>
+                <div class="kpi-value"><?= (int)$estado['vencidos'] ?></div>
+            </td>
+        </tr>
+    </table>
+
+    <h2>Lotes Críticos (Vencidos o próximos)</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Lote</th>
+                <th>Producto</th>
+                <th>Fecha Vto.</th>
+                <th>Días Restantes</th>
+                <th>Cant.</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if (empty($lotes)): ?>
+            <tr><td colspan="6" class="empty">No hay lotes críticos registrados.</td></tr>
+        <?php else: foreach ($lotes as $l): ?>
+            <tr>
+                <td><strong><?= htmlspecialchars($l['numero_lote'] ?: 'N/A') ?></strong></td>
+                <td><?= htmlspecialchars($l['producto']) ?></td>
+                <td><?= $l['fecha_vencimiento'] ?></td>
+                <td><?= $l['dias_restantes'] < 0 ? 'Hace ' . abs($l['dias_restantes']) : $l['dias_restantes'] ?> días</td>
+                <td><?= $l['cantidad'] ?></td>
+                <td><?= $l['dias_restantes'] < 0 ? badge('agotado') : badge('bajo') ?></td>
+            </tr>
+        <?php endforeach; endif; ?>
+        </tbody>
+    </table>
+    <?php
+    return ob_get_clean();
+}
+
 switch ($tipo) {
     case 'ventas':
         $html = generarReporteVentas($conn, $desde, $hasta, $labelPeriodo);
@@ -560,6 +756,14 @@ switch ($tipo) {
     case 'productos':
         $html = generarReporteProductos($conn, $desde, $hasta, $labelPeriodo);
         $tituloDoc = 'Reporte_Productos';
+        break;
+    case 'financiero':
+        $html = generarReporteFinanciero($conn, $desde, $hasta, $labelPeriodo);
+        $tituloDoc = 'Reporte_Financiero';
+        break;
+    case 'vencimientos':
+        $html = generarReporteVencimientos($conn, $labelPeriodo);
+        $tituloDoc = 'Reporte_Vencimientos';
         break;
     default:
         die('Tipo de reporte no válido.');

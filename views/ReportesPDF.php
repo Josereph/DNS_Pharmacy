@@ -226,6 +226,63 @@ include 'layouts/slider.php';
             </div>
         </div>
 
+        <div class="reporte-card" data-tipo="financiero">
+            <div class="reporte-card-header">
+                <div class="reporte-icon" style="background:linear-gradient(135deg, #70ab32, #5c8e29);"><i class="bi bi-cash-coin"></i></div>
+                <div>
+                    <h4>Reporte Financiero</h4>
+                    <p>Análisis de ingresos, gastos, utilidad bruta y margen de ganancia.</p>
+                </div>
+            </div>
+
+            <div class="reporte-form">
+                <label>Período</label>
+                <select class="form-control periodo-select" onchange="toggleCustomDates(this)">
+                    <option value="hoy">Hoy</option>
+                    <option value="semana">Semanal</option>
+                    <option value="mes" selected>Mensual</option>
+                    <option value="mes_anterior">Mes anterior</option>
+                    <option value="anio">Anual</option>
+                    <option value="custom">Personalizado</option>
+                </select>
+
+                <div class="custom-dates d-none">
+                    <input type="date" class="form-control fecha-desde">
+                    <input type="date" class="form-control fecha-hasta">
+                </div>
+
+                <button class="btn-generar-pdf" onclick="generarReporteDesdeCard(this)" style="background:linear-gradient(135deg, #70ab32, #5c8e29); box-shadow:0 10px 22px rgba(112, 171, 50, 0.3);">
+                    <i class="bi bi-file-earmark-pdf"></i> Generar PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="reporte-card" data-tipo="vencimientos">
+            <div class="reporte-card-header">
+                <div class="reporte-icon" style="background:linear-gradient(135deg, #f57c00, #e65100);"><i class="bi bi-calendar-x"></i></div>
+                <div>
+                    <h4>Reporte de Vencimientos</h4>
+                    <p>Lotes críticos: vigentes, próximos a vencer y vencidos (sin rango de fecha).</p>
+                </div>
+            </div>
+
+            <div class="reporte-form">
+                <label>Período (No aplica para este reporte)</label>
+                <select class="form-control periodo-select" disabled>
+                    <option value="todo" selected>Todo el inventario actual</option>
+                </select>
+
+                <div class="custom-dates d-none">
+                    <input type="date" class="form-control fecha-desde">
+                    <input type="date" class="form-control fecha-hasta">
+                </div>
+
+                <button class="btn-generar-pdf" onclick="generarReporteDesdeCard(this)" style="background:linear-gradient(135deg, #f57c00, #e65100); box-shadow:0 10px 22px rgba(245, 124, 0, 0.3);">
+                    <i class="bi bi-file-earmark-pdf"></i> Generar PDF
+                </button>
+            </div>
+        </div>
+
     </div>
 </div>
 

@@ -577,6 +577,71 @@ switch ($accion) {
         $stmt->close();
         break;
 
+    /* ── Flujo de caja ────────────────────────────────────── */
+    case 'flujo_caja':
+        $stmt = $conn->prepare("
+            SELECT fecha, SUM(ingresos) AS ingresos, SUM(gastos) AS gastos
+            FROM (
+                SELECT DATE(fecha_venta) AS fecha, total AS ingresos, 0 AS gastos
+                FROM ventas WHERE DATE(fecha_venta) BETWEEN ? AND ? AND estado = 'completada'
+                UNION ALL
+                SELECT fecha_compra AS fecha, 0 AS ingresos, total AS gastos
+                FROM compras WHERE fecha_compra BETWEEN ? AND ? AND estado = 'registrada'
+            ) flujos
+            GROUP BY fecha ORDER BY fecha
+        ");
+        $stmt->bind_param('ssss', $desde, $hasta, $desde, $hasta);
+        $stmt->execute();
+        echo json_encode($stmt->get_result()->fetch_all(MYSQLI_ASSOC));
+        $stmt->close();
+        break;
+
+    /* ── Utilidad Neta ────────────────────────────────────── */
+    case 'utilidad_neta':
+        $stmt = $conn->prepare("
+            SELECT 
+                ROUND(SUM(dv.subtotal), 2) AS ingresos_ventas,
+                ROUND(SUM(p.precio_compra * dv.cantidad), 2) AS costo_ventas,
+                ROUND(SUM(dv.subtotal) - SUM(p.precio_compra * dv.cantidad), 2) AS utilidad_neta,
+                ROUND((SUM(dv.subtotal) - SUM(p.precio_compra * dv.cantidad)) / NULLIF(SUM(dv.subtotal),0) * 100, 1) AS margen_pct
+            FROM detalle_venta dv
+            INNER JOIN ventas v ON v.id_venta = dv.id_venta
+            INNER JOIN productos p ON p.id_producto = dv.id_producto
+            WHERE DATE(v.fecha_venta) BETWEEN ? AND ? AND v.estado = 'completada'
+        ");
+        $stmt->bind_param('ss', $desde, $hasta);
+        $stmt->execute();
+        echo json_encode($stmt->get_result()->fetch_assoc());
+        $stmt->close();
+        break;
+
+    /* ── Estado de Lotes ──────────────────────────────────── */
+    case 'estado_lotes':
+        $res = $conn->query("
+            SELECT 
+                SUM(DATEDIFF(fecha_vencimiento, CURDATE()) > 90) AS vigentes,
+                SUM(DATEDIFF(fecha_vencimiento, CURDATE()) BETWEEN 0 AND 90) AS proximos,
+                SUM(DATEDIFF(fecha_vencimiento, CURDATE()) < 0) AS vencidos
+            FROM detalle_compra
+            WHERE fecha_vencimiento IS NOT NULL
+        ");
+        echo json_encode($res->fetch_assoc());
+        break;
+
+    /* ── Lotes Críticos ───────────────────────────────────── */
+    case 'lotes_criticos':
+        $res = $conn->query("
+            SELECT dc.numero_lote, p.nombre AS producto, DATE_FORMAT(dc.fecha_vencimiento,'%d/%m/%Y') AS fecha_vencimiento,
+                   DATEDIFF(dc.fecha_vencimiento, CURDATE()) AS dias_restantes,
+                   dc.cantidad
+            FROM detalle_compra dc
+            INNER JOIN productos p ON p.id_producto = dc.id_producto
+            WHERE dc.fecha_vencimiento IS NOT NULL AND DATEDIFF(dc.fecha_vencimiento, CURDATE()) <= 90
+            ORDER BY dias_restantes ASC
+        ");
+        echo json_encode($res->fetch_all(MYSQLI_ASSOC));
+        break;
+
     default:
         http_response_code(400);
         echo json_encode(['error' => 'Acción no válida: ' . htmlspecialchars($accion)]);

@@ -4,7 +4,9 @@
     --text:#1e293b;
     --muted:#64748b;
     --border:#e2e8f0;
-    --shadow:0 10px 30px rgba(15,23,42,.08);
+    --shadow:0 10px 30px rgba(132, 20, 128, .08);
+    --primary:#841480;
+    --secondary:#70ab32;
     --danger:#dc2626;
     --dark:#0f172a;
 }
@@ -35,8 +37,8 @@ body{
     display:inline-block;
     padding:6px 12px;
     border-radius:999px;
-    background:#fee2e2;
-    color:#b91c1c;
+    background:#f3e8f3;
+    color:var(--primary);
     font-size:.82rem;
     font-weight:700;
     margin-bottom:12px;
@@ -81,6 +83,12 @@ body{
     display:flex;
     flex-direction:column;
     gap:18px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reporte-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(132, 20, 128, .12);
 }
 
 .reporte-card-header{
@@ -93,7 +101,7 @@ body{
     width:58px;
     height:58px;
     border-radius:18px;
-    background:linear-gradient(135deg,#dc2626,#991b1b);
+    background:linear-gradient(135deg, var(--primary), #a21c9d);
     color:#fff;
     display:flex;
     align-items:center;
@@ -143,7 +151,7 @@ body{
 
 .btn-generar-pdf{
     border:none;
-    background:linear-gradient(135deg,#dc2626,#b91c1c);
+    background:linear-gradient(135deg, var(--primary), #a21c9d);
     color:#fff;
     border-radius:14px;
     padding:13px 16px;
@@ -152,7 +160,7 @@ body{
     align-items:center;
     justify-content:center;
     gap:8px;
-    box-shadow:0 10px 22px rgba(220,38,38,.2);
+    box-shadow:0 10px 22px rgba(132, 20, 128,.2);
 }
 
 .btn-generar-pdf:hover{

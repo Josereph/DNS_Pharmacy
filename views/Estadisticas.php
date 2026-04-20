@@ -132,6 +132,12 @@ include 'layouts/slider.php';
         <button class="rep-tab" onclick="cambiarTab(this,'tabProductos')">
             <i class="bi bi-box-seam"></i> Productos
         </button>
+        <button class="rep-tab" onclick="cambiarTab(this,'tabFinanciero')">
+            <i class="bi bi-cash-coin"></i> Financiero
+        </button>
+        <button class="rep-tab" onclick="cambiarTab(this,'tabVencimientos')">
+            <i class="bi bi-calendar-x"></i> Vencimientos
+        </button>
     </div>
 
     <!-- TAB VENTAS -->
@@ -472,6 +478,94 @@ include 'layouts/slider.php';
                     <tr><td colspan="7" class="tabla-vacia">Cargando...</td></tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- TAB FINANCIERO -->
+    <div id="tabFinanciero" class="rep-tab-content">
+        <div class="charts-grid-2">
+            <div class="chart-card chart-wide">
+                <div class="chart-card-header">
+                    <span class="chart-title"><i class="bi bi-activity"></i> Flujo de Caja (Ventas vs Compras)</span>
+                    <div class="chart-toggle">
+                        <button class="ct-btn active" onclick="toggleChartType('chartFlujoCaja','bar',this)">Barras</button>
+                        <button class="ct-btn" onclick="toggleChartType('chartFlujoCaja','line',this)">Línea</button>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="chartFlujoCaja"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="kpi-grid">
+            <div class="kpi-card kpi-purple">
+                <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-val" id="kpiUtilidadIngresos">—</div>
+                    <div class="kpi-lbl">Ingresos Totales (Ventas)</div>
+                </div>
+            </div>
+            <div class="kpi-card kpi-orange">
+                <div class="kpi-icon"><i class="bi bi-graph-down-arrow"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-val" id="kpiUtilidadCostos">—</div>
+                    <div class="kpi-lbl">Costo de Ventas (COGS)</div>
+                </div>
+            </div>
+            <div class="kpi-card kpi-green">
+                <div class="kpi-icon"><i class="bi bi-piggy-bank"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-val" id="kpiUtilidadNeta">—</div>
+                    <div class="kpi-lbl">Utilidad Bruta</div>
+                </div>
+            </div>
+            <div class="kpi-card kpi-blue">
+                <div class="kpi-icon"><i class="bi bi-percent"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-val" id="kpiUtilidadMargen">—</div>
+                    <div class="kpi-lbl">Margen Promedio</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB VENCIMIENTOS -->
+    <div id="tabVencimientos" class="rep-tab-content">
+        <div class="charts-grid-3">
+            <div class="chart-card chart-wide-2">
+                <div class="chart-card-header">
+                    <span class="chart-title"><i class="bi bi-shield-exclamation"></i> Estado Global de Lotes</span>
+                </div>
+                <div class="chart-wrap chart-wrap-donut">
+                    <canvas id="chartEstadoLotes"></canvas>
+                </div>
+                <div class="chart-legend" id="legendEstadoLotes"></div>
+            </div>
+
+            <div class="rep-table-card rep-error-table" style="margin-bottom:0; height:100%;">
+                <div class="rep-table-header">
+                    <span class="chart-title"><i class="bi bi-exclamation-triangle"></i> Lotes Críticos (Vencidos o próximos)</span>
+                    <input type="text" id="buscadorLotes" class="rep-search" placeholder="Buscar producto o lote..." oninput="filtrarTabla('tablaLotes', this.value)">
+                </div>
+                <div class="rep-table-wrapper" style="max-height: 350px; overflow-y: auto;">
+                    <table class="rep-table" id="tablaLotes">
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Producto</th>
+                                <th>Fecha Vencimiento</th>
+                                <th>Días Restantes</th>
+                                <th>Cantidad</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTablaLotes">
+                            <tr><td colspan="6" class="tabla-vacia">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

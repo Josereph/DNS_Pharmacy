@@ -2,7 +2,7 @@
    PRODUCTOS.JS - DNS Pharmacy
    ===================== */
 
-const CONTROLLER = '/DNS_Pharmacy/controllers/ProductoController.php';
+const CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
 
 /* ══════════════════════════════════════════
    MODALES
@@ -273,8 +273,11 @@ document.getElementById('formProducto').addEventListener('submit', function(e) {
 
     var formData = new FormData(this);
     formData.append('accion', 'guardar');
-    formData.set('requiere_receta', document.getElementById('prod_receta').checked ? '1' : '');
-    formData.set('estado',          document.getElementById('prod_estado').checked  ? '1' : '');
+    if (document.getElementById('prod_receta').checked) formData.set('requiere_receta', '1');
+    else formData.delete('requiere_receta');
+
+    if (document.getElementById('prod_estado').checked) formData.set('estado', '1');
+    else formData.delete('estado');
 
     var btn = this.querySelector('.btn-guardar');
     btn.textContent = 'Guardando...';

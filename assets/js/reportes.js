@@ -2,8 +2,8 @@ let periodoActual = 'mes';
 let charts = {};
 
 const CHART_COLORS = [
-    '#2563eb', '#16a34a', '#ea580c', '#7c3aed', '#dc2626',
-    '#0f766e', '#0891b2', '#ca8a04', '#9333ea', '#64748b'
+    '#841480', '#70ab32', '#f57c00', '#1565c0', '#5c35b5',
+    '#00796b', '#d32f2f', '#fbc02d', '#8e24aa', '#c0ca33'
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,7 +50,7 @@ function getParams() {
 }
 
 async function api(accion) {
-    const url = `../controllers/ReportesController.php?accion=${accion}&${getParams()}`;
+    const url = `../controllers/Reportescontroller.php?accion=${accion}&${getParams()}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Error en ${accion}`);
     return await res.json();
@@ -64,7 +64,9 @@ async function cargarDashboard() {
             cargarInventario(),
             cargarEmpleados(),
             cargarProveedores(),
-            cargarProductos()
+            cargarProductos(),
+            cargarFinanciero(),
+            cargarVencimientos()
         ]);
     } catch (e) {
         console.error(e);
@@ -632,4 +634,77 @@ function toggleChartType(chartId, newType, button) {
         parent.querySelectorAll('.ct-btn').forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
     }
+}
+
+async function cargarFinanciero() {
+    const [flujo, utilidad] = await Promise.all([
+        api('flujo_caja'),
+        api('utilidad_neta')
+    ]);
+
+    createOrUpdateChart('chartFlujoCaja', {
+        type: 'bar',
+        data: {
+            labels: flujo.map(i => i.fecha),
+            datasets: [
+                { label: 'Ingresos (Ventas)', data: flujo.map(i => Number(i.ingresos)), backgroundColor: '#70ab32', borderRadius: 6 },
+                { label: 'Gastos (Compras)', data: flujo.map(i => Number(i.gastos)), backgroundColor: '#f57c00', borderRadius: 6 }
+            ]
+        },
+        options: responsiveOptions('y', true)
+    });
+
+    document.getElementById('kpiUtilidadIngresos').textContent = formatMoney(utilidad?.ingresos_ventas);
+    document.getElementById('kpiUtilidadCostos').textContent = formatMoney(utilidad?.costo_ventas);
+    document.getElementById('kpiUtilidadNeta').textContent = formatMoney(utilidad?.utilidad_neta);
+    document.getElementById('kpiUtilidadMargen').textContent = (utilidad?.margen_pct || 0) + '%';
+}
+
+async function cargarVencimientos() {
+    const [estado, lotes] = await Promise.all([
+        api('estado_lotes'),
+        api('lotes_criticos')
+    ]);
+
+    const estadoLabels = ['Vigentes (>90 días)', 'Próximos a Vencer (<=90 días)', 'Vencidos'];
+    const estadoValues = [
+        Number(estado?.vigentes || 0),
+        Number(estado?.proximos || 0),
+        Number(estado?.vencidos || 0)
+    ];
+
+    createOrUpdateChart('chartEstadoLotes', {
+        type: 'doughnut',
+        data: {
+            labels: estadoLabels,
+            datasets: [{
+                data: estadoValues,
+                backgroundColor: ['#70ab32', '#f57c00', '#d32f2f']
+            }]
+        },
+        options: doughnutOptions()
+    });
+    renderLegend('legendEstadoLotes', estadoLabels, ['#70ab32', '#f57c00', '#d32f2f'], estadoValues);
+
+    const tbody = document.getElementById('cuerpoTablaLotes');
+    tbody.innerHTML = '';
+
+    if (!lotes || !lotes.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay lotes críticos registrados.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = lotes.map(l => {
+        let estadoStr = l.dias_restantes < 0 ? '<span class="badge-estado badge-agotado">Vencido</span>' : '<span class="badge-estado badge-bajo">Próximo</span>';
+        
+        return `
+        <tr>
+            <td><strong>${l.numero_lote || 'N/A'}</strong></td>
+            <td>${l.producto}</td>
+            <td>${l.fecha_vencimiento}</td>
+            <td>${l.dias_restantes < 0 ? 'Hace ' + Math.abs(l.dias_restantes) : l.dias_restantes} días</td>
+            <td>${l.cantidad}</td>
+            <td>${estadoStr}</td>
+        </tr>
+    `}).join('');
 }

@@ -2,9 +2,8 @@
    INVENTARIO.JS - DNS Pharmacy
    IVA opcional
    ===================== */
-
-const INV_CONTROLLER  = '/DNS_Pharmacy/controllers/InventarioController.php';
-const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/ProductoController.php';
+const INV_CONTROLLER  = '/DNS_Pharmacy/controllers/Inventariocontroller.php';
+const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
 
 var productosLista = [];
 var filaContador   = 0;

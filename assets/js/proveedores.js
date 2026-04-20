@@ -1,4 +1,4 @@
-const CONTROLLER = '../controllers/ProveedorController.php';
+const CONTROLLER = '../controllers/Proveedorcontroller.php';
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarProveedores();

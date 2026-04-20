@@ -2,9 +2,8 @@
    POS.JS - DNS Pharmacy
    Con descuentos, IVA opcional
    ===================== */
-
-const POS_CONTROLLER  = '/DNS_Pharmacy/controllers/PosController.php';
-const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/ProductoController.php';
+const POS_CONTROLLER  = '/DNS_Pharmacy/controllers/Poscontroller.php';
+const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
 
 var carrito      = [];
 var productos    = [];

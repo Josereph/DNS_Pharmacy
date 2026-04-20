@@ -152,6 +152,12 @@ if (!$conn) {
                 <button class="btn-periodo" onclick="setPeriodo('mes')">Este mes</button>
                 <button class="btn-periodo activo" onclick="setPeriodo('todo')">Todo</button>
             </div>
+
+            <div style="margin-left: auto;">
+                <button class="btn btn-danger d-flex align-items-center" onclick="generarPDFHistorial()" style="font-size: 13px; font-weight: 600; border-radius: 6px; padding: 8px 16px; gap: 6px; transition: all 0.2s;">
+                    <i class="bi bi-filetype-pdf" style="font-size: 16px;"></i> Exportar PDF
+                </button>
+            </div>
         </div>
 
         <!-- Tabla -->
@@ -189,25 +195,20 @@ if (!$conn) {
     <?php include 'layouts/footer.php'; ?>
 
     <!-- Modal detalle de venta -->
-    <div class="modal fade" id="detalleVentaModal" tabindex="-1" role="dialog" aria-labelledby="detalleVentaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content animate__animated animate__zoomIn animate__faster">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detalleVentaModalLabel">
-                        <i class="bi bi-receipt"></i> Detalle de Venta
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body" id="detalleVentaBody">
-                    <!-- Contenido dinámico -->
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
+    <div class="modal-overlay" id="modalDetalle">
+        <div class="modal-box modal-mediano">
+            <div class="modal-header">
+                <h5 class="modal-titulo">
+                    <i class="bi bi-receipt"></i> Detalle de Venta
+                </h5>
+                <button class="modal-cerrar" onclick="cerrarModal('modalDetalle')">&times;</button>
+            </div>
+            <div class="modal-body" id="cuerpoDetalle">
+                <!-- Contenido dinámico -->
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-cancelar" onclick="cerrarModal('modalDetalle')">Cerrar</button>
+                <button type="button" class="btn-imprimir" onclick="imprimirDetalle()"><i class="bi bi-printer"></i> Imprimir</button>
             </div>
         </div>
     </div>
