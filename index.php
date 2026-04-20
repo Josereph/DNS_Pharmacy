@@ -5,7 +5,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: /DNS_Pharmacy/views/Login.php');
     exit;
 }
-// SOLO ADMIN puede entrar
+
 if ($_SESSION['usuario_rol'] !== 'Administrador') {
     header('Location: /DNS_Pharmacy/views/pos.php');
     exit;
@@ -18,7 +18,7 @@ if ($_SESSION['usuario_rol'] !== 'Administrador') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/slider.css">
     <link rel="stylesheet" href="assets/css/footer.css">
     <link rel="stylesheet" href="assets/css/index.css">
@@ -29,86 +29,83 @@ if ($_SESSION['usuario_rol'] !== 'Administrador') {
 
 <div class="main-content">
 
-    <!-- Bienvenida estilo sistema -->
-    <div class="dashboard-header">
-        <h2 class="dashboard-title">
-            Bienvenida, <?php echo $_SESSION['usuario_nombre']; ?> 👋
-        </h2>
-        <p class="dashboard-subtitle">
-            Panel principal del sistema DNS Pharmacy
-        </p>
+    <div class="dash-header">
+        <div>
+            <h2 class="dash-title">
+                Hola, <?php echo htmlspecialchars(explode(' ', $_SESSION['usuario_nombre'])[0]); ?> 👋
+            </h2>
+            <p class="dash-subtitle">Panel de administración · <?php echo date('d/m/Y H:i'); ?></p>
+        </div>
+        <div class="dash-rol-badge">
+            <i class="bi bi-shield-check"></i>
+            <?php echo htmlspecialchars($_SESSION['usuario_rol']); ?>
+        </div>
     </div>
 
-    <!-- Tarjetas estilo moderno -->
-    <div class="dashboard-cards">
-
-        <div class="dashboard-card">
-            <div class="card-icon purple"><i class="bi bi-receipt"></i></div>
-            <div>
-                <h4>Ventas hoy</h4>
-                <p class="card-value">$0.00</p>
+    <div class="dash-stats">
+        <div class="dash-stat-card purple">
+            <div class="ds-icon"><i class="bi bi-receipt"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsVentasHoy">$0.00</div>
+                <div class="ds-lbl">Ventas hoy</div>
             </div>
         </div>
-
-        <div class="dashboard-card">
-            <div class="card-icon green"><i class="bi bi-cash"></i></div>
-            <div>
-                <h4>Ingresos</h4>
-                <p class="card-value">$0.00</p>
+        <div class="dash-stat-card green">
+            <div class="ds-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsProductos">0</div>
+                <div class="ds-lbl">Productos activos</div>
             </div>
         </div>
-
-        <div class="dashboard-card">
-            <div class="card-icon orange"><i class="bi bi-box"></i></div>
-            <div>
-                <h4>Productos</h4>
-                <p class="card-value">--</p>
+        <div class="dash-stat-card orange">
+            <div class="ds-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsStockBajo">0</div>
+                <div class="ds-lbl">Stock bajo mínimo</div>
             </div>
         </div>
-
-        <div class="dashboard-card">
-            <div class="card-icon red"><i class="bi bi-exclamation-triangle"></i></div>
-            <div>
-                <h4>Stock bajo</h4>
-                <p class="card-value">--</p>
+        <div class="dash-stat-card blue">
+            <div class="ds-icon"><i class="bi bi-people"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsUsuarios">0</div>
+                <div class="ds-lbl">Usuarios activos</div>
             </div>
         </div>
-
     </div>
 
-    <!-- Acciones rápidas (adaptadas por rol) -->
-    <div class="dashboard-actions">
-
-        <h3>Acciones rápidas</h3>
-
-        <div class="actions-grid">
-
-            <!-- TODOS -->
-            <a href="views/pos.php" class="action-card">
+    <div class="dash-section">
+        <h3 class="dash-section-title"><i class="bi bi-lightning-charge-fill"></i> Acciones rápidas</h3>
+        <div class="dash-actions">
+            <a href="views/pos.php" class="action-card purple">
                 <i class="bi bi-display"></i>
-                <span>Ir al POS</span>
+                <span>Punto de Venta</span>
+                <small>Abrir POS</small>
             </a>
-
-            <a href="views/perfil.php" class="action-card">
-                <i class="bi bi-person"></i>
-                <span>Mi perfil</span>
-            </a>
-
-            <!-- SOLO ADMIN -->
-            <?php if ($_SESSION['usuario_rol'] === 'Administrador'): ?>
-
-            <a href="views/productos.php" class="action-card">
+            <a href="views/productos.php" class="action-card green">
                 <i class="bi bi-box-seam"></i>
                 <span>Productos</span>
+                <small>Gestionar catálogo</small>
             </a>
-
-            <a href="views/reportes.php" class="action-card">
-                <i class="bi bi-bar-chart"></i>
-                <span>Reportes</span>
+            <a href="views/inventario.php" class="action-card orange">
+                <i class="bi bi-clipboard2-pulse"></i>
+                <span>Inventario</span>
+                <small>Stock y compras</small>
             </a>
-
-            <?php endif; ?>
-
+            <a href="views/historial_ventas.php" class="action-card blue">
+                <i class="bi bi-clock-history"></i>
+                <span>Historial</span>
+                <small>Ver ventas</small>
+            </a>
+            <a href="views/usuarios.php" class="action-card indigo">
+                <i class="bi bi-people"></i>
+                <span>Usuarios</span>
+                <small>Gestionar accesos</small>
+            </a>
+            <a href="views/proveedores.php" class="action-card teal">
+                <i class="bi bi-building"></i>
+                <span>Proveedores</span>
+                <small>Ver proveedores</small>
+            </a>
         </div>
     </div>
 
@@ -116,5 +113,32 @@ if ($_SESSION['usuario_rol'] !== 'Administrador') {
 
 <?php include 'views/layouts/footer.php'; ?>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/DNS_Pharmacy/controllers/ProductoController.php?accion=stats')
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            document.getElementById('dsProductos').textContent = res.datos.activos;
+            document.getElementById('dsStockBajo').textContent = res.datos.stock_bajo;
+        });
+
+    fetch('/DNS_Pharmacy/controllers/UsuarioController.php?accion=stats')
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            document.getElementById('dsUsuarios').textContent = res.datos.activos;
+        });
+
+    var hoy = new Date().toISOString().split('T')[0];
+    fetch('/DNS_Pharmacy/controllers/HistorialVentasController.php?accion=listar&desde=' + hoy + '&hasta=' + hoy)
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            var total = res.datos.reduce(function(s, v) { return s + parseFloat(v.total); }, 0);
+            document.getElementById('dsVentasHoy').textContent = '$' + total.toFixed(2);
+        });
+});
+</script>
 </body>
 </html>
