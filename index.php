@@ -15,17 +15,21 @@ if ($_SESSION['usuario_rol'] !== 'Administrador') {
     header('Location: /DNS_Pharmacy/views/pos.php');
     exit;
 }
+<<<<<<< HEAD
 
 $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
 >>>>>>> FrontEnd1
+=======
+>>>>>>> FrontEnd2
 ?>
 <!doctype html>
 <html lang="es">
 <head>
-    <title>Inicio - DNS Pharmacy</title>
+    <title>Dashboard - DNS Pharmacy</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<<<<<<< HEAD
 <<<<<<< HEAD
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/slider.css">
@@ -230,6 +234,9 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
         }
     </style>
 =======
+=======
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+>>>>>>> FrontEnd2
     <link rel="stylesheet" href="assets/css/slider.css">
     <link rel="stylesheet" href="assets/css/footer.css">
     <link rel="stylesheet" href="assets/css/index.css">
@@ -241,6 +248,7 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
 
 <div class="main-content">
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     <div class="dashboard-header">
         <h1><i class="fas fa-clinic-medical mr-2"></i> Panel principal</h1>
@@ -312,50 +320,44 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
             <div class="dash-greeting">Bienvenido de vuelta,</div>
             <div class="dash-name"><?php echo htmlspecialchars($admin_nombre); ?> 👋</div>
             <div class="dash-sub">Panel de administración — DNS Pharmacy</div>
+=======
+    <div class="dash-header">
+        <div>
+            <h2 class="dash-title">
+                Hola, <?php echo htmlspecialchars(explode(' ', $_SESSION['usuario_nombre'])[0]); ?> 👋
+            </h2>
+            <p class="dash-subtitle">Panel de administración · <?php echo date('d/m/Y H:i'); ?></p>
+>>>>>>> FrontEnd2
         </div>
-        <div class="dash-welcome-right">
-            <div class="dash-fecha-dia">Hoy es</div>
-            <div class="dash-fecha-hora" id="dashHora">--:--</div>
-            <div class="dash-fecha-completa" id="dashFecha">cargando...</div>
+        <div class="dash-rol-badge">
+            <i class="bi bi-shield-check"></i>
+            <?php echo htmlspecialchars($_SESSION['usuario_rol']); ?>
         </div>
     </div>
 
-    <!-- Banner farmacéutico -->
-    <div class="dash-banner">
-        <div class="dash-banner-icon"><i class="bi bi-capsule"></i></div>
-        <div class="dash-banner-text">
-            <h4>DNS Pharmacy — Drug Network Supply</h4>
-            <p>Sistema de gestión farmacéutica · San Salvador, El Salvador · contacto@dnspharmacy.com</p>
-        </div>
-        <div class="dash-banner-badge"><i class="bi bi-shield-check"></i> Sistema activo</div>
-    </div>
-
-    <!-- Stats -->
-    <div class="dash-stats-grid">
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon icon-purple"><i class="bi bi-receipt"></i></div>
-            <div>
-                <div class="dash-stat-val" id="statVentasHoy">—</div>
-                <div class="dash-stat-label">Ventas hoy</div>
-                <div class="dash-stat-sub" id="statVentasSub">$0.00 recaudado</div>
+    <div class="dash-stats">
+        <div class="dash-stat-card purple">
+            <div class="ds-icon"><i class="bi bi-receipt"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsVentasHoy">$0.00</div>
+                <div class="ds-lbl">Ventas hoy</div>
             </div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon icon-green"><i class="bi bi-boxes"></i></div>
-            <div>
-                <div class="dash-stat-val" id="statProductos">—</div>
-                <div class="dash-stat-label">Productos activos</div>
-                <div class="dash-stat-sub" id="statProductosSub">en catálogo</div>
+        <div class="dash-stat-card green">
+            <div class="ds-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsProductos">0</div>
+                <div class="ds-lbl">Productos activos</div>
             </div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon icon-amber"><i class="bi bi-exclamation-triangle"></i></div>
-            <div>
-                <div class="dash-stat-val" id="statStockBajo">—</div>
-                <div class="dash-stat-label">Stock bajo</div>
-                <div class="dash-stat-sub">requieren atención</div>
+        <div class="dash-stat-card orange">
+            <div class="ds-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsStockBajo">0</div>
+                <div class="ds-lbl">Stock bajo mínimo</div>
             </div>
         </div>
+<<<<<<< HEAD
         <div class="dash-stat-card">
             <div class="dash-stat-icon icon-blue"><i class="bi bi-people"></i></div>
             <div>
@@ -363,10 +365,18 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
                 <div class="dash-stat-label">Usuarios activos</div>
                 <div class="dash-stat-sub">en el sistema</div>
 >>>>>>> FrontEnd1
+=======
+        <div class="dash-stat-card blue">
+            <div class="ds-icon"><i class="bi bi-people"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsUsuarios">0</div>
+                <div class="ds-lbl">Usuarios activos</div>
+>>>>>>> FrontEnd2
             </div>
         </div>
     </div>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     <div class="row">
         <div class="col-lg-8 mb-4">
@@ -545,6 +555,41 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
                 </tbody>
             </table>
 >>>>>>> FrontEnd1
+=======
+    <div class="dash-section">
+        <h3 class="dash-section-title"><i class="bi bi-lightning-charge-fill"></i> Acciones rápidas</h3>
+        <div class="dash-actions">
+            <a href="views/pos.php" class="action-card purple">
+                <i class="bi bi-display"></i>
+                <span>Punto de Venta</span>
+                <small>Abrir POS</small>
+            </a>
+            <a href="views/productos.php" class="action-card green">
+                <i class="bi bi-box-seam"></i>
+                <span>Productos</span>
+                <small>Gestionar catálogo</small>
+            </a>
+            <a href="views/inventario.php" class="action-card orange">
+                <i class="bi bi-clipboard2-pulse"></i>
+                <span>Inventario</span>
+                <small>Stock y compras</small>
+            </a>
+            <a href="views/historial_ventas.php" class="action-card blue">
+                <i class="bi bi-clock-history"></i>
+                <span>Historial</span>
+                <small>Ver ventas</small>
+            </a>
+            <a href="views/usuarios.php" class="action-card indigo">
+                <i class="bi bi-people"></i>
+                <span>Usuarios</span>
+                <small>Gestionar accesos</small>
+            </a>
+            <a href="views/proveedores.php" class="action-card teal">
+                <i class="bi bi-building"></i>
+                <span>Proveedores</span>
+                <small>Ver proveedores</small>
+            </a>
+>>>>>>> FrontEnd2
         </div>
     </div>
 
@@ -552,6 +597,7 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
 
 <?php include 'views/layouts/footer.php'; ?>
 
+<<<<<<< HEAD
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <<<<<<< HEAD
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -561,5 +607,34 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="assets/js/index.js"></script>
 >>>>>>> FrontEnd1
+=======
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/DNS_Pharmacy/controllers/ProductoController.php?accion=stats')
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            document.getElementById('dsProductos').textContent = res.datos.activos;
+            document.getElementById('dsStockBajo').textContent = res.datos.stock_bajo;
+        });
+
+    fetch('/DNS_Pharmacy/controllers/UsuarioController.php?accion=stats')
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            document.getElementById('dsUsuarios').textContent = res.datos.activos;
+        });
+
+    var hoy = new Date().toISOString().split('T')[0];
+    fetch('/DNS_Pharmacy/controllers/HistorialVentasController.php?accion=listar&desde=' + hoy + '&hasta=' + hoy)
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            var total = res.datos.reduce(function(s, v) { return s + parseFloat(v.total); }, 0);
+            document.getElementById('dsVentasHoy').textContent = '$' + total.toFixed(2);
+        });
+});
+</script>
+>>>>>>> FrontEnd2
 </body>
 </html>

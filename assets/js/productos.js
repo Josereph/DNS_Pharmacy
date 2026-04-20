@@ -1,11 +1,12 @@
 /* =====================
    PRODUCTOS.JS - DNS Pharmacy
-   Con conexión a BD via fetch
    ===================== */
 
 const CONTROLLER = '/DNS_Pharmacy/controllers/ProductoController.php';
 
-/* ── Modales ── */
+/* ══════════════════════════════════════════
+   MODALES
+══════════════════════════════════════════ */
 function abrirModal(id) {
     document.getElementById(id).classList.add('activo');
     document.body.style.overflow = 'hidden';
@@ -25,7 +26,9 @@ document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
     });
 });
 
-/* ── Toast ── */
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
 function mostrarToast(mensaje, tipo) {
     var toast = document.getElementById('toast');
     if (!toast) {
@@ -61,9 +64,10 @@ function cargarProductos() {
     fetch(CONTROLLER + '?accion=listar')
         .then(function(r) { return r.json(); })
         .then(function(res) {
-            if (!res.ok) return;
+            if (!res.ok) { mostrarToast('Error al cargar productos.', 'error'); return; }
             renderizarTabla(res.datos);
-        });
+        })
+        .catch(function() { mostrarToast('Error de conexión.', 'error'); });
 }
 
 function renderizarTabla(productos) {
@@ -80,11 +84,11 @@ function renderizarTabla(productos) {
             ? '<img src="/DNS_Pharmacy/' + p.imagen_url + '" class="tabla-img" alt="' + p.nombre + '">'
             : '<div class="tabla-img-placeholder"><i class="fas fa-pills"></i></div>';
 
-        var stock     = parseInt(p.stock_actual);
-        var minimo    = parseInt(p.stock_minimo);
+        var stock  = parseInt(p.stock_actual);
+        var minimo = parseInt(p.stock_minimo);
         var stockHtml = stock <= minimo
             ? '<span class="stock-bajo">' + stock + '</span>'
-            : '<span class="stock-ok">' + stock + '</span>';
+            : '<span class="stock-ok">'   + stock + '</span>';
 
         var estadoHtml = p.estado == 1
             ? '<span class="badge-activo">Activo</span>'
@@ -95,24 +99,33 @@ function renderizarTabla(productos) {
             : '<span class="badge-no">No</span>';
 
         var datosEditar = JSON.stringify({
-            id: p.id_producto, nombre: p.nombre, codigo: p.codigo_barras,
-            categoria: p.id_categoria, unidad: p.unidad_medida,
-            descripcion: p.descripcion || '', presentacion: p.presentacion || '',
-            marca: p.marca || '', laboratorio: p.laboratorio || '',
-            precio_compra: p.precio_compra, precio_venta: p.precio_venta,
-            stock_actual: p.stock_actual, stock_minimo: p.stock_minimo,
-            receta: p.requiere_receta, estado: p.estado, imagen: p.imagen_url || ''
+            id:            p.id_producto,
+            nombre:        p.nombre,
+            codigo:        p.codigo_barras,
+            categoria:     p.id_categoria,
+            unidad:        p.unidad_medida,
+            descripcion:   p.descripcion   || '',
+            presentacion:  p.presentacion  || '',
+            marca:         p.marca         || '',
+            laboratorio:   p.laboratorio   || '',
+            precio_compra: p.precio_compra,
+            precio_venta:  p.precio_venta,
+            stock_actual:  p.stock_actual,
+            stock_minimo:  p.stock_minimo,
+            receta:        p.requiere_receta,
+            estado:        p.estado,
+            imagen:        p.imagen_url    || ''
         }).replace(/'/g, "&#39;");
 
-        return '<tr data-nombre="' + p.nombre.toLowerCase() + '"'
-             + ' data-codigo="' + p.codigo_barras.toLowerCase() + '"'
-             + ' data-categoria="' + p.nombre_categoria.toLowerCase() + '"'
-             + ' data-estado="' + (p.estado == 1 ? 'activo' : 'inactivo') + '">'
+        return '<tr data-nombre="'    + p.nombre.toLowerCase()          + '"'
+             + ' data-codigo="'       + p.codigo_barras.toLowerCase()   + '"'
+             + ' data-categoria="'    + (p.nombre_categoria || '').toLowerCase() + '"'
+             + ' data-estado="'       + (p.estado == 1 ? 'activo' : 'inactivo') + '">'
              + '<td>' + (i+1) + '</td>'
              + '<td>' + img + '</td>'
              + '<td class="td-codigo">' + p.codigo_barras + '</td>'
              + '<td style="font-weight:500">' + p.nombre + '</td>'
-             + '<td>' + p.nombre_categoria + '</td>'
+             + '<td>' + (p.nombre_categoria || '—') + '</td>'
              + '<td>$' + parseFloat(p.precio_compra).toFixed(2) + '</td>'
              + '<td class="td-precio-venta">$' + parseFloat(p.precio_venta).toFixed(2) + '</td>'
              + '<td>' + stockHtml + '</td>'
@@ -134,11 +147,10 @@ function actualizarContador(visible, total) {
     if (ct) ct.textContent = total;
 }
 
-/* ── Filtros ── */
 function filtrarTabla() {
     var buscar    = document.getElementById('buscador').value.toLowerCase();
     var categoria = document.getElementById('filtroCategoria').value.toLowerCase();
-    var estado    = document.getElementById('filtroEstado').value.toLowerCase();
+    var estado    = document.getElementById('filtroEstado').value;
     var filas     = document.querySelectorAll('#cuerpoTabla tr[data-nombre]');
     var visible   = 0;
 
@@ -191,6 +203,7 @@ function abrirModalProducto(datos) {
     } else {
         document.getElementById('tituloModalProducto').textContent = 'Nuevo Producto';
     }
+
     abrirModal('modalProducto');
 }
 
@@ -209,7 +222,8 @@ function limpiarErroresProducto() {
         if (err) err.textContent = '';
         if (inp) inp.classList.remove('input-error');
     });
-    document.getElementById('err_imagen').textContent = '';
+    var ei = document.getElementById('err_imagen');
+    if (ei) ei.textContent = '';
 }
 
 function mostrarError(campo, mensaje) {
@@ -227,7 +241,7 @@ function validarFormProducto() {
     if (!nombre) { mostrarError('nombre','El nombre es obligatorio.'); v=false; }
     else if (nombre.length < 3) { mostrarError('nombre','Mínimo 3 caracteres.'); v=false; }
 
-    if (!document.getElementById('prod_codigo').value.trim()) { mostrarError('codigo','Código de barras obligatorio.'); v=false; }
+    if (!document.getElementById('prod_codigo').value.trim()) { mostrarError('codigo','Código obligatorio.'); v=false; }
     if (!document.getElementById('prod_categoria').value)     { mostrarError('categoria','Selecciona una categoría.'); v=false; }
     if (!document.getElementById('prod_unidad').value)        { mostrarError('unidad','Selecciona la unidad.'); v=false; }
 
@@ -299,7 +313,7 @@ function confirmarEliminarProducto(id, nombre) {
 document.getElementById('btnConfirmarEliminar').addEventListener('click', function() {
     if (!idProductoEliminar) return;
     var fd = new FormData();
-    fd.append('accion', 'eliminar');
+    fd.append('accion',      'eliminar');
     fd.append('id_producto', idProductoEliminar);
     fetch(CONTROLLER, { method:'POST', body:fd })
         .then(function(r) { return r.json(); })
@@ -316,14 +330,16 @@ document.getElementById('btnConfirmarEliminar').addEventListener('click', functi
 ══════════════════════════════════════════ */
 function previsualizarImagen(input) {
     var err = document.getElementById('err_imagen');
-    err.textContent = '';
+    if (err) err.textContent = '';
     if (!input.files || !input.files[0]) return;
     var archivo = input.files[0];
     if (!['image/jpeg','image/png','image/webp','image/gif'].includes(archivo.type)) {
-        err.textContent = 'Solo JPG, PNG, WEBP o GIF.'; input.value=''; return;
+        if (err) err.textContent = 'Solo JPG, PNG, WEBP o GIF.';
+        input.value = ''; return;
     }
     if (archivo.size > 2*1024*1024) {
-        err.textContent = 'Máximo 2MB.'; input.value=''; return;
+        if (err) err.textContent = 'Máximo 2MB.';
+        input.value = ''; return;
     }
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -336,20 +352,14 @@ function previsualizarImagen(input) {
 }
 
 function quitarImagen() {
-    var input = document.getElementById('prod_imagen');
-    if (input) input.value = '';
-    var src = document.getElementById('img-preview-src');
-    if (src) src.src = '';
-    var nombre = document.getElementById('img-preview-nombre');
-    if (nombre) nombre.textContent = '';
-    var actual = document.getElementById('prod_imagen_actual');
-    if (actual) actual.value = '';
-    var preview = document.getElementById('preview-imagen');
-    if (preview) preview.style.display = 'none';
-    var ph = document.getElementById('filePlaceholder');
-    if (ph) ph.style.display = 'flex';
-    var err = document.getElementById('err_imagen');
-    if (err) err.textContent = '';
+    var el;
+    el = document.getElementById('prod_imagen');       if (el) el.value = '';
+    el = document.getElementById('img-preview-src');   if (el) el.src   = '';
+    el = document.getElementById('img-preview-nombre');if (el) el.textContent = '';
+    el = document.getElementById('prod_imagen_actual');if (el) el.value = '';
+    el = document.getElementById('preview-imagen');    if (el) el.style.display = 'none';
+    el = document.getElementById('filePlaceholder');   if (el) el.style.display = 'flex';
+    el = document.getElementById('err_imagen');        if (el) el.textContent  = '';
 }
 
 var uploadArea = document.getElementById('fileUploadArea');
@@ -472,6 +482,7 @@ document.getElementById('formCategoria').addEventListener('submit', function(e) 
         });
 });
 
+/* ── Eliminar categoría ── */
 var idCategoriaEliminar = null;
 
 function confirmarEliminarCategoria(id, nombre) {
