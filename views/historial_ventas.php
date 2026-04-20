@@ -5,6 +5,15 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 $base_url = '/DNS_Pharmacy';
+
+// Incluir conexión a la base de datos
+require_once $_SERVER['DOCUMENT_ROOT'] . '/DNS_Pharmacy/config/database.php';
+
+// Verificar conexión
+$conn = conectar();
+if (!$conn) {
+    die("Error: No se pudo conectar a la base de datos");
+}
 ?>
 <!doctype html>
 <html lang="es">
@@ -31,7 +40,10 @@ $base_url = '/DNS_Pharmacy';
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> BackEnd2
         .tabla-card {
             transition: transform 0.3s ease;
         }
@@ -39,6 +51,21 @@ $base_url = '/DNS_Pharmacy';
         .tabla-card:hover {
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
+<<<<<<< HEAD
+=======
+        .estado-completada {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .estado-anulada {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .estado-pendiente {
+            color: #ffc107;
+            font-weight: bold;
+        }
+>>>>>>> BackEnd2
     </style>
 </head>
 
@@ -48,7 +75,19 @@ $base_url = '/DNS_Pharmacy';
 
     <div class="main-content">
 
+<<<<<<< HEAD
         <div class="page-header animate__animated animate__fadeInDown">
+=======
+    <div class="page-header animate__animated animate__fadeInDown">
+        <div>
+            <h2 class="page-title">Centro de Reportes de Ventas</h2>
+            <p class="page-subtitle">Gestión integral de ingresos y desempeño de empleados</p>
+        </div>
+    </div>
+
+    <div class="stats-strip animate__animated animate__zoomIn animate__delay-1s">
+        <div class="stat-card">
+>>>>>>> BackEnd2
             <div>
                 <h2 class="page-title">Centro de Reportes de Ventas</h2>
                 <p class="page-subtitle">Gestión integral de ingresos y desempeño de empleados</p>
@@ -140,9 +179,78 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
+<<<<<<< HEAD
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="<?php echo $base_url; ?>/assets/js/historial_ventas.js"></script>
+=======
+    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
+        <div class="filtro-fecha-wrap">
+            <label class="filtro-label">Desde</label>
+            <input type="date" id="filtroDesde" class="filtro-input" onchange="filtrarTodo()">
+        </div>
+        <div class="filtro-fecha-wrap">
+            <label class="filtro-label">Hasta</label>
+            <input type="date" id="filtroHasta" class="filtro-input" onchange="filtrarTodo()">
+        </div>
+        <div class="filtros-accesos-rapidos">
+            <button class="btn-periodo" onclick="setPeriodo('hoy')">Hoy</button>
+            <button class="btn-periodo" onclick="setPeriodo('semana')">Semana</button>
+            <button class="btn-periodo" onclick="setPeriodo('mes')">Mes</button>
+            <button class="btn-periodo" onclick="setPeriodo('todo')">Todo</button>
+        </div>
+    </div>
+
+    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
+        <table class="tabla-productos">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ticket</th>
+                    <th>Empleado</th>
+                    <th>Fecha</th>
+                    <th>Subtotal</th>
+                    <th>Impuesto</th>
+                    <th>Total</th>
+                    <th>Método</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoTabla">
+                <tr>
+                    <td colspan="10" class="tabla-vacia">Cargando ventas...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<?php include 'layouts/footer.php'; ?>
+
+<div class="modal fade" id="detalleVentaModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content animate__animated animate__zoomIn animate__faster">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-receipt"></i> Detalle de Venta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="detalleVentaBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="../assets/js/historial_ventas.js"></script>
+>>>>>>> BackEnd2
 
 </body>
 </html>
