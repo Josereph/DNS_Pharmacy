@@ -71,7 +71,7 @@ class ProductoModel {
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         ");
         $stmt->bind_param(
-            'issssssddiiissi',
+            'issssssddiisiisi',
             $datos['id_categoria'],
             $datos['codigo_barras'],
             $datos['nombre'],
@@ -118,7 +118,7 @@ class ProductoModel {
             WHERE id_producto  = ?
         ");
         $stmt->bind_param(
-            'issssssddiissii',
+            'issssssddiisiisii',
             $datos['id_categoria'],
             $datos['codigo_barras'],
             $datos['nombre'],

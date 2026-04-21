@@ -20,6 +20,10 @@ $views = $base_url . '/views';
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/asistencia.css">
+
+
+
+    
 </head>
 <body>
 

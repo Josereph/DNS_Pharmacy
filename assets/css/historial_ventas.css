@@ -41,11 +41,19 @@
 
 /* ── Stats ── */
 .stats-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 12px;
     margin-bottom: 20px;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #e8d5e8 transparent;
 }
+.stats-strip::-webkit-scrollbar { height: 6px; }
+.stats-strip::-webkit-scrollbar-track { background: transparent; }
+.stats-strip::-webkit-scrollbar-thumb { background: #e8d5e8; border-radius: 4px; }
+.stats-strip > .stat-card { flex: 1 1 0; min-width: 200px; }
 
 .stat-card {
     background: #ffffff;
@@ -386,7 +394,6 @@
 }
 
 /* Responsive */
-@media (max-width: 900px) { .stats-strip { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 768px) {
     .filtros-bar { flex-direction: column; align-items: stretch; }
     .filtros-accesos-rapidos { justify-content: flex-start; }

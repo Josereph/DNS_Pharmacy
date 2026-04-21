@@ -305,9 +305,48 @@
 .ticket-footer { font-size:11px; color:#555; margin-top:4px; }
 
 @media print {
-    body * { visibility:hidden; }
-    .ticket-paper, .ticket-paper * { visibility:visible; }
-    .ticket-paper { position:fixed; top:0; left:0; width:80mm; }
+    body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+    
+    /* Hide ALL elements (including sidebar, main UI, and scripts) */
+    body > * { display: none !important; }
+    
+    /* ONLY show the ticket modal */
+    body > #modalTicket {
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+        display: block !important;
+        margin: 0 !important;
+    }
+    
+    #modalTicket .modal-box {
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        animation: none !important;
+    }
+    
+    #modalTicket .modal-header,
+    #modalTicket .modal-footer-custom {
+        display: none !important;
+    }
+    
+    #modalTicket .modal-body {
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* Ticket styling for thermal printer */
+    .ticket-paper { 
+        width: 100% !important; /* Let the printer driver determine the actual physical width */
+        margin: 0 !important; 
+        padding: 0 !important; 
+    }
+    
+    @page { margin: 0; }
 }
 
 @media (max-width:768px) {
