@@ -11,7 +11,7 @@ const API = '/DNS_Pharmacy/controllers/PerfilController.php';
 document.addEventListener('DOMContentLoaded', () => {
     obtenerPerfil();
     cargarMisVentas();
-   // setPeriodo('mes');
+    // setPeriodo('mes') se llamará después de cargar los datos
 
     document.getElementById('formEditar')?.addEventListener('submit', guardarEdicion);
     document.getElementById('formPassword')?.addEventListener('submit', cambiarPassword);
@@ -206,7 +206,7 @@ function cargarMisVentas() {
         .then(data => {
             if (data.error) return console.error(data.mensaje);
             todasMisVentas = data.data;
-            filtrarMisVentas();
+            setPeriodo('mes');
         })
         .catch(e => console.error('Error ventas:', e));
 }
@@ -274,11 +274,14 @@ function esc(str) {
 }
 
 function badgeMetodo(m) {
-    return m || '';
+    if (!m) return '—';
+    return m.charAt(0).toUpperCase() + m.slice(1);
 }
 
 function badgeEstado(e) {
-    return e || '';
+    if (!e) return '—';
+    const color = e.toLowerCase() === 'anulada' ? '#dc3545' : (e.toLowerCase() === 'completada' ? '#198754' : '#ffc107');
+    return `<span style="color: ${color}; font-weight: 600;">${e.toUpperCase()}</span>`;
 }
 function abrirModalEditar() {
     // Llenar el formulario con los datos actuales
@@ -324,3 +327,86 @@ document.getElementById('edit_telefono')?.addEventListener('input', function() {
 /* ── Modales ── */
 function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
 function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
+
+/* ── Funcionalidad de Ventas y Periodos ── */
+function setPeriodo(periodo, event) {
+    if (event) {
+        document.querySelectorAll('.btn-periodo').forEach(b => b.classList.remove('activo'));
+        event.target.classList.add('activo');
+    }
+
+    const hoy = new Date();
+    let desde = '';
+    let hasta = hoy.toISOString().split('T')[0];
+
+    if (periodo === 'hoy') {
+        desde = hasta;
+    } else if (periodo === 'semana') {
+        const d = new Date(hoy);
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        const primerDia = new Date(d.setDate(diff));
+        desde = primerDia.toISOString().split('T')[0];
+    } else if (periodo === 'mes') {
+        const primerDia = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+        desde = primerDia.toISOString().split('T')[0];
+    } else if (periodo === 'todo') {
+        desde = '';
+        hasta = '';
+    }
+
+    document.getElementById('filtroDesde').value = desde;
+    document.getElementById('filtroHasta').value = hasta;
+
+    filtrarMisVentas();
+}
+
+function verDetalleVenta(id_venta, ticket) {
+    document.getElementById('tituloDetalleVenta').textContent = `Detalle de venta #${ticket}`;
+    document.getElementById('cuerpoDetalleVenta').innerHTML = `<p>Cargando...</p>`;
+    abrirModal('modalDetalleVenta');
+
+    fetchJSON(`${API}?action=detalle&id_venta=${id_venta}`)
+        .then(data => {
+            if (data.error) {
+                document.getElementById('cuerpoDetalleVenta').innerHTML = `<p class="form-error">${data.mensaje}</p>`;
+                return;
+            }
+
+            const d = data.data;
+            if (!d.length) {
+                document.getElementById('cuerpoDetalleVenta').innerHTML = `<p>No hay detalles disponibles para esta venta.</p>`;
+                return;
+            }
+
+            const html = `
+                <div class="tabla-card" style="margin:0; box-shadow:none;">
+                    <table class="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cant.</th>
+                                <th>P. Unit.</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${d.map(item => `
+                                <tr>
+                                    <td>${esc(item.nombre)}</td>
+                                    <td>${item.cantidad}</td>
+                                    <td>$${parseFloat(item.precio_unitario).toFixed(2)}</td>
+                                    <td>$${parseFloat(item.subtotal).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById('cuerpoDetalleVenta').innerHTML = html;
+        })
+        .catch(e => {
+            console.error('Error detalle:', e);
+            document.getElementById('cuerpoDetalleVenta').innerHTML = `<p class="form-error">Error al cargar detalles de la venta.</p>`;
+        });
+}

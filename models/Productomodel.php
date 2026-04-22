@@ -60,7 +60,25 @@ class ProductoModel {
     // Insertar nuevo producto
     public function insertar(array $datos): int {
         $conn = conectar();
-        $stmt = $conn->prepare("
+        
+        // Escapar valores para evitar inyección SQL
+        $id_categoria    = intval($datos['id_categoria']);
+        $codigo_barras   = $conn->real_escape_string($datos['codigo_barras']);
+        $nombre          = $conn->real_escape_string($datos['nombre']);
+        $descripcion     = $conn->real_escape_string($datos['descripcion']);
+        $presentacion    = $conn->real_escape_string($datos['presentacion']);
+        $marca           = $conn->real_escape_string($datos['marca']);
+        $laboratorio     = $conn->real_escape_string($datos['laboratorio']);
+        $precio_compra   = floatval($datos['precio_compra']);
+        $precio_venta    = floatval($datos['precio_venta']);
+        $stock_actual    = intval($datos['stock_actual']);
+        $stock_minimo    = intval($datos['stock_minimo']);
+        $unidad_medida   = $conn->real_escape_string($datos['unidad_medida']);
+        $requiere_receta = intval($datos['requiere_receta']);
+        $imagen_url      = $conn->real_escape_string($datos['imagen_url']);
+        $estado          = intval($datos['estado']);
+        
+        $sql = "
             INSERT INTO productos
                 (id_categoria, codigo_barras, nombre, descripcion,
                  presentacion, marca, laboratorio,
@@ -68,77 +86,65 @@ class ProductoModel {
                  stock_actual, stock_minimo,
                  unidad_medida, requiere_receta,
                  imagen_url, estado)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-        ");
-        $stmt->bind_param(
-            'issssssddiisiisi',
-            $datos['id_categoria'],
-            $datos['codigo_barras'],
-            $datos['nombre'],
-            $datos['descripcion'],
-            $datos['presentacion'],
-            $datos['marca'],
-            $datos['laboratorio'],
-            $datos['precio_compra'],
-            $datos['precio_venta'],
-            $datos['stock_actual'],
-            $datos['stock_minimo'],
-            $datos['unidad_medida'],
-            $datos['requiere_receta'],
-            $datos['imagen_url'],
-            $datos['estado']
-        );
-        $stmt->execute();
+            VALUES
+                ($id_categoria, '$codigo_barras', '$nombre', '$descripcion',
+                 '$presentacion', '$marca', '$laboratorio',
+                 $precio_compra, $precio_venta,
+                 $stock_actual, $stock_minimo,
+                 '$unidad_medida', $requiere_receta,
+                 '$imagen_url', $estado)
+        ";
+        
+        $conn->query($sql);
         $id = $conn->insert_id;
-        $stmt->close();
         $conn->close();
         return $id;
     }
 
-    // Actualizar producto
+    // Actualizar producto - VERSIÓN SIMPLIFICADA QUE FUNCIONA
     public function actualizar(array $datos): bool {
         $conn = conectar();
-        $stmt = $conn->prepare("
+        
+        // Escapar valores para evitar inyección SQL
+        $id_producto     = intval($datos['id_producto']);
+        $id_categoria    = intval($datos['id_categoria']);
+        $codigo_barras   = $conn->real_escape_string($datos['codigo_barras']);
+        $nombre          = $conn->real_escape_string($datos['nombre']);
+        $descripcion     = $conn->real_escape_string($datos['descripcion']);
+        $presentacion    = $conn->real_escape_string($datos['presentacion']);
+        $marca           = $conn->real_escape_string($datos['marca']);
+        $laboratorio     = $conn->real_escape_string($datos['laboratorio']);
+        $precio_compra   = floatval($datos['precio_compra']);
+        $precio_venta    = floatval($datos['precio_venta']);
+        $stock_actual    = intval($datos['stock_actual']);
+        $stock_minimo    = intval($datos['stock_minimo']);
+        $unidad_medida   = $conn->real_escape_string($datos['unidad_medida']);
+        $requiere_receta = intval($datos['requiere_receta']);
+        $imagen_url      = $conn->real_escape_string($datos['imagen_url']);
+        $estado          = intval($datos['estado']);
+        
+        $sql = "
             UPDATE productos SET
-                id_categoria   = ?,
-                codigo_barras  = ?,
-                nombre         = ?,
-                descripcion    = ?,
-                presentacion   = ?,
-                marca          = ?,
-                laboratorio    = ?,
-                precio_compra  = ?,
-                precio_venta   = ?,
-                stock_actual   = ?,
-                stock_minimo   = ?,
-                unidad_medida  = ?,
-                requiere_receta = ?,
-                imagen_url     = ?,
-                estado         = ?
-            WHERE id_producto  = ?
-        ");
-        $stmt->bind_param(
-            'issssssddiisiisii',
-            $datos['id_categoria'],
-            $datos['codigo_barras'],
-            $datos['nombre'],
-            $datos['descripcion'],
-            $datos['presentacion'],
-            $datos['marca'],
-            $datos['laboratorio'],
-            $datos['precio_compra'],
-            $datos['precio_venta'],
-            $datos['stock_actual'],
-            $datos['stock_minimo'],
-            $datos['unidad_medida'],
-            $datos['requiere_receta'],
-            $datos['imagen_url'],
-            $datos['estado'],
-            $datos['id_producto']
-        );
-        $stmt->execute();
-        $ok = $stmt->affected_rows >= 0;
-        $stmt->close();
+                id_categoria    = $id_categoria,
+                codigo_barras   = '$codigo_barras',
+                nombre          = '$nombre',
+                descripcion     = '$descripcion',
+                presentacion    = '$presentacion',
+                marca           = '$marca',
+                laboratorio     = '$laboratorio',
+                precio_compra   = $precio_compra,
+                precio_venta    = $precio_venta,
+                stock_actual    = $stock_actual,
+                stock_minimo    = $stock_minimo,
+                unidad_medida   = '$unidad_medida',
+                requiere_receta = $requiere_receta,
+                imagen_url      = '$imagen_url',
+                estado          = $estado
+            WHERE id_producto   = $id_producto
+        ";
+        
+        $result = $conn->query($sql);
+        $ok = $result !== false;
         $conn->close();
         return $ok;
     }
@@ -148,32 +154,36 @@ class ProductoModel {
         $conn = conectar();
 
         // Verificar si tiene detalle_venta
-        $stmt = $conn->prepare("SELECT id_detalle_venta FROM detalle_venta WHERE id_producto = ? LIMIT 1");
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows > 0) {
-            $stmt->close(); $conn->close();
+        $result = $conn->query("SELECT id_detalle_venta FROM detalle_venta WHERE id_producto = $id LIMIT 1");
+        if ($result && $result->num_rows > 0) {
+            $conn->close();
             return ['ok' => false, 'mensaje' => 'No se puede eliminar: el producto tiene ventas registradas.'];
         }
-        $stmt->close();
 
         // Verificar si tiene detalle_compra
-        $stmt2 = $conn->prepare("SELECT id_detalle_compra FROM detalle_compra WHERE id_producto = ? LIMIT 1");
-        $stmt2->bind_param('i', $id);
-        $stmt2->execute();
-        if ($stmt2->get_result()->num_rows > 0) {
-            $stmt2->close(); $conn->close();
+        $result2 = $conn->query("SELECT id_detalle_compra FROM detalle_compra WHERE id_producto = $id LIMIT 1");
+        if ($result2 && $result2->num_rows > 0) {
+            $conn->close();
             return ['ok' => false, 'mensaje' => 'No se puede eliminar: el producto tiene compras registradas.'];
         }
-        $stmt2->close();
+
+        // Obtener la imagen para eliminarla después
+        $resultImg = $conn->query("SELECT imagen_url FROM productos WHERE id_producto = $id");
+        $producto = $resultImg->fetch_assoc();
+        $imagen_url = $producto['imagen_url'] ?? '';
 
         // Eliminar
-        $stmt3 = $conn->prepare("DELETE FROM productos WHERE id_producto = ?");
-        $stmt3->bind_param('i', $id);
-        $stmt3->execute();
-        $eliminado = $stmt3->affected_rows > 0;
-        $stmt3->close();
+        $conn->query("DELETE FROM productos WHERE id_producto = $id");
+        $eliminado = $conn->affected_rows > 0;
         $conn->close();
+
+        // Eliminar archivo de imagen si existe
+        if ($eliminado && !empty($imagen_url)) {
+            $ruta_imagen = __DIR__ . '/../' . $imagen_url;
+            if (file_exists($ruta_imagen)) {
+                @unlink($ruta_imagen);
+            }
+        }
 
         return ['ok' => $eliminado, 'mensaje' => $eliminado ? 'Producto eliminado.' : 'No se encontró el producto.'];
     }
@@ -213,22 +223,29 @@ class ProductoModel {
 
     public function insertarCategoria(array $datos): int {
         $conn = conectar();
-        $stmt = $conn->prepare("INSERT INTO categorias (nombre, descripcion, estado) VALUES (?,?,?)");
-        $stmt->bind_param('ssi', $datos['nombre'], $datos['descripcion'], $datos['estado']);
-        $stmt->execute();
+        
+        $nombre      = $conn->real_escape_string($datos['nombre']);
+        $descripcion = $conn->real_escape_string($datos['descripcion']);
+        $estado      = intval($datos['estado']);
+        
+        $sql = "INSERT INTO categorias (nombre, descripcion, estado) VALUES ('$nombre', '$descripcion', $estado)";
+        $conn->query($sql);
         $id = $conn->insert_id;
-        $stmt->close();
         $conn->close();
         return $id;
     }
 
     public function actualizarCategoria(array $datos): bool {
         $conn = conectar();
-        $stmt = $conn->prepare("UPDATE categorias SET nombre=?, descripcion=?, estado=? WHERE id_categoria=?");
-        $stmt->bind_param('ssii', $datos['nombre'], $datos['descripcion'], $datos['estado'], $datos['id_categoria']);
-        $stmt->execute();
-        $ok = $stmt->affected_rows >= 0;
-        $stmt->close();
+        
+        $id          = intval($datos['id_categoria']);
+        $nombre      = $conn->real_escape_string($datos['nombre']);
+        $descripcion = $conn->real_escape_string($datos['descripcion']);
+        $estado      = intval($datos['estado']);
+        
+        $sql = "UPDATE categorias SET nombre='$nombre', descripcion='$descripcion', estado=$estado WHERE id_categoria=$id";
+        $result = $conn->query($sql);
+        $ok = $result !== false;
         $conn->close();
         return $ok;
     }
@@ -237,20 +254,14 @@ class ProductoModel {
         $conn = conectar();
 
         // Verificar si tiene productos asociados
-        $stmt = $conn->prepare("SELECT id_producto FROM productos WHERE id_categoria = ? LIMIT 1");
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows > 0) {
-            $stmt->close(); $conn->close();
+        $result = $conn->query("SELECT id_producto FROM productos WHERE id_categoria = $id LIMIT 1");
+        if ($result && $result->num_rows > 0) {
+            $conn->close();
             return ['ok' => false, 'mensaje' => 'No se puede eliminar: tiene productos asociados.'];
         }
-        $stmt->close();
 
-        $stmt2 = $conn->prepare("DELETE FROM categorias WHERE id_categoria = ?");
-        $stmt2->bind_param('i', $id);
-        $stmt2->execute();
-        $eliminado = $stmt2->affected_rows > 0;
-        $stmt2->close();
+        $conn->query("DELETE FROM categorias WHERE id_categoria = $id");
+        $eliminado = $conn->affected_rows > 0;
         $conn->close();
 
         return ['ok' => $eliminado, 'mensaje' => $eliminado ? 'Categoría eliminada.' : 'No encontrada.'];

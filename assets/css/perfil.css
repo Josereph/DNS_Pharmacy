@@ -442,10 +442,3 @@
     .page-header { flex-direction: column; gap: 12px; }
     .filtros-bar { flex-direction: column; align-items: flex-start; }
 }
-.perfil-nombre,
-.dato-valor,
-.badge-rol {
-    color: #000 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
