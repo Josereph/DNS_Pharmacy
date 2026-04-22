@@ -119,6 +119,7 @@ $views = $base_url . '/views';
                 <div class="form-group-custom">
                     <label>Dirección</label>
                     <input type="text" id="prov_direccion" name="direccion" class="form-input" placeholder="Ej. Col. Escalón, San Salvador">
+                    <span class="form-error" id="err_direccion"></span>
                 </div>
 
                 <div class="form-seccion">Datos fiscales</div>
@@ -126,6 +127,8 @@ $views = $base_url . '/views';
                     <div class="form-group-custom">
                         <label>NIT</label>
                         <input type="text" id="prov_nit" name="nit" class="form-input" placeholder="Ej. 0614-010101-001-0">
+                        <span class="form-error" id="err_nit"></span>
+
                     </div>
                     <div class="form-group-custom">
                         <label>NRC</label>
