@@ -1,212 +1,288 @@
-let misVentas = [];
+/* ═══════════════════════════════════════════════
+   perfil.js — DNS Pharmacy
+   FormData se construye 100% manual en cada función
+   para evitar que campos deshabilitados o de solo
+   lectura interfieran con el envío al servidor.
+═══════════════════════════════════════════════ */
+
+const API = '../controllers/PerfilController.php';
+
+let misVentas      = [];
 let todasMisVentas = [];
 const usuarioSesion = {};
-
-const roles = { 1: 'Administrador', 2: 'Cajero' };
+const roles      = { 1: 'Administrador', 2: 'Cajero' };
 const rolesClase = { 1: 'rol-admin', 2: 'rol-cajero' };
 
-// 🔥 IMPORTANTE: ruta correcta
-const API = '/DNS_Pharmacy/controllers/PerfilController.php';
-
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
     obtenerPerfil();
     cargarMisVentas();
-    // setPeriodo('mes') se llamará después de cargar los datos
-
-    document.getElementById('formEditar')?.addEventListener('submit', guardarEdicion);
-    document.getElementById('formPassword')?.addEventListener('submit', cambiarPassword);
+    setPeriodo('mes');
+    iniciarValidacionEnTiempoReal();
 });
 
-/* ── FETCH SEGURO ── */
-function fetchJSON(url, options = {}) {
-    return fetch(url, options)
-        .then(async res => {
-            const text = await res.text();
-
-            if (text.startsWith('<')) {
-                console.error('❌ El servidor devolvió HTML:', text);
-                throw new Error('Respuesta inválida del servidor');
-            }
-
-            return JSON.parse(text);
-        });
-}
-
-/* ── Perfil ── */
+/* ══════════════════════════════════
+   PERFIL
+══════════════════════════════════ */
 function obtenerPerfil() {
-    fetchJSON(`${API}?action=perfil`)
+    fetch(`${API}?action=perfil`)
+        .then(r => r.json())
         .then(data => {
-            if (data.error) return console.error(data.mensaje);
+            if (data.error) { console.error('Error perfil:', data.mensaje); return; }
             Object.assign(usuarioSesion, data.data);
             pintarPerfil();
         })
-        .catch(e => console.error('Error perfil:', e));
+        .catch(e => console.error('Error al obtener perfil:', e));
 }
 
 function pintarPerfil() {
-    const u = usuarioSesion;
+    const u   = usuarioSesion;
     const ini = ((u.nombre?.[0] || '') + (u.apellido?.[0] || '')).toUpperCase();
 
-    document.getElementById('perfilNombreCompleto').textContent = `${u.nombre} ${u.apellido}`;
-    document.getElementById('perfilRol').textContent = roles[u.id_rol] || '—';
-    document.getElementById('perfilRol').className = `badge-rol ${rolesClase[u.id_rol] || ''}`;
-    document.getElementById('perfilCorreo').textContent = u.correo || '—';
-    document.getElementById('perfilTelefono').textContent = u.telefono || '—';
-    document.getElementById('perfilUltimoAcceso').textContent = formatearFecha(u.ultimo_acceso);
+    document.getElementById('perfilNombreCompleto').textContent = `${u.nombre || ''} ${u.apellido || ''}`.trim();
+    document.getElementById('perfilRol').textContent            = roles[u.id_rol] || '—';
+    document.getElementById('perfilRol').className              = `badge-rol ${rolesClase[u.id_rol] || ''}`;
+    document.getElementById('perfilCorreo').textContent         = u.correo   || '—';
+    document.getElementById('perfilTelefono').textContent       = u.telefono || '—';
+    document.getElementById('perfilUltimoAcceso').textContent   = formatearFecha(u.ultimo_acceso);
+
+    const avatar = document.getElementById('perfilAvatar');
+    const foto   = document.getElementById('perfilFoto');
 
     if (u.foto_perfil) {
-        document.getElementById('perfilFoto').src = `/DNS_Pharmacy/uploads/perfiles/${u.foto_perfil}`;
-        document.getElementById('perfilFoto').style.display = 'block';
-        document.getElementById('perfilAvatar').style.display = 'none';
+        foto.src           = `../uploads/perfiles/${u.foto_perfil}`;
+        foto.style.display  = 'block';
+        avatar.style.display = 'none';
     } else {
-        document.getElementById('perfilAvatar').textContent = ini;
-        document.getElementById('perfilAvatar').style.display = 'flex';
-        document.getElementById('perfilFoto').style.display = 'none';
+        avatar.textContent   = ini || 'U';
+        avatar.style.display = 'flex';
+        foto.style.display   = 'none';
     }
 }
 
-/* ── Foto ── */
+/* ══════════════════════════════════
+   FOTO
+══════════════════════════════════ */
 function previsualizarFoto(input) {
     const file = input.files[0];
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) {
-        alert('La imagen no debe superar 2MB.');
+        mostrarToast('La imagen no debe superar 2MB.', 'error');
         input.value = '';
         return;
     }
 
     const reader = new FileReader();
     reader.onload = e => {
-        document.getElementById('perfilFoto').src = e.target.result;
-        document.getElementById('perfilFoto').style.display = 'block';
+        document.getElementById('perfilFoto').src           = e.target.result;
+        document.getElementById('perfilFoto').style.display  = 'block';
         document.getElementById('perfilAvatar').style.display = 'none';
     };
     reader.readAsDataURL(file);
-
     subirFoto(file);
 }
 
 function subirFoto(file) {
     const fd = new FormData();
-    fd.append('action', 'subirFoto');
+    fd.append('action',      'subirFoto');
     fd.append('foto_perfil', file);
 
-    fetchJSON(API, { method: 'POST', body: fd })
+    fetch(API, { method: 'POST', body: fd })
+        .then(r => r.json())
         .then(data => {
-            if (data.error) alert(data.mensaje);
+            if (data.error) mostrarToast('Error al subir foto: ' + data.mensaje, 'error');
+            else            mostrarToast('Foto actualizada correctamente.', 'exito');
         })
         .catch(e => console.error('Error foto:', e));
 }
 
-function guardarEdicion(e) {
-    e.preventDefault();
-
-    const nombre = document.getElementById('edit_nombre');
+/* ══════════════════════════════════
+   MODAL EDITAR PERFIL
+══════════════════════════════════ */
+function abrirModalEditar() {
+    // Llenar campos con datos actuales del usuario en sesión
+    const nombre   = document.getElementById('edit_nombre');
     const apellido = document.getElementById('edit_apellido');
-    const correo = document.getElementById('edit_correo');
     const telefono = document.getElementById('edit_telefono');
+    const correo   = document.getElementById('edit_correo_display');
+
+    nombre.value   = usuarioSesion.nombre   || '';
+    apellido.value = usuarioSesion.apellido || '';
+    telefono.value = usuarioSesion.telefono || '';
+    if (correo) correo.value = usuarioSesion.correo || '';
+
+    limpiarErrores(['err_edit_nombre', 'err_edit_apellido', 'err_edit_telefono']);
+    abrirModal('modalEditar');
+
+    // Foco en nombre después de que el modal se muestre
+    setTimeout(() => nombre.focus(), 100);
+}
+
+function guardarEdicion() {
+    limpiarErrores(['err_edit_nombre', 'err_edit_apellido', 'err_edit_telefono']);
+
+    // Leer valores DIRECTAMENTE de los campos, no del form
+    const nombre   = document.getElementById('edit_nombre').value.trim();
+    const apellido = document.getElementById('edit_apellido').value.trim();
+    const telefono = document.getElementById('edit_telefono').value.trim();
 
     let valido = true;
 
-    // limpiar errores
-    document.querySelectorAll('#modalEditar .form-error').forEach(e => e.textContent = '');
-
-    // 🟣 NOMBRE
-    if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]{2,30}$/.test(nombre.value)) {
-        document.getElementById('err_edit_nombre').textContent = 'Solo letras (2-30 caracteres)';
+    /* Validar nombre */
+    if (!nombre) {
+        setError('err_edit_nombre', 'El nombre es obligatorio.');
+        valido = false;
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u.test(nombre)) {
+        setError('err_edit_nombre', 'Solo se permiten letras, sin números ni símbolos.');
+        valido = false;
+    } else if (nombre.length < 2 || nombre.length > 50) {
+        setError('err_edit_nombre', 'Debe tener entre 2 y 50 caracteres.');
         valido = false;
     }
 
-    // 🟣 APELLIDO
-    if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]{2,30}$/.test(apellido.value)) {
-        document.getElementById('err_edit_apellido').textContent = 'Solo letras (2-30 caracteres)';
+    /* Validar apellido */
+    if (!apellido) {
+        setError('err_edit_apellido', 'El apellido es obligatorio.');
+        valido = false;
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u.test(apellido)) {
+        setError('err_edit_apellido', 'Solo se permiten letras, sin números ni símbolos.');
+        valido = false;
+    } else if (apellido.length < 2 || apellido.length > 50) {
+        setError('err_edit_apellido', 'Debe tener entre 2 y 50 caracteres.');
         valido = false;
     }
 
-    // 🟣 CORREO (VALIDACIÓN REAL)
-    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regexCorreo.test(correo.value)) {
-        document.getElementById('err_edit_correo').textContent = 'Correo inválido';
-        valido = false;
-    }
-
-    // 🟣 TELÉFONO (El Salvador ejemplo: 8 dígitos)
-    if (telefono.value && !/^[0-9]{8}$/.test(telefono.value)) {
-        document.getElementById('err_edit_telefono').textContent = 'Debe tener 8 dígitos';
-        valido = false;
+    /* Validar teléfono — opcional, pero si viene debe tener 8 dígitos */
+    if (telefono !== '') {
+        const soloDigitos = telefono.replace(/\D/g, '');
+        if (soloDigitos.length !== 8) {
+            setError('err_edit_telefono', 'Debe tener exactamente 8 dígitos numéricos.');
+            valido = false;
+        }
     }
 
     if (!valido) return;
 
-    const fd = new FormData(e.target);
-    fd.append('action', 'actualizar');
+    /* Construir FormData MANUALMENTE — sin pasar el form completo */
+    const fd = new FormData();
+    fd.append('action',   'actualizar');
+    fd.append('nombre',   nombre);
+    fd.append('apellido', apellido);
+    fd.append('telefono', telefono);
+    /* El correo NO se incluye — no se edita */
 
-    fetchJSON(API, { method: 'POST', body: fd })
+    fetch(API, { method: 'POST', body: fd })
+        .then(async r => {
+            const texto = await r.text();
+            try { return JSON.parse(texto); }
+            catch { throw new Error('Respuesta inválida del servidor: ' + texto.slice(0, 200)); }
+        })
         .then(data => {
-            if (data.error) return alert(data.mensaje);
-
-            Object.assign(usuarioSesion, {
-                nombre: fd.get('nombre'),
-                apellido: fd.get('apellido'),
-                correo: fd.get('correo'),
-                telefono: fd.get('telefono')
-            });
-
+            if (data.error) {
+                if (data.campo === 'nombre')   setError('err_edit_nombre',   data.mensaje);
+                if (data.campo === 'apellido') setError('err_edit_apellido', data.mensaje);
+                if (data.campo === 'telefono') setError('err_edit_telefono', data.mensaje);
+                if (!data.campo) mostrarToast(data.mensaje, 'error');
+                return;
+            }
+            /* Actualizar objeto local sin recargar la página */
+            Object.assign(usuarioSesion, { nombre, apellido, telefono });
             pintarPerfil();
             cerrarModal('modalEditar');
+            mostrarToast('✓ Perfil actualizado correctamente.', 'exito');
+        })
+        .catch(e => {
+            console.error('Error al guardar perfil:', e);
+            mostrarToast('Error de conexión. Revisa la consola (F12).', 'error');
         });
 }
 
-function cambiarPassword(e) {
-    e.preventDefault();
+/* ══════════════════════════════════
+   MODAL CONTRASEÑA
+══════════════════════════════════ */
+function abrirModalPassword() {
+    document.getElementById('pass_actual').value    = '';
+    document.getElementById('pass_nueva').value     = '';
+    document.getElementById('pass_confirmar').value = '';
+    limpiarErrores(['err_pass_actual', 'err_pass_nueva', 'err_pass_confirmar']);
+    abrirModal('modalPassword');
+    setTimeout(() => document.getElementById('pass_actual').focus(), 100);
+}
 
-    const actual = document.getElementById('pass_actual');
-    const nueva = document.getElementById('pass_nueva');
-    const confirmar = document.getElementById('pass_confirmar');
+function guardarPassword() {
+    limpiarErrores(['err_pass_actual', 'err_pass_nueva', 'err_pass_confirmar']);
+
+    const actual    = document.getElementById('pass_actual').value;
+    const nueva     = document.getElementById('pass_nueva').value;
+    const confirmar = document.getElementById('pass_confirmar').value;
 
     let valido = true;
 
-    document.querySelectorAll('#modalPassword .form-error').forEach(e => e.textContent = '');
-
-    if (!actual.value) {
-        document.getElementById('err_pass_actual').textContent = 'Ingresa tu contraseña actual';
+    if (!actual) {
+        setError('err_pass_actual', 'Ingresa tu contraseña actual.');
         valido = false;
     }
-
-    if (nueva.value.length < 8) {
-        document.getElementById('err_pass_nueva').textContent = 'Mínimo 8 caracteres';
+    if (!nueva) {
+        setError('err_pass_nueva', 'Ingresa la nueva contraseña.');
+        valido = false;
+    } else if (nueva.length < 8) {
+        setError('err_pass_nueva', 'Mínimo 8 caracteres.');
+        valido = false;
+    } else if (!/[A-Z]/.test(nueva)) {
+        setError('err_pass_nueva', 'Debe contener al menos una letra mayúscula.');
+        valido = false;
+    } else if (!/[0-9]/.test(nueva)) {
+        setError('err_pass_nueva', 'Debe contener al menos un número.');
         valido = false;
     }
-
-    if (nueva.value !== confirmar.value) {
-        document.getElementById('err_pass_confirmar').textContent = 'No coinciden';
+    if (nueva && confirmar && nueva !== confirmar) {
+        setError('err_pass_confirmar', 'Las contraseñas no coinciden.');
         valido = false;
     }
 
     if (!valido) return;
 
     const fd = new FormData();
-    fd.append('action', 'cambiarPassword');
-    fd.append('password_actual', actual.value);
-    fd.append('password_hash', nueva.value);
+    fd.append('action',          'cambiarPassword');
+    fd.append('password_actual', actual);
+    fd.append('password_nuevo',  nueva);
+    /* Nota: el campo se llama 'password_nuevo' en el controller */
 
-    fetchJSON(API, { method: 'POST', body: fd })
+    fetch(API, { method: 'POST', body: fd })
+        .then(async r => {
+            const texto = await r.text();
+            try { return JSON.parse(texto); }
+            catch { throw new Error('Respuesta inválida: ' + texto.slice(0, 200)); }
+        })
         .then(data => {
-            if (data.error) return alert(data.mensaje);
-
+            if (data.error) {
+                if (data.campo === 'actual') setError('err_pass_actual', data.mensaje);
+                if (data.campo === 'nueva')  setError('err_pass_nueva',  data.mensaje);
+                if (!data.campo) mostrarToast(data.mensaje, 'error');
+                return;
+            }
             cerrarModal('modalPassword');
-            alert('Contraseña actualizada');
+            mostrarToast('✓ Contraseña actualizada correctamente.', 'exito');
+        })
+        .catch(e => {
+            console.error('Error contraseña:', e);
+            mostrarToast('Error de conexión. Revisa la consola (F12).', 'error');
         });
 }
 
-/* ── Ventas ── */
+/* ══════════════════════════════════
+   VENTAS
+══════════════════════════════════ */
 function cargarMisVentas() {
-    fetchJSON(`${API}?action=ventas`)
+    fetch(`${API}?action=ventas`)
+        .then(r => r.json())
         .then(data => {
-            if (data.error) return console.error(data.mensaje);
+            if (data.error) return;
             todasMisVentas = data.data;
-            setPeriodo('mes');
+            filtrarMisVentas();
         })
         .catch(e => console.error('Error ventas:', e));
 }
@@ -214,7 +290,7 @@ function cargarMisVentas() {
 function filtrarMisVentas() {
     const desde = document.getElementById('filtroDesde').value;
     const hasta = document.getElementById('filtroHasta').value;
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy   = new Date().toISOString().split('T')[0];
 
     misVentas = todasMisVentas.filter(v => {
         const fecha = v.fecha_venta.split(' ')[0];
@@ -227,42 +303,242 @@ function filtrarMisVentas() {
 }
 
 function actualizarStats(ventasHoy) {
-    const total = misVentas.reduce((s, v) => s + parseFloat(v.total), 0);
-    const tickets = misVentas.length;
+    const total    = misVentas.reduce((s, v) => s + parseFloat(v.total), 0);
+    const tickets  = misVentas.length;
     const promedio = tickets ? total / tickets : 0;
 
     document.getElementById('statMisTickets').textContent = tickets;
-    document.getElementById('statMisVentas').textContent = `$${total.toFixed(2)}`;
-    document.getElementById('statPromedio').textContent = `$${promedio.toFixed(2)}`;
-    document.getElementById('statHoy').textContent = ventasHoy;
+    document.getElementById('statMisVentas').textContent  = `$${total.toFixed(2)}`;
+    document.getElementById('statPromedio').textContent   = `$${promedio.toFixed(2)}`;
+    document.getElementById('statHoy').textContent        = ventasHoy;
 }
 
 function renderizarTabla(lista) {
     const tbody = document.getElementById('cuerpoMisVentas');
-
     if (!lista.length) {
-        tbody.innerHTML = `<tr><td colspan="9">No hay ventas.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">No hay ventas en el período seleccionado.</td></tr>`;
         return;
     }
-
     tbody.innerHTML = lista.map((v, i) => `
         <tr>
             <td>${i + 1}</td>
-            <td>${esc(v.numero_ticket)}</td>
-            <td>${formatearFecha(v.fecha_venta)}</td>
-            <td>$${parseFloat(v.subtotal).toFixed(2)}</td>
-            <td>$${parseFloat(v.impuesto).toFixed(2)}</td>
-            <td>$${parseFloat(v.total).toFixed(2)}</td>
+            <td><span class="td-ticket">${esc(v.numero_ticket)}</span></td>
+            <td class="td-fecha">${formatearFecha(v.fecha_venta)}</td>
+            <td class="td-monto">$${parseFloat(v.subtotal).toFixed(2)}</td>
+            <td class="td-monto">$${parseFloat(v.impuesto).toFixed(2)}</td>
+            <td class="td-total">$${parseFloat(v.total).toFixed(2)}</td>
             <td>${badgeMetodo(v.metodo_pago)}</td>
             <td>${badgeEstado(v.estado)}</td>
             <td>
-                <button onclick="verDetalleVenta(${v.id_venta}, '${esc(v.numero_ticket)}')">Ver</button>
+                <button class="btn-accion btn-ver"
+                        onclick="verDetalleVenta(${v.id_venta}, '${esc(v.numero_ticket)}')">
+                    <i class="bi bi-receipt"></i>
+                </button>
             </td>
         </tr>
     `).join('');
 }
 
-/* ── Helpers ── */
+function verDetalleVenta(id, ticket) {
+    document.getElementById('tituloDetalleVenta').textContent = `Ticket ${ticket}`;
+    fetch(`${API}?action=detalle&id_venta=${id}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) return;
+            const venta = todasMisVentas.find(v => v.id_venta == id);
+            document.getElementById('cuerpoDetalleVenta').innerHTML = `
+                <table class="tabla-detalle-venta">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unit.</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.data.map(d => `
+                            <tr>
+                                <td>${esc(d.nombre)}</td>
+                                <td>${d.cantidad}</td>
+                                <td>$${parseFloat(d.precio_unitario).toFixed(2)}</td>
+                                <td><strong>$${parseFloat(d.subtotal).toFixed(2)}</strong></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ${venta ? `
+                <div class="totales-grid">
+                    <div class="total-row"><span>Subtotal</span><span>$${parseFloat(venta.subtotal).toFixed(2)}</span></div>
+                    <div class="total-row"><span>Impuesto</span><span>$${parseFloat(venta.impuesto).toFixed(2)}</span></div>
+                    <div class="total-row total-final"><span>Total</span><span>$${parseFloat(venta.total).toFixed(2)}</span></div>
+                    <div class="total-row"><span>Monto recibido</span><span>$${parseFloat(venta.monto_recibido).toFixed(2)}</span></div>
+                    <div class="total-row total-cambio"><span>Cambio</span><span>$${parseFloat(venta.cambio).toFixed(2)}</span></div>
+                </div>` : ''}
+            `;
+            abrirModal('modalDetalleVenta');
+        });
+}
+
+/* ══════════════════════════════════
+   PERÍODO
+══════════════════════════════════ */
+function setPeriodo(periodo, ev) {
+    document.querySelectorAll('.btn-periodo').forEach(b => b.classList.remove('activo'));
+    if (ev) ev.target.classList.add('activo');
+
+    const hoy = new Date();
+    const fmt = d => d.toISOString().split('T')[0];
+
+    if (periodo === 'hoy') {
+        document.getElementById('filtroDesde').value = fmt(hoy);
+        document.getElementById('filtroHasta').value = fmt(hoy);
+    } else if (periodo === 'semana') {
+        const lunes = new Date(hoy);
+        lunes.setDate(hoy.getDate() - hoy.getDay() + 1);
+        document.getElementById('filtroDesde').value = fmt(lunes);
+        document.getElementById('filtroHasta').value = fmt(hoy);
+    } else if (periodo === 'mes') {
+        document.getElementById('filtroDesde').value =
+            `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
+        document.getElementById('filtroHasta').value = fmt(hoy);
+    } else {
+        document.getElementById('filtroDesde').value = '';
+        document.getElementById('filtroHasta').value = '';
+    }
+
+    filtrarMisVentas();
+}
+
+/* ══════════════════════════════════
+   VALIDACIÓN EN TIEMPO REAL
+   Bloquea caracteres inválidos mientras el usuario escribe
+══════════════════════════════════ */
+function iniciarValidacionEnTiempoReal() {
+    /* Nombre: solo letras y espacios, máx 50 */
+    document.getElementById('edit_nombre')?.addEventListener('input', function () {
+        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '').slice(0, 50);
+        setError('err_edit_nombre', '');
+    });
+
+    /* Apellido: solo letras y espacios, máx 50 */
+    document.getElementById('edit_apellido')?.addEventListener('input', function () {
+        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '').slice(0, 50);
+        setError('err_edit_apellido', '');
+    });
+
+    /* Teléfono: solo dígitos, máx 8 */
+    document.getElementById('edit_telefono')?.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 8);
+        if (this.value.length > 0 && this.value.length < 8) {
+            setError('err_edit_telefono', `${this.value.length} / 8 dígitos`);
+        } else {
+            setError('err_edit_telefono', '');
+        }
+    });
+
+    /* Contraseñas: limpiar error al escribir */
+    const passErrores = {
+        pass_actual:    'err_pass_actual',
+        pass_nueva:     'err_pass_nueva',
+        pass_confirmar: 'err_pass_confirmar'
+    };
+    Object.entries(passErrores).forEach(([inputId, errId]) => {
+        document.getElementById(inputId)?.addEventListener('input', () => setError(errId, ''));
+    });
+}
+
+/* ══════════════════════════════════
+   TOAST (notificación flotante)
+══════════════════════════════════ */
+function mostrarToast(mensaje, tipo = 'exito') {
+    /* Eliminar toast anterior */
+    document.getElementById('perfilToast')?.remove();
+
+    /* Inyectar keyframes solo una vez */
+    if (!document.getElementById('toastStyle')) {
+        const s = document.createElement('style');
+        s.id = 'toastStyle';
+        s.textContent = `
+            @keyframes toastIn  { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
+            @keyframes toastOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-12px); } }
+        `;
+        document.head.appendChild(s);
+    }
+
+    const colores = {
+        exito: '#70ab32',
+        error: '#c62828'
+    };
+
+    const toast = document.createElement('div');
+    toast.id = 'perfilToast';
+    toast.style.cssText = `
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 99999;
+        background: ${colores[tipo] || colores.exito};
+        color: #ffffff;
+        padding: 14px 22px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+        animation: toastIn 0.3s ease forwards;
+        max-width: 340px;
+        line-height: 1.5;
+        font-family: 'Segoe UI', sans-serif;
+        pointer-events: none;
+    `;
+    toast.textContent = mensaje;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'toastOut 0.35s ease forwards';
+        setTimeout(() => toast.remove(), 350);
+    }, 3500);
+}
+
+/* ══════════════════════════════════
+   TOGGLE CONTRASEÑA
+══════════════════════════════════ */
+function togglePass(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) icon.className = 'bi bi-eye-slash';
+    } else {
+        input.type = 'password';
+        if (icon) icon.className = 'bi bi-eye';
+    }
+}
+
+/* ══════════════════════════════════
+   MODALES
+══════════════════════════════════ */
+function abrirModal(id)  { document.getElementById(id).style.display = 'flex'; }
+function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModal(this.id);
+    });
+});
+
+/* ══════════════════════════════════
+   HELPERS
+══════════════════════════════════ */
+function setError(id, msg) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = msg;
+}
+
+function limpiarErrores(ids) {
+    ids.forEach(id => setError(id, ''));
+}
+
 function formatearFecha(f) {
     if (!f) return '—';
     const d = new Date(f);
@@ -270,143 +546,29 @@ function formatearFecha(f) {
 }
 
 function esc(str) {
-    return String(str || '').replace(/</g,'&lt;');
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g,  '&amp;')
+        .replace(/</g,  '&lt;')
+        .replace(/>/g,  '&gt;')
+        .replace(/"/g,  '&quot;')
+        .replace(/'/g,  '&#39;');
 }
 
 function badgeMetodo(m) {
-    if (!m) return '—';
-    return m.charAt(0).toUpperCase() + m.slice(1);
+    const map = {
+        efectivo:      `<span class="badge-metodo metodo-efectivo">Efectivo</span>`,
+        tarjeta:       `<span class="badge-metodo metodo-tarjeta">Tarjeta</span>`,
+        transferencia: `<span class="badge-metodo metodo-transferencia">Transferencia</span>`
+    };
+    return map[m] || `<span class="badge-metodo">${esc(m)}</span>`;
 }
 
 function badgeEstado(e) {
-    if (!e) return '—';
-    const color = e.toLowerCase() === 'anulada' ? '#dc3545' : (e.toLowerCase() === 'completada' ? '#198754' : '#ffc107');
-    return `<span style="color: ${color}; font-weight: 600;">${e.toUpperCase()}</span>`;
-}
-function abrirModalEditar() {
-    // Llenar el formulario con los datos actuales
-    document.getElementById('edit_nombre').value = usuarioSesion.nombre || '';
-    document.getElementById('edit_apellido').value = usuarioSesion.apellido || '';
-    document.getElementById('edit_correo').value = usuarioSesion.correo || '';
-    document.getElementById('edit_telefono').value = usuarioSesion.telefono || '';
-
-    abrirModal('modalEditar');
-}
-function abrirModalPassword() {
-    // limpiar campos
-    document.getElementById('pass_actual').value = '';
-    document.getElementById('pass_nueva').value = '';
-    document.getElementById('pass_confirmar').value = '';
-
-    abrirModal('modalPassword');
-}
-function togglePass(id, btn) {
-    const input = document.getElementById(id);
-
-    if (!input) return;
-
-    if (input.type === 'password') {
-        input.type = 'text';
-        btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
-    } else {
-        input.type = 'password';
-        btn.innerHTML = '<i class="bi bi-eye"></i>';
-    }
-}
-
-document.querySelectorAll('.form-input').forEach(input => {
-    input.addEventListener('input', () => {
-        const error = input.closest('.form-group-custom')?.querySelector('.form-error');
-        if (error) error.textContent = '';
-    });
-});
-document.getElementById('edit_telefono')?.addEventListener('input', function() {
-    this.value = this.value.replace(/[^\d+ -]/g, '');
-});
-
-/* ── Modales ── */
-function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
-function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
-
-/* ── Funcionalidad de Ventas y Periodos ── */
-function setPeriodo(periodo, event) {
-    if (event) {
-        document.querySelectorAll('.btn-periodo').forEach(b => b.classList.remove('activo'));
-        event.target.classList.add('activo');
-    }
-
-    const hoy = new Date();
-    let desde = '';
-    let hasta = hoy.toISOString().split('T')[0];
-
-    if (periodo === 'hoy') {
-        desde = hasta;
-    } else if (periodo === 'semana') {
-        const d = new Date(hoy);
-        const day = d.getDay();
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-        const primerDia = new Date(d.setDate(diff));
-        desde = primerDia.toISOString().split('T')[0];
-    } else if (periodo === 'mes') {
-        const primerDia = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-        desde = primerDia.toISOString().split('T')[0];
-    } else if (periodo === 'todo') {
-        desde = '';
-        hasta = '';
-    }
-
-    document.getElementById('filtroDesde').value = desde;
-    document.getElementById('filtroHasta').value = hasta;
-
-    filtrarMisVentas();
-}
-
-function verDetalleVenta(id_venta, ticket) {
-    document.getElementById('tituloDetalleVenta').textContent = `Detalle de venta #${ticket}`;
-    document.getElementById('cuerpoDetalleVenta').innerHTML = `<p>Cargando...</p>`;
-    abrirModal('modalDetalleVenta');
-
-    fetchJSON(`${API}?action=detalle&id_venta=${id_venta}`)
-        .then(data => {
-            if (data.error) {
-                document.getElementById('cuerpoDetalleVenta').innerHTML = `<p class="form-error">${data.mensaje}</p>`;
-                return;
-            }
-
-            const d = data.data;
-            if (!d.length) {
-                document.getElementById('cuerpoDetalleVenta').innerHTML = `<p>No hay detalles disponibles para esta venta.</p>`;
-                return;
-            }
-
-            const html = `
-                <div class="tabla-card" style="margin:0; box-shadow:none;">
-                    <table class="tabla-productos">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Cant.</th>
-                                <th>P. Unit.</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${d.map(item => `
-                                <tr>
-                                    <td>${esc(item.nombre)}</td>
-                                    <td>${item.cantidad}</td>
-                                    <td>$${parseFloat(item.precio_unitario).toFixed(2)}</td>
-                                    <td>$${parseFloat(item.subtotal).toFixed(2)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            document.getElementById('cuerpoDetalleVenta').innerHTML = html;
-        })
-        .catch(e => {
-            console.error('Error detalle:', e);
-            document.getElementById('cuerpoDetalleVenta').innerHTML = `<p class="form-error">Error al cargar detalles de la venta.</p>`;
-        });
+    const map = {
+        completada: `<span class="badge-completada">Completada</span>`,
+        anulada:    `<span class="badge-anulada">Anulada</span>`,
+        pendiente:  `<span class="badge-pendiente">Pendiente</span>`
+    };
+    return map[e] || esc(e);
 }

@@ -5,9 +5,6 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: /DNS_Pharmacy/views/Login.php');
     exit;
 }
-
-$base_url = '/DNS_Pharmacy';
-$views = $base_url . '/views';
 ?>
 <!doctype html>
 <html lang="es">
@@ -36,22 +33,26 @@ $views = $base_url . '/views';
 
     <div class="perfil-grid">
 
-        <!-- Tarjeta de perfil -->
+        <!-- ── Tarjeta de perfil ── -->
         <div class="perfil-card">
 
-            <!-- Foto de perfil -->
             <div class="perfil-avatar-wrap">
                 <div class="perfil-foto-wrap">
                     <div class="perfil-avatar" id="perfilAvatar">AG</div>
-                    <img id="perfilFoto" src="" alt="Foto de perfil" style="display:none;">
-                    <button class="btn-cambiar-foto" onclick="document.getElementById('inputFoto').click()" title="Cambiar foto">
+                    <img id="perfilFoto" src="" alt="Foto" style="display:none;">
+                    <button class="btn-cambiar-foto" type="button"
+                            onclick="document.getElementById('inputFoto').click()"
+                            title="Cambiar foto">
                         <i class="bi bi-camera"></i>
                     </button>
-                    <input type="file" id="inputFoto" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previsualizarFoto(this)">
+                    <input type="file" id="inputFoto"
+                           accept="image/jpeg,image/png,image/webp"
+                           style="display:none;"
+                           onchange="previsualizarFoto(this)">
                 </div>
                 <div class="perfil-avatar-info">
                     <div class="perfil-nombre" id="perfilNombreCompleto">—</div>
-                    <span class="badge-rol rol-admin" id="perfilRol">—</span>
+                    <span class="badge-rol" id="perfilRol">—</span>
                 </div>
             </div>
 
@@ -65,7 +66,6 @@ $views = $base_url . '/views';
                 <div class="perfil-dato-item">
                     <span class="dato-label"><i class="bi bi-telephone"></i> Teléfono</span>
                     <span class="dato-valor" id="perfilTelefono">—</span>
-                    <span class="form-error" id="err_edit_telefono"></span>
                 </div>
                 <div class="perfil-dato-item">
                     <span class="dato-label"><i class="bi bi-clock-history"></i> Último acceso</span>
@@ -75,19 +75,18 @@ $views = $base_url . '/views';
 
             <div class="perfil-divider"></div>
 
-            <!-- Botones de acción -->
             <div class="perfil-acciones">
-                <button class="btn-editar-perfil" onclick="abrirModalEditar()">
+                <button type="button" class="btn-editar-perfil" onclick="abrirModalEditar()">
                     <i class="bi bi-pencil-square"></i> Editar información
                 </button>
-                <button class="btn-cambiar-pass" onclick="abrirModalPassword()">
+                <button type="button" class="btn-cambiar-pass" onclick="abrirModalPassword()">
                     <i class="bi bi-lock"></i> Cambiar contraseña
                 </button>
             </div>
 
         </div>
 
-        <!-- Dashboard de ventas -->
+        <!-- ── Dashboard de ventas ── -->
         <div class="perfil-stats-col">
 
             <div class="stats-strip">
@@ -131,10 +130,10 @@ $views = $base_url . '/views';
                     <input type="date" id="filtroHasta" class="filtro-input" onchange="filtrarMisVentas()">
                 </div>
                 <div class="filtros-accesos-rapidos">
-                    <button class="btn-periodo activo" onclick="setPeriodo('mes', event)">Este mes</button>
-                    <button class="btn-periodo" onclick="setPeriodo('semana', event)">Esta semana</button>
-                    <button class="btn-periodo" onclick="setPeriodo('hoy', event)">Hoy</button>
-                    <button class="btn-periodo" onclick="setPeriodo('todo', event)">Todo</button>
+                    <button type="button" class="btn-periodo activo" onclick="setPeriodo('mes', event)">Este mes</button>
+                    <button type="button" class="btn-periodo" onclick="setPeriodo('semana', event)">Esta semana</button>
+                    <button type="button" class="btn-periodo" onclick="setPeriodo('hoy', event)">Hoy</button>
+                    <button type="button" class="btn-periodo" onclick="setPeriodo('todo', event)">Todo</button>
                 </div>
             </div>
 
@@ -169,107 +168,154 @@ $views = $base_url . '/views';
 <?php include 'layouts/footer.php'; ?>
 
 
-<!-- MODAL: EDITAR PERFIL -->
+<!-- ════════════════════════════════════
+     MODAL: EDITAR PERFIL
+     Sin <form> — los botones llaman JS directamente
+     autocomplete="off" en todos los inputs para evitar
+     que el browser rellene campos con datos incorrectos
+════════════════════════════════════ -->
 <div class="modal-overlay" id="modalEditar">
     <div class="modal-box modal-mediano">
         <div class="modal-header">
             <h5 class="modal-titulo">Editar información personal</h5>
-            <button class="modal-cerrar" onclick="cerrarModal('modalEditar')">&times;</button>
+            <button type="button" class="modal-cerrar" onclick="cerrarModal('modalEditar')">&times;</button>
         </div>
-        <form id="formEditar" novalidate>
-            <input type="hidden" id="edit_id_usuario" name="id_usuario">
-            <div class="modal-body">
+        <div class="modal-body">
 
-                <div class="form-seccion">Información personal</div>
-                <div class="form-row-custom">
-                    <div class="form-group-custom">
-                        <label>Nombre <span class="req">*</span></label>
-                        <input type="text" id="edit_nombre" name="nombre" class="form-input" placeholder="Ej. Carlos">
-                        <span class="form-error" id="err_edit_nombre"></span>
-                    </div>
-                    <div class="form-group-custom">
-                        <label>Apellido <span class="req">*</span></label>
-                        <input type="text" id="edit_apellido" name="apellido" class="form-input" placeholder="Ej. Pérez">
-                        <span class="form-error" id="err_edit_apellido"></span>
-                    </div>
+            <div class="form-seccion">Información personal</div>
+            <div class="form-row-custom">
+                <div class="form-group-custom">
+                    <label>Nombre <span class="req">*</span></label>
+                    <input type="text"
+                           id="edit_nombre"
+                           class="form-input"
+                           placeholder="Ej. Carlos"
+                           maxlength="50"
+                           autocomplete="off">
+                    <span class="form-error" id="err_edit_nombre"></span>
                 </div>
-
-                <div class="form-seccion">Contacto</div>
-                <div class="form-row-custom">
-                    <div class="form-group-custom">
-                        <label>Correo electrónico <span class="req">*</span></label>
-                        <input type="email" id="edit_correo" name="correo" class="form-input" placeholder="correo@dnspharmacy.com">
-                        <span class="form-error" id="err_edit_correo"></span>
-                    </div>
-                    <div class="form-group-custom">
-                        <label>Teléfono</label>
-                        <input type="text" id="edit_telefono" name="telefono" class="form-input" placeholder="Ej. +503 7600-0000">
-                    </div>
+                <div class="form-group-custom">
+                    <label>Apellido <span class="req">*</span></label>
+                    <input type="text"
+                           id="edit_apellido"
+                           class="form-input"
+                           placeholder="Ej. Pérez"
+                           maxlength="50"
+                           autocomplete="off">
+                    <span class="form-error" id="err_edit_apellido"></span>
                 </div>
+            </div>
 
+            <div class="form-seccion">Contacto</div>
+            <div class="form-row-custom">
+                <div class="form-group-custom">
+                    <label>Correo electrónico</label>
+                    <!-- disabled = no se envía, no se puede editar, no permite autocomplete -->
+                    <input type="text"
+                           id="edit_correo_display"
+                           class="form-input"
+                           disabled
+                           autocomplete="off"
+                           style="background:#f5f5f5;cursor:not-allowed;color:#888;border-color:#ddd;">
+                    <small style="color:#aaa;font-size:11px;margin-top:2px;display:block;">
+                        El correo no se puede modificar.
+                    </small>
+                </div>
+                <div class="form-group-custom">
+                    <label>Teléfono <small style="color:#aaa;font-weight:400">(8 dígitos numéricos)</small></label>
+                    <input type="text"
+                           id="edit_telefono"
+                           class="form-input"
+                           placeholder="Ej. 76000000"
+                           maxlength="8"
+                           autocomplete="off"
+                           inputmode="numeric">
+                    <span class="form-error" id="err_edit_telefono"></span>
+                </div>
             </div>
-            <div class="modal-footer-custom">
-                <button type="button" class="btn-cancelar" onclick="cerrarModal('modalEditar')">Cancelar</button>
-                <button type="submit" class="btn-guardar">Guardar cambios</button>
-            </div>
-        </form>
+
+        </div>
+        <div class="modal-footer-custom">
+            <button type="button" class="btn-cancelar" onclick="cerrarModal('modalEditar')">Cancelar</button>
+            <button type="button" class="btn-guardar" onclick="guardarEdicion()">Guardar cambios</button>
+        </div>
     </div>
 </div>
 
 
-<!-- MODAL: CAMBIAR CONTRASEÑA -->
+<!-- ════════════════════════════════════
+     MODAL: CAMBIAR CONTRASEÑA
+════════════════════════════════════ -->
 <div class="modal-overlay" id="modalPassword">
     <div class="modal-box modal-chico">
         <div class="modal-header">
             <h5 class="modal-titulo">Cambiar contraseña</h5>
-            <button class="modal-cerrar" onclick="cerrarModal('modalPassword')">&times;</button>
+            <button type="button" class="modal-cerrar" onclick="cerrarModal('modalPassword')">&times;</button>
         </div>
-        <form id="formPassword" novalidate>
-            <div class="modal-body">
+        <div class="modal-body">
 
-                <div class="form-group-custom">
-                    <label>Contraseña actual <span class="req">*</span></label>
-                    <div class="input-password-wrap">
-                        <input type="password" id="pass_actual" name="password_actual" class="form-input" placeholder="Tu contraseña actual">
-                        <button type="button" class="btn-toggle-pass" onclick="togglePass('pass_actual', this)"><i class="bi bi-eye"></i></button>
-                    </div>
-                    <span class="form-error" id="err_pass_actual"></span>
+            <div class="form-group-custom">
+                <label>Contraseña actual <span class="req">*</span></label>
+                <div class="input-password-wrap">
+                    <input type="password"
+                           id="pass_actual"
+                           class="form-input"
+                           placeholder="Tu contraseña actual"
+                           autocomplete="current-password">
+                    <button type="button" class="btn-toggle-pass" onclick="togglePass('pass_actual', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
                 </div>
-
-                <div class="form-group-custom">
-                    <label>Nueva contraseña <span class="req">*</span></label>
-                    <div class="input-password-wrap">
-                        <input type="password" id="pass_nueva" name="password_hash" class="form-input" placeholder="Mínimo 8 caracteres">
-                        <button type="button" class="btn-toggle-pass" onclick="togglePass('pass_nueva', this)"><i class="bi bi-eye"></i></button>
-                    </div>
-                    <span class="form-error" id="err_pass_nueva"></span>
-                </div>
-
-                <div class="form-group-custom">
-                    <label>Confirmar nueva contraseña <span class="req">*</span></label>
-                    <div class="input-password-wrap">
-                        <input type="password" id="pass_confirmar" class="form-input" placeholder="Repite la nueva contraseña">
-                        <button type="button" class="btn-toggle-pass" onclick="togglePass('pass_confirmar', this)"><i class="bi bi-eye"></i></button>
-                    </div>
-                    <span class="form-error" id="err_pass_confirmar"></span>
-                </div>
-
+                <span class="form-error" id="err_pass_actual"></span>
             </div>
-            <div class="modal-footer-custom">
-                <button type="button" class="btn-cancelar" onclick="cerrarModal('modalPassword')">Cancelar</button>
-                <button type="submit" class="btn-guardar">Actualizar contraseña</button>
+
+            <div class="form-group-custom">
+                <label>Nueva contraseña <span class="req">*</span></label>
+                <div class="input-password-wrap">
+                    <input type="password"
+                           id="pass_nueva"
+                           class="form-input"
+                           placeholder="Mín. 8 caracteres, 1 mayúscula, 1 número"
+                           autocomplete="new-password">
+                    <button type="button" class="btn-toggle-pass" onclick="togglePass('pass_nueva', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <span class="form-error" id="err_pass_nueva"></span>
             </div>
-        </form>
+
+            <div class="form-group-custom">
+                <label>Confirmar nueva contraseña <span class="req">*</span></label>
+                <div class="input-password-wrap">
+                    <input type="password"
+                           id="pass_confirmar"
+                           class="form-input"
+                           placeholder="Repite la nueva contraseña"
+                           autocomplete="new-password">
+                    <button type="button" class="btn-toggle-pass" onclick="togglePass('pass_confirmar', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <span class="form-error" id="err_pass_confirmar"></span>
+            </div>
+
+        </div>
+        <div class="modal-footer-custom">
+            <button type="button" class="btn-cancelar" onclick="cerrarModal('modalPassword')">Cancelar</button>
+            <button type="button" class="btn-guardar" onclick="guardarPassword()">Actualizar contraseña</button>
+        </div>
     </div>
 </div>
 
 
-<!-- MODAL: DETALLE VENTA -->
+<!-- ════════════════════════════════════
+     MODAL: DETALLE VENTA
+════════════════════════════════════ -->
 <div class="modal-overlay" id="modalDetalleVenta">
     <div class="modal-box modal-mediano">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloDetalleVenta">Detalle de venta</h5>
-            <button class="modal-cerrar" onclick="cerrarModal('modalDetalleVenta')">&times;</button>
+            <button type="button" class="modal-cerrar" onclick="cerrarModal('modalDetalleVenta')">&times;</button>
         </div>
         <div class="modal-body" id="cuerpoDetalleVenta"></div>
         <div class="modal-footer-custom">
@@ -282,6 +328,5 @@ $views = $base_url . '/views';
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="../assets/js/perfil.js"></script>
-
 </body>
 </html>
