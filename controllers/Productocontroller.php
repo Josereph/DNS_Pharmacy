@@ -7,7 +7,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-require_once __DIR__ . '/../models/Productomodel.php';
+require_once __DIR__ . '/../models/ProductoModel.php';
 
 header('Content-Type: application/json');
 
