@@ -2,7 +2,7 @@
    PRODUCTOS.JS - DNS Pharmacy
    ===================== */
 
-const CONTROLLER = '/DNS_Pharmacy/controllers/ProductoController.php';
+const CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
 
 /* ══════════════════════════════════════════
    MODALES
@@ -70,12 +70,8 @@ function cargarProductos() {
         .catch(function() { mostrarToast('Error de conexión.', 'error'); });
 }
 
-/* Cache de productos para edición segura */
-var _productosCache = [];
-
 function renderizarTabla(productos) {
     var tbody = document.getElementById('cuerpoTabla');
-    _productosCache = productos; // guardar referencia segura
 
     if (!productos || productos.length === 0) {
         tbody.innerHTML = '<tr><td colspan="11" class="tabla-vacia">No hay productos registrados.</td></tr>';
@@ -85,7 +81,7 @@ function renderizarTabla(productos) {
 
     tbody.innerHTML = productos.map(function(p, i) {
         var img = p.imagen_url
-            ? '<img src="/DNS_Pharmacy/' + p.imagen_url + '" class="tabla-img" alt="producto">'
+            ? '<img src="/DNS_Pharmacy/' + p.imagen_url + '" class="tabla-img" alt="' + p.nombre + '">'
             : '<div class="tabla-img-placeholder"><i class="fas fa-pills"></i></div>';
 
         var stock  = parseInt(p.stock_actual);
@@ -102,8 +98,27 @@ function renderizarTabla(productos) {
             ? '<span class="badge-receta">Sí</span>'
             : '<span class="badge-no">No</span>';
 
-        return '<tr data-nombre="'    + p.nombre.toLowerCase()                   + '"'
-             + ' data-codigo="'       + p.codigo_barras.toLowerCase()            + '"'
+        var datosEditar = JSON.stringify({
+            id:            p.id_producto,
+            nombre:        p.nombre,
+            codigo:        p.codigo_barras,
+            categoria:     p.id_categoria,
+            unidad:        p.unidad_medida,
+            descripcion:   p.descripcion   || '',
+            presentacion:  p.presentacion  || '',
+            marca:         p.marca         || '',
+            laboratorio:   p.laboratorio   || '',
+            precio_compra: p.precio_compra,
+            precio_venta:  p.precio_venta,
+            stock_actual:  p.stock_actual,
+            stock_minimo:  p.stock_minimo,
+            receta:        p.requiere_receta,
+            estado:        p.estado,
+            imagen:        p.imagen_url    || ''
+        }).replace(/'/g, "&#39;");
+
+        return '<tr data-nombre="'    + p.nombre.toLowerCase()          + '"'
+             + ' data-codigo="'       + p.codigo_barras.toLowerCase()   + '"'
              + ' data-categoria="'    + (p.nombre_categoria || '').toLowerCase() + '"'
              + ' data-estado="'       + (p.estado == 1 ? 'activo' : 'inactivo') + '">'
              + '<td>' + (i+1) + '</td>'
@@ -117,36 +132,12 @@ function renderizarTabla(productos) {
              + '<td>' + recetaHtml + '</td>'
              + '<td>' + estadoHtml + '</td>'
              + '<td>'
-             + '<button class="btn-accion btn-editar" onclick="editarProductoPorId(' + p.id_producto + ')">Editar</button>'
+             + '<button class="btn-accion btn-editar" onclick=\'abrirModalProducto(' + datosEditar + ')\'>Editar</button>'
              + '<button class="btn-accion btn-eliminar-sm" onclick="confirmarEliminarProducto(' + p.id_producto + ',\'' + p.nombre.replace(/'/g,"&#39;") + '\')">Eliminar</button>'
              + '</td></tr>';
     }).join('');
 
     actualizarContador(productos.length, productos.length);
-}
-
-/* Editar por ID — busca en cache, sin problemas de JSON en HTML */
-function editarProductoPorId(id) {
-    var p = _productosCache.find(function(x) { return x.id_producto == id; });
-    if (!p) return;
-    abrirModalProducto({
-        id:            p.id_producto,
-        nombre:        p.nombre,
-        codigo:        p.codigo_barras,
-        categoria:     p.id_categoria,
-        unidad:        p.unidad_medida,
-        descripcion:   p.descripcion   || '',
-        presentacion:  p.presentacion  || '',
-        marca:         p.marca         || '',
-        laboratorio:   p.laboratorio   || '',
-        precio_compra: p.precio_compra,
-        precio_venta:  p.precio_venta,
-        stock_actual:  p.stock_actual,
-        stock_minimo:  p.stock_minimo,
-        receta:        p.requiere_receta,
-        estado:        p.estado,
-        imagen:        p.imagen_url    || ''
-    });
 }
 
 function actualizarContador(visible, total) {
@@ -282,8 +273,11 @@ document.getElementById('formProducto').addEventListener('submit', function(e) {
 
     var formData = new FormData(this);
     formData.append('accion', 'guardar');
-    formData.set('requiere_receta', document.getElementById('prod_receta').checked ? '1' : '');
-    formData.set('estado',          document.getElementById('prod_estado').checked  ? '1' : '');
+    if (document.getElementById('prod_receta').checked) formData.set('requiere_receta', '1');
+    else formData.delete('requiere_receta');
+
+    if (document.getElementById('prod_estado').checked) formData.set('estado', '1');
+    else formData.delete('estado');
 
     var btn = this.querySelector('.btn-guardar');
     btn.textContent = 'Guardando...';
