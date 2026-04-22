@@ -2,16 +2,16 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
 
-$base_url = '/DNS_Pharmacy';
+$base_url = '';
 $usuario_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
 $usuario_rol    = $_SESSION['usuario_rol'] ?? 'Administrador';
 
 if ($usuario_rol !== 'Administrador') {
-    header('Location: /DNS_Pharmacy/views/pos.php');
+    header('Location: /views/Pos.php');
     exit;
 }
 
@@ -93,7 +93,7 @@ $primer_nombre = explode(' ', trim($usuario_nombre))[0];
         </h3>
 
         <div class="dash-actions">
-            <a href="<?php echo $base_url; ?>/views/pos.php" class="action-card purple">
+            <a href="<?php echo $base_url; ?>/views/Pos.php" class="action-card purple">
                 <i class="bi bi-display"></i>
                 <span>Punto de Venta</span>
                 <small>Abrir POS</small>
@@ -137,7 +137,7 @@ $primer_nombre = explode(' ', trim($usuario_nombre))[0];
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/DNS_Pharmacy/controllers/ProductoController.php?accion=stats')
+    fetch(window.BASE_URL + '/controllers/ProductoController.php?accion=stats')
         .then(function(r) { return r.json(); })
         .then(function(res) {
             if (!res.ok) return;
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error cargando stats de productos:', error);
         });
 
-    fetch('/DNS_Pharmacy/controllers/UsuarioController.php?accion=stats')
+    fetch(window.BASE_URL + '/controllers/UsuarioController.php?accion=stats')
         .then(function(r) { return r.json(); })
         .then(function(res) {
             if (!res.ok) return;
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var hoy = new Date().toISOString().split('T')[0];
 
-    fetch('/DNS_Pharmacy/controllers/HistorialVentasController.php?accion=listar&desde=' + hoy + '&hasta=' + hoy)
+    fetch(window.BASE_URL + '/controllers/HistorialVentasController.php?accion=listar&desde=' + hoy + '&hasta=' + hoy)
         .then(function(r) { return r.json(); })
         .then(function(res) {
             if (!res.ok || !Array.isArray(res.datos)) return;

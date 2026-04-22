@@ -2,7 +2,7 @@
    HISTORIAL_VENTAS.JS - DNS Pharmacy
    ===================== */
 
-const HV_CONTROLLER = '/DNS_Pharmacy/controllers/HistorialventasController.php';
+const HV_CONTROLLER = window.BASE_URL + '/controllers/HistorialventasController.php';
 
 var ventasData = [];
 
@@ -207,7 +207,7 @@ function generarPDFHistorial() {
     var desde = document.getElementById('filtroDesde').value;
     var hasta = document.getElementById('filtroHasta').value;
     
-    var url = '/DNS_Pharmacy/controllers/GenerarReportePDF.php?tipo=ventas';
+    var url = window.BASE_URL + '/controllers/GenerarReportePDF.php?tipo=ventas';
     if (desde) url += '&desde=' + desde;
     if (hasta) url += '&hasta=' + hasta;
     

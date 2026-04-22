@@ -1,6 +1,12 @@
 <?php
 $pagina_actual = basename($_SERVER['PHP_SELF']);
-$base_url = '/DNS_Pharmacy';
+$base_url = '';
+?>
+<script>
+    window.BASE_URL = "<?php echo $base_url; ?>";
+</script>
+<?php
+
 $views = $base_url . '/views';
 
 $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Usuario';
@@ -10,7 +16,7 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
 $rol = $_SESSION['usuario_rol'] ?? '';
 
 // En el POS el sidebar arranca oculto
-$es_pos = ($pagina_actual === 'pos.php');
+$es_pos = ($pagina_actual === 'Pos.php');
 ?>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

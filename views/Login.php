@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 session_start();
 
 if (isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/index.php');
+    header('Location: /index.php');
     exit;
 }
 
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $conn2->close();
 
                 // Redirigir a pantalla de bienvenida
-                header('Location: /DNS_Pharmacy/views/Bienvenida.php');
+                header('Location: /views/Bienvenida.php');
                 exit;
             }
         }

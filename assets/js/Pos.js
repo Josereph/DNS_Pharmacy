@@ -2,8 +2,8 @@
    POS.JS - DNS Pharmacy
    Con descuentos, IVA opcional
    ===================== */
-const POS_CONTROLLER  = '/DNS_Pharmacy/controllers/Poscontroller.php';
-const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
+const POS_CONTROLLER  = window.BASE_URL + '/controllers/Poscontroller.php';
+const PROD_CONTROLLER = window.BASE_URL + '/controllers/Productocontroller.php';
 
 var carrito      = [];
 var productos    = [];
@@ -78,7 +78,7 @@ function renderizarGrid(prods) {
     grid.innerHTML = prods.map(function(p) {
         var sinStock  = parseInt(p.stock_actual) <= 0;
         var imgHtml   = p.imagen_url
-            ? '<img src="/DNS_Pharmacy/' + p.imagen_url + '" class="prod-img" alt="' + p.nombre + '">'
+            ? '<img src="' + window.BASE_URL + '/' + p.imagen_url + '" class="prod-img" alt="' + p.nombre + '">'
             : '<div class="prod-placeholder"><i class="bi bi-capsule"></i></div>';
         var stockClass = parseInt(p.stock_actual) <= parseInt(p.stock_minimo) ? 'bajo' : '';
         return '<div class="prod-card' + (sinStock ? ' sin-stock' : '') + '"'

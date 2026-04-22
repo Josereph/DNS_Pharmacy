@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
 

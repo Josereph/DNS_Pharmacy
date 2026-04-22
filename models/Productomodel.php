@@ -71,23 +71,23 @@ class ProductoModel {
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         ");
         $stmt->bind_param(
-            'issssssddiisiisi',
-            $datos['id_categoria'],
-            $datos['codigo_barras'],
-            $datos['nombre'],
-            $datos['descripcion'],
-            $datos['presentacion'],
-            $datos['marca'],
-            $datos['laboratorio'],
-            $datos['precio_compra'],
-            $datos['precio_venta'],
-            $datos['stock_actual'],
-            $datos['stock_minimo'],
-            $datos['unidad_medida'],
-            $datos['requiere_receta'],
-            $datos['imagen_url'],
-            $datos['estado']
-        );
+    'issssssddiisisi',
+    $datos['id_categoria'],
+    $datos['codigo_barras'],
+    $datos['nombre'],
+    $datos['descripcion'],
+    $datos['presentacion'],
+    $datos['marca'],
+    $datos['laboratorio'],
+    $datos['precio_compra'],
+    $datos['precio_venta'],
+    $datos['stock_actual'],
+    $datos['stock_minimo'],
+    $datos['unidad_medida'],
+    $datos['requiere_receta'],
+    $datos['imagen_url'],
+    $datos['estado']
+);
         $stmt->execute();
         $id = $conn->insert_id;
         $stmt->close();
@@ -118,24 +118,24 @@ class ProductoModel {
             WHERE id_producto  = ?
         ");
         $stmt->bind_param(
-            'issssssddiisiisii',
-            $datos['id_categoria'],
-            $datos['codigo_barras'],
-            $datos['nombre'],
-            $datos['descripcion'],
-            $datos['presentacion'],
-            $datos['marca'],
-            $datos['laboratorio'],
-            $datos['precio_compra'],
-            $datos['precio_venta'],
-            $datos['stock_actual'],
-            $datos['stock_minimo'],
-            $datos['unidad_medida'],
-            $datos['requiere_receta'],
-            $datos['imagen_url'],
-            $datos['estado'],
-            $datos['id_producto']
-        );
+    'issssssddiisisii',
+    $datos['id_categoria'],
+    $datos['codigo_barras'],
+    $datos['nombre'],
+    $datos['descripcion'],
+    $datos['presentacion'],
+    $datos['marca'],
+    $datos['laboratorio'],
+    $datos['precio_compra'],
+    $datos['precio_venta'],
+    $datos['stock_actual'],
+    $datos['stock_minimo'],
+    $datos['unidad_medida'],
+    $datos['requiere_receta'],
+    $datos['imagen_url'],
+    $datos['estado'],
+    $datos['id_producto']
+);
         $stmt->execute();
         $ok = $stmt->affected_rows >= 0;
         $stmt->close();

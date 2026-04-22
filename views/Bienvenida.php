@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
 
@@ -11,8 +11,8 @@ $ini    = strtoupper(substr($nombre, 0, 1));
 
 // Destino según rol
 $destino = $rol === 'Administrador'
-    ? '/DNS_Pharmacy/index.php'
-    : '/DNS_Pharmacy/views/pos.php';
+    ? $base_url . '/index.php'
+    : $base_url . '/views/Pos.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">

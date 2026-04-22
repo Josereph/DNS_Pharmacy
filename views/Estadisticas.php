@@ -4,11 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
 
-$base_url = '/DNS_Pharmacy';
+$base_url = '';
 $views = $base_url . '/views';
 include 'layouts/slider.php';
 ?>

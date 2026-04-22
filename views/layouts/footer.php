@@ -1,4 +1,4 @@
-<?php $base_url = '/DNS_Pharmacy'; ?>
+<?php $base_url = ''; ?>
 
 <footer>
   <div class="footer-container">

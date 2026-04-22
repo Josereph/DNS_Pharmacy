@@ -2,14 +2,14 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
 
-$base_url = '/DNS_Pharmacy';
+$base_url = '';
 
 // Incluir conexión a la base de datos
-require_once $_SERVER['DOCUMENT_ROOT'] . '/DNS_Pharmacy/config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 // Verificar conexión
 $conn = conectar();

@@ -3,7 +3,7 @@
    Conectado a BD via fetch
    ===================== */
 
-const USR_CONTROLLER = '/DNS_Pharmacy/controllers/Usuariocontroller.php';
+const USR_CONTROLLER = window.BASE_URL + '/controllers/Usuariocontroller.php';
 
 /* ══════════════════════════════════════════
    INIT
