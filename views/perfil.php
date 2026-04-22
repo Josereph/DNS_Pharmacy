@@ -20,6 +20,42 @@ $views = $base_url . '/views';
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/perfil.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        /* Animación  las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        /* Animación para la tarjeta de perfil */
+        .perfil-card {
+            transition: all 0.3s ease;
+        }
+        .perfil-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        /* Animación para botones de perfil */
+        .btn-editar-perfil, .btn-cambiar-pass {
+            transition: all 0.2s ease;
+        }
+        .btn-editar-perfil:hover, .btn-cambiar-pass:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
 </head>
 <body>
 
@@ -27,7 +63,7 @@ $views = $base_url . '/views';
 
 <div class="main-content">
 
-    <div class="page-header">
+    <div class="page-header animate__animated animate__fadeInDown">
         <div>
             <h2 class="page-title">Mi Perfil</h2>
             <p class="page-subtitle">Información personal y resumen de actividad</p>
@@ -37,7 +73,7 @@ $views = $base_url . '/views';
     <div class="perfil-grid">
 
         <!-- Tarjeta de perfil -->
-        <div class="perfil-card">
+        <div class="perfil-card animate__animated animate__fadeInLeft animate__delay-1s">
 
             <!-- Foto de perfil -->
             <div class="perfil-avatar-wrap">
@@ -88,9 +124,9 @@ $views = $base_url . '/views';
         </div>
 
         <!-- Dashboard de ventas -->
-        <div class="perfil-stats-col">
+        <div class="perfil-stats-col animate__animated animate__fadeInRight animate__delay-1s">
 
-            <div class="stats-strip">
+            <div class="stats-strip animate__animated animate__zoomIn animate__delay-2s">
                 <div class="stat-card">
                     <div class="stat-icon stat-purple"><i class="bi bi-receipt"></i></div>
                     <div>
@@ -121,7 +157,7 @@ $views = $base_url . '/views';
                 </div>
             </div>
 
-            <div class="filtros-bar">
+            <div class="filtros-bar animate__animated animate__fadeIn animate__delay-2s">
                 <div class="filtro-fecha-wrap">
                     <label class="filtro-label">Desde</label>
                     <input type="date" id="filtroDesde" class="filtro-input" onchange="filtrarMisVentas()">
@@ -138,7 +174,7 @@ $views = $base_url . '/views';
                 </div>
             </div>
 
-            <div class="tabla-card">
+            <div class="tabla-card animate__animated animate__fadeInUp animate__delay-2s">
                 <table class="tabla-productos">
                     <thead>
                         <tr>
@@ -171,7 +207,7 @@ $views = $base_url . '/views';
 
 <!-- MODAL: EDITAR PERFIL -->
 <div class="modal-overlay" id="modalEditar">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Editar información personal</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalEditar')">&times;</button>
@@ -219,7 +255,7 @@ $views = $base_url . '/views';
 
 <!-- MODAL: CAMBIAR CONTRASEÑA -->
 <div class="modal-overlay" id="modalPassword">
-    <div class="modal-box modal-chico">
+    <div class="modal-box modal-chico animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Cambiar contraseña</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalPassword')">&times;</button>
@@ -266,7 +302,7 @@ $views = $base_url . '/views';
 
 <!-- MODAL: DETALLE VENTA -->
 <div class="modal-overlay" id="modalDetalleVenta">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloDetalleVenta">Detalle de venta</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalDetalleVenta')">&times;</button>

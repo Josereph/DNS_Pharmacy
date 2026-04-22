@@ -6,8 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/Pos.css">
+    
+    <style>
+        /* Animación para las Cards al pasar el mouse */
+        .producto-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .producto-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para el carrito */
+        .cart-items {
+            transition: transform 0.3s ease;
+        }
+        .cart-items:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -25,7 +45,7 @@ include 'layouts/slider.php';
     <!-- ══ PANEL IZQUIERDO ══ -->
     <div class="pos-left">
 
-        <div class="pos-topbar">
+        <div class="pos-topbar animate__animated animate__fadeInDown">
             <div class="pos-topbar-left">
                 <span class="pos-title">Punto de Venta</span>
                 <span class="pos-date" id="posDate"></span>
@@ -38,7 +58,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="pos-search-row">
+        <div class="pos-search-row animate__animated animate__fadeInLeft">
             <div class="pos-search-box">
                 <i class="bi bi-search"></i>
                 <input type="text" id="buscadorPos" placeholder="Buscar producto por nombre o código de barras..." autocomplete="off" oninput="buscarProducto()">
@@ -48,11 +68,11 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="pos-cats" id="posCats">
+        <div class="pos-cats animate__animated animate__zoomIn animate__delay-1s" id="posCats">
             <button class="cat-tab active" data-cat="" onclick="filtrarCategoria(this, '')">Todos</button>
         </div>
 
-        <div class="pos-grid" id="posGrid">
+        <div class="pos-grid animate__animated animate__fadeInUp animate__delay-1s" id="posGrid">
             <div class="pos-loading">
                 <i class="bi bi-arrow-repeat"></i>
                 Cargando productos...
@@ -64,7 +84,7 @@ include 'layouts/slider.php';
     <!-- ══ PANEL DERECHO — CARRITO ══ -->
     <div class="pos-right">
 
-        <div class="cart-header">
+        <div class="cart-header animate__animated animate__fadeInRight">
             <div class="cart-title">
                 <i class="bi bi-cart3"></i>
                 Venta actual
@@ -75,7 +95,7 @@ include 'layouts/slider.php';
             </button>
         </div>
 
-        <div class="cart-items" id="cartItems">
+        <div class="cart-items animate__animated animate__fadeInRight animate__delay-1s" id="cartItems">
             <div class="cart-empty">
                 <i class="bi bi-cart-x"></i>
                 <span>Carrito vacío</span>
@@ -136,10 +156,6 @@ include 'layouts/slider.php';
                     <i class="bi bi-credit-card"></i>
                     Tarjeta
                 </button>
-                <button class="pay-btn" data-metodo="transferencia" onclick="seleccionarMetodo(this)">
-                    <i class="bi bi-phone"></i>
-                    Digital
-                </button>
             </div>
         </div>
 
@@ -165,14 +181,13 @@ include 'layouts/slider.php';
 
 <!-- ══ MODAL: DESCUENTO ══ -->
 <div class="modal-overlay" id="modalDescuento">
-    <div class="modal-box modal-descuento">
+    <div class="modal-box modal-descuento animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo"><i class="bi bi-tag-fill"></i> Aplicar Descuento</h5>
             <button class="modal-cerrar" onclick="cerrarModalDescuento()">&times;</button>
         </div>
         <div class="modal-body">
 
-            <!-- Tipo de descuento -->
             <div class="descuento-tipo-tabs">
                 <button class="tipo-tab active" data-tipo="porcentaje" onclick="seleccionarTipoDescuento(this, 'porcentaje')">
                     <i class="bi bi-percent"></i>
@@ -184,7 +199,6 @@ include 'layouts/slider.php';
                 </button>
             </div>
 
-            <!-- Input descuento -->
             <div class="descuento-input-wrap">
                 <div class="descuento-prefix" id="descuentoPrefix">%</div>
                 <input type="number" id="inputDescuento" class="descuento-input"
@@ -194,7 +208,6 @@ include 'layouts/slider.php';
 
             <span class="form-error" id="errDescuento"></span>
 
-            <!-- Preview cálculo -->
             <div class="descuento-preview" id="descuentoPreview">
                 <div class="preview-row">
                     <span>Subtotal original</span>
@@ -211,7 +224,6 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <!-- Accesos rápidos porcentaje -->
             <div class="descuento-rapidos" id="rapidosPorcentaje">
                 <span class="rapidos-label">Accesos rápidos</span>
                 <div class="rapidos-btns">
@@ -239,7 +251,7 @@ include 'layouts/slider.php';
 
 <!-- ══ MODAL: TICKET ══ -->
 <div class="modal-overlay" id="modalTicket">
-    <div class="modal-box modal-ticket">
+    <div class="modal-box modal-ticket animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo"><i class="bi bi-receipt"></i> Ticket de venta</h5>
             <button class="modal-cerrar" onclick="cerrarModalTicket()">&times;</button>

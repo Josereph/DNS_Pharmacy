@@ -21,20 +21,53 @@ include 'layouts/slider.php';
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/reportes.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        /* Animación para las KPI Cards al pasar el mouse */
+        .kpi-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .kpi-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1);
+        }
+        /* Efecto sutil para las tablas */
+        .rep-table-card {
+            transition: transform 0.3s ease;
+        }
+        .rep-table-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        /* Animación para los tabs */
+        .rep-tab {
+            transition: all 0.3s ease;
+        }
+        .rep-tab:hover {
+            transform: translateY(-2px);
+        }
+        /* Animación para las charts */
+        .chart-card {
+            transition: all 0.3s ease;
+        }
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
 
-
-
 <div class="main-content">
 
-    <div class="rep-header">
+    <div class="rep-header animate__animated animate__fadeInDown">
         <div class="rep-header-left">
             <span class="rep-badge">Dashboard analítico</span>
             <h2 class="rep-title">Estadísticas</h2>
@@ -68,7 +101,7 @@ include 'layouts/slider.php';
     </div>
 
     <div class="kpi-grid" id="kpiGrid">
-        <div class="kpi-card kpi-blue">
+        <div class="kpi-card kpi-blue animate__animated animate__zoomIn animate__delay-1s">
             <div class="kpi-icon"><i class="bi bi-receipt-cutoff"></i></div>
             <div class="kpi-body">
                 <div class="kpi-val" id="kpiVentas">—</div>
@@ -77,7 +110,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="kpi-card kpi-green">
+        <div class="kpi-card kpi-green animate__animated animate__zoomIn animate__delay-2s">
             <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
             <div class="kpi-body">
                 <div class="kpi-val" id="kpiIngresos">—</div>
@@ -86,9 +119,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-       
-
-        <div class="kpi-card kpi-purple">
+        <div class="kpi-card kpi-purple animate__animated animate__zoomIn animate__delay-3s">
             <div class="kpi-icon"><i class="bi bi-boxes"></i></div>
             <div class="kpi-body">
                 <div class="kpi-val" id="kpiUnidades">—</div>
@@ -97,7 +128,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="kpi-card kpi-red">
+        <div class="kpi-card kpi-red animate__animated animate__zoomIn animate__delay-4s">
             <div class="kpi-icon"><i class="bi bi-exclamation-triangle"></i></div>
             <div class="kpi-body">
                 <div class="kpi-val" id="kpiStockBajo">—</div>
@@ -106,7 +137,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="kpi-card kpi-teal">
+        <div class="kpi-card kpi-teal animate__animated animate__zoomIn animate__delay-5s">
             <div class="kpi-icon"><i class="bi bi-cart-check"></i></div>
             <div class="kpi-body">
                 <div class="kpi-val" id="kpiCompras">—</div>
@@ -116,7 +147,7 @@ include 'layouts/slider.php';
         </div>
     </div>
 
-    <div class="rep-tabs">
+    <div class="rep-tabs animate__animated animate__fadeIn animate__delay-1s">
         <button class="rep-tab active" onclick="cambiarTab(this,'tabVentas')">
             <i class="bi bi-bar-chart-line"></i> Ventas
         </button>
@@ -143,7 +174,7 @@ include 'layouts/slider.php';
     <!-- TAB VENTAS -->
     <div id="tabVentas" class="rep-tab-content active-tab">
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-1s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-bar-chart"></i> Ingresos en el período</span>
                     <div class="chart-toggle">
@@ -156,7 +187,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-2s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-pie-chart"></i> Método de pago</span>
                 </div>
@@ -168,7 +199,7 @@ include 'layouts/slider.php';
         </div>
 
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-3s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-clock"></i> Ventas por hora del día</span>
                 </div>
@@ -177,7 +208,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-4s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-tags"></i> Ingresos por categoría</span>
                 </div>
@@ -187,7 +218,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="rep-table-card">
+        <div class="rep-table-card animate__animated animate__fadeInUp animate__delay-5s">
             <div class="rep-table-header">
                 <span class="chart-title"><i class="bi bi-list-ol"></i> Detalle de ventas recientes</span>
                 <input type="text" id="buscadorVentas" class="rep-search" placeholder="Buscar ticket..." oninput="filtrarTabla('tablaVentas', this.value)">
@@ -207,7 +238,7 @@ include 'layouts/slider.php';
                     </tr>
                 </thead>
                 <tbody id="cuerpoTablaVentas">
-                    <tr><td colspan="9" class="tabla-vacia">Cargando...</td></tr>
+                    <tr><td colspan="9" class="tabla-vacia">Cargando...<\/td></tr>
                 </tbody>
             </table>
         </div>
@@ -216,7 +247,7 @@ include 'layouts/slider.php';
     <!-- TAB INVENTARIO -->
     <div id="tabInventario" class="rep-tab-content">
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-pie-chart"></i> Estado del stock</span>
                 </div>
@@ -226,7 +257,7 @@ include 'layouts/slider.php';
                 <div class="chart-legend" id="legendEstadoStock"></div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-1s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-bar-chart-steps"></i> Unidades en stock por categoría</span>
                 </div>
@@ -237,7 +268,7 @@ include 'layouts/slider.php';
         </div>
 
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-2s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-arrow-left-right"></i> Movimientos de inventario</span>
                 </div>
@@ -246,7 +277,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-3s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-currency-dollar"></i> Inversión por categoría</span>
                 </div>
@@ -256,7 +287,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="rep-table-card rep-alerta-table">
+        <div class="rep-table-card rep-alerta-table animate__animated animate__fadeInUp animate__delay-4s">
             <div class="rep-table-header">
                 <span class="chart-title"><i class="bi bi-exclamation-triangle-fill text-warning"></i> Productos con stock bajo o agotado</span>
             </div>
@@ -273,7 +304,7 @@ include 'layouts/slider.php';
                     </tr>
                 </thead>
                 <tbody id="cuerpoTablaStockBajo">
-                    <tr><td colspan="7" class="tabla-vacia">Cargando...</td></tr>
+                    <tr><td colspan="7" class="tabla-vacia">Cargando...<\/td></tr>
                 </tbody>
             </table>
         </div>
@@ -282,7 +313,7 @@ include 'layouts/slider.php';
     <!-- TAB EMPLEADOS -->
     <div id="tabEmpleados" class="rep-tab-content">
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-person-lines-fill"></i> Ventas por empleado</span>
                 </div>
@@ -291,7 +322,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-1s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-receipt"></i> Tickets emitidos por empleado</span>
                 </div>
@@ -303,7 +334,7 @@ include 'layouts/slider.php';
         </div>
 
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-2s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-clock-history"></i> Turnos trabajados</span>
                 </div>
@@ -312,7 +343,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-3s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-graph-up"></i> Ticket promedio por empleado</span>
                 </div>
@@ -322,7 +353,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="rep-table-card">
+        <div class="rep-table-card animate__animated animate__fadeInUp animate__delay-4s">
             <div class="rep-table-header">
                 <span class="chart-title"><i class="bi bi-trophy"></i> Ranking de empleados</span>
             </div>
@@ -340,7 +371,7 @@ include 'layouts/slider.php';
                     </tr>
                 </thead>
                 <tbody id="cuerpoTablaEmpleados">
-                    <tr><td colspan="8" class="tabla-vacia">Cargando...</td></tr>
+                    <tr><td colspan="8" class="tabla-vacia">Cargando...<\/td></tr>
                 </tbody>
             </table>
         </div>
@@ -349,7 +380,7 @@ include 'layouts/slider.php';
     <!-- TAB PROVEEDORES -->
     <div id="tabProveedores" class="rep-tab-content">
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-building"></i> Monto de compras por proveedor</span>
                 </div>
@@ -358,7 +389,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-1s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-pie-chart"></i> Participación por proveedor</span>
                 </div>
@@ -370,7 +401,7 @@ include 'layouts/slider.php';
         </div>
 
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-2s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-calendar3"></i> Evolución de compras</span>
                 </div>
@@ -379,7 +410,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-3s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-arrow-down-circle"></i> Top productos reabastecidos</span>
                 </div>
@@ -389,7 +420,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="rep-table-card">
+        <div class="rep-table-card animate__animated animate__fadeInUp animate__delay-4s">
             <div class="rep-table-header">
                 <span class="chart-title"><i class="bi bi-table"></i> Historial de compras del período</span>
                 <input type="text" id="buscadorCompras" class="rep-search" placeholder="Buscar proveedor..." oninput="filtrarTabla('tablaComprasRep', this.value)">
@@ -408,7 +439,7 @@ include 'layouts/slider.php';
                     </tr>
                 </thead>
                 <tbody id="cuerpoTablaComprasRep">
-                    <tr><td colspan="8" class="tabla-vacia">Cargando...</td></tr>
+                    <tr><td colspan="8" class="tabla-vacia">Cargando...<\/td></tr>
                 </tbody>
             </table>
         </div>
@@ -417,7 +448,7 @@ include 'layouts/slider.php';
     <!-- TAB PRODUCTOS -->
     <div id="tabProductos" class="rep-tab-content">
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-trophy-fill"></i> Top 10 productos más vendidos</span>
                 </div>
@@ -426,7 +457,7 @@ include 'layouts/slider.php';
                 </div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-1s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-percent"></i> Margen por categoría</span>
                 </div>
@@ -437,7 +468,7 @@ include 'layouts/slider.php';
         </div>
 
         <div class="charts-grid-2">
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-2s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-slash-circle"></i> Productos sin ventas en el período</span>
                 </div>
@@ -447,7 +478,7 @@ include 'layouts/slider.php';
                 <div class="chart-legend" id="legendSinMovimiento"></div>
             </div>
 
-            <div class="chart-card">
+            <div class="chart-card animate__animated animate__fadeInUp animate__delay-3s">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-currency-dollar"></i> Ingresos vs costos por categoría</span>
                 </div>
@@ -457,7 +488,7 @@ include 'layouts/slider.php';
             </div>
         </div>
 
-        <div class="rep-table-card">
+        <div class="rep-table-card animate__animated animate__fadeInUp animate__delay-4s">
             <div class="rep-table-header">
                 <span class="chart-title"><i class="bi bi-list-stars"></i> Ranking de productos</span>
                 <input type="text" id="buscadorProductos" class="rep-search" placeholder="Buscar producto..." oninput="filtrarTabla('tablaProductosRep', this.value)">
@@ -475,7 +506,7 @@ include 'layouts/slider.php';
                     </tr>
                 </thead>
                 <tbody id="cuerpoTablaProductosRep">
-                    <tr><td colspan="7" class="tabla-vacia">Cargando...</td></tr>
+                    <tr><td colspan="7" class="tabla-vacia">Cargando...<\/td></tr>
                 </tbody>
             </table>
         </div>
@@ -484,7 +515,7 @@ include 'layouts/slider.php';
     <!-- TAB FINANCIERO -->
     <div id="tabFinanciero" class="rep-tab-content">
         <div class="charts-grid-2">
-            <div class="chart-card chart-wide">
+            <div class="chart-card chart-wide animate__animated animate__fadeInUp">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-activity"></i> Flujo de Caja (Ventas vs Compras)</span>
                     <div class="chart-toggle">
@@ -499,28 +530,28 @@ include 'layouts/slider.php';
         </div>
         
         <div class="kpi-grid">
-            <div class="kpi-card kpi-purple">
+            <div class="kpi-card kpi-purple animate__animated animate__zoomIn animate__delay-1s">
                 <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
                 <div class="kpi-body">
                     <div class="kpi-val" id="kpiUtilidadIngresos">—</div>
                     <div class="kpi-lbl">Ingresos Totales (Ventas)</div>
                 </div>
             </div>
-            <div class="kpi-card kpi-orange">
+            <div class="kpi-card kpi-orange animate__animated animate__zoomIn animate__delay-2s">
                 <div class="kpi-icon"><i class="bi bi-graph-down-arrow"></i></div>
                 <div class="kpi-body">
                     <div class="kpi-val" id="kpiUtilidadCostos">—</div>
                     <div class="kpi-lbl">Costo de Ventas (COGS)</div>
                 </div>
             </div>
-            <div class="kpi-card kpi-green">
+            <div class="kpi-card kpi-green animate__animated animate__zoomIn animate__delay-3s">
                 <div class="kpi-icon"><i class="bi bi-piggy-bank"></i></div>
                 <div class="kpi-body">
                     <div class="kpi-val" id="kpiUtilidadNeta">—</div>
                     <div class="kpi-lbl">Utilidad Bruta</div>
                 </div>
             </div>
-            <div class="kpi-card kpi-blue">
+            <div class="kpi-card kpi-blue animate__animated animate__zoomIn animate__delay-4s">
                 <div class="kpi-icon"><i class="bi bi-percent"></i></div>
                 <div class="kpi-body">
                     <div class="kpi-val" id="kpiUtilidadMargen">—</div>
@@ -533,7 +564,7 @@ include 'layouts/slider.php';
     <!-- TAB VENCIMIENTOS -->
     <div id="tabVencimientos" class="rep-tab-content">
         <div class="charts-grid-3">
-            <div class="chart-card chart-wide-2">
+            <div class="chart-card chart-wide-2 animate__animated animate__fadeInUp">
                 <div class="chart-card-header">
                     <span class="chart-title"><i class="bi bi-shield-exclamation"></i> Estado Global de Lotes</span>
                 </div>
@@ -543,7 +574,7 @@ include 'layouts/slider.php';
                 <div class="chart-legend" id="legendEstadoLotes"></div>
             </div>
 
-            <div class="rep-table-card rep-error-table" style="margin-bottom:0; height:100%;">
+            <div class="rep-table-card rep-error-table animate__animated animate__fadeInUp animate__delay-1s" style="margin-bottom:0; height:100%;">
                 <div class="rep-table-header">
                     <span class="chart-title"><i class="bi bi-exclamation-triangle"></i> Lotes Críticos (Vencidos o próximos)</span>
                     <input type="text" id="buscadorLotes" class="rep-search" placeholder="Buscar producto o lote..." oninput="filtrarTabla('tablaLotes', this.value)">
@@ -561,7 +592,7 @@ include 'layouts/slider.php';
                             </tr>
                         </thead>
                         <tbody id="cuerpoTablaLotes">
-                            <tr><td colspan="6" class="tabla-vacia">Cargando...</td></tr>
+                            <tr><td colspan="6" class="tabla-vacia">Cargando...<\/td></tr>
                         </tbody>
                     </table>
                 </div>

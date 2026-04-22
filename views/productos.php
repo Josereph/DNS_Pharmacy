@@ -18,6 +18,26 @@ $base_url = '/DNS_Pharmacy';
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/productos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        /* Animación  las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -25,8 +45,22 @@ $base_url = '/DNS_Pharmacy';
 
 <div class="main-content">
 
-    <!-- Stats -->
-    <div class="stats-row">
+    <div class="page-header animate__animated animate__fadeInDown">
+        <div>
+            <h2 class="page-title">Productos</h2>
+            <p class="page-subtitle">Gestión del catálogo de productos</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-categorias" onclick="abrirModalCategorias()">
+                <i class="bi bi-tags"></i> Categorías
+            </button>
+            <button class="btn-nuevo" onclick="abrirModalProducto()">
+                <i class="bi bi-plus-lg"></i> Nuevo Producto
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-row animate__animated animate__zoomIn animate__delay-1s">
         <div class="stat-card">
             <div class="stat-num" id="statTotal">0</div>
             <div class="stat-lbl">Total productos</div>
@@ -45,24 +79,7 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <!-- Header -->
-    <div class="page-header">
-        <div>
-            <h2 class="page-title">Productos</h2>
-            <p class="page-subtitle">Gestión del catálogo de productos</p>
-        </div>
-        <div class="header-actions">
-            <button class="btn-categorias" onclick="abrirModalCategorias()">
-                <i class="bi bi-tags"></i> Categorías
-            </button>
-            <button class="btn-nuevo" onclick="abrirModalProducto()">
-                <i class="bi bi-plus-lg"></i> Nuevo Producto
-            </button>
-        </div>
-    </div>
-
-    <!-- Filtros -->
-    <div class="filtros-bar">
+    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre o código de barras..." oninput="filtrarTabla()">
         <select id="filtroCategoria" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todas las categorías</option>
@@ -74,8 +91,7 @@ $base_url = '/DNS_Pharmacy';
         </select>
     </div>
 
-    <!-- Tabla -->
-    <div class="tabla-card">
+    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
         <div class="tabla-header-bar">
             <span>Mostrando <strong id="contadorVisible">0</strong> de <strong id="contadorTotal">0</strong> productos</span>
             <span>DNS Pharmacy · Inventario</span>
@@ -109,7 +125,7 @@ $base_url = '/DNS_Pharmacy';
 
 <!-- ══ MODAL: PRODUCTO ══ -->
 <div class="modal-overlay" id="modalProducto">
-    <div class="modal-box modal-grande">
+    <div class="modal-box modal-grande animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalProducto">Nuevo Producto</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProducto')">&times;</button>
@@ -249,7 +265,7 @@ $base_url = '/DNS_Pharmacy';
 
 <!-- ══ MODAL: ELIMINAR PRODUCTO ══ -->
 <div class="modal-overlay" id="modalEliminar">
-    <div class="modal-box modal-chico">
+    <div class="modal-box modal-chico animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Eliminar producto</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalEliminar')">&times;</button>
@@ -268,7 +284,7 @@ $base_url = '/DNS_Pharmacy';
 
 <!-- ══ MODAL: CATEGORÍAS ══ -->
 <div class="modal-overlay" id="modalCategorias">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Gestión de Categorías</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalCategorias')">&times;</button>
@@ -316,7 +332,7 @@ $base_url = '/DNS_Pharmacy';
 
 <!-- ══ MODAL: ELIMINAR CATEGORÍA ══ -->
 <div class="modal-overlay" id="modalEliminarCategoria">
-    <div class="modal-box modal-chico">
+    <div class="modal-box modal-chico animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Eliminar categoría</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalEliminarCategoria')">&times;</button>
