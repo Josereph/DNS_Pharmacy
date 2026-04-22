@@ -1,64 +1,113 @@
-.accent-green {
-    display: inline-block;
-    width: 40px;
-    height: 4px;
-    background: #70ab32;
-    border-radius: 2px;
-    margin-bottom: 12px;
-}
+/* =====================
+   RECUPERAR CONTRASEÑA - DNS Pharmacy
+   Estilos complementarios al login.css
+   ===================== */
 
-.recuperar-back {
-    text-align: center;
-    margin-top: 18px;
-}
-
-.recuperar-back a {
-    font-size: 13px;
-    color: #841480;
-    text-decoration: none;
-    font-weight: 500;
-    transition: opacity .2s;
-}
-
-.recuperar-back a:hover { opacity: .7; }
-
+/* Estilo para el mensaje de éxito */
 .recuperar-exito {
     text-align: center;
     padding: 20px 0;
 }
 
 .exito-icon {
-    width: 72px;
-    height: 72px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #70ab32, #4a8a1a);
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
-    color: #ffffff;
-    margin: 0 auto 20px;
-    box-shadow: 0 4px 16px rgba(112, 171, 50, 0.35);
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 20px rgba(112, 171, 50, 0.3);
+}
+
+.exito-icon i {
+    font-size: 40px;
+    color: white;
 }
 
 .recuperar-exito h2 {
-    font-size: 22px;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #2a1a38;
+    color: var(--text);
     margin-bottom: 8px;
 }
 
 .recuperar-exito p {
     font-size: 14px;
-    color: #888;
-}
-
-.alert {
-    padding: 10px 14px;
-    border-radius: 7px;
-    font-size: 13px;
+    color: var(--muted);
     margin-bottom: 16px;
 }
 
-.alert-danger  { background: #fce4ec; color: #c62828; border: 1px solid #f5b8b8; }
-.alert-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+/* Estilo para el correo verificado */
+#correoVerificado {
+    display: inline-block;
+    background: var(--purple-light);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+/* Animación para los pasos */
+#paso1, #paso2, #paso3 {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para el botón de mostrar/ocultar contraseña */
+.field-toggle {
+    background: none;
+    border: none;
+    color: #ce93d8;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+}
+
+.field-toggle:hover {
+    color: var(--purple);
+}
+
+/* Mensaje de alerta específico para éxito */
+.alert-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.alert-success i {
+    color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .recuperar-exito {
+        padding: 10px 0;
+    }
+    
+    .exito-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .exito-icon i {
+        font-size: 30px;
+    }
+    
+    .recuperar-exito h2 {
+        font-size: 1.3rem;
+    }
+}
