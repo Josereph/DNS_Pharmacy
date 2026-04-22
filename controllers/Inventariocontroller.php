@@ -15,6 +15,21 @@ $accion = $_POST['accion'] ?? $_GET['accion'] ?? '';
 
 switch ($accion) {
 
+    /* ── Generar número de factura único ── */
+    case 'generar_factura':
+        $conn = conectar();
+        do {
+            $numero = 'FAC-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+            $stmt   = $conn->prepare("SELECT id_compra FROM compras WHERE numero_factura = ? LIMIT 1");
+            $stmt->bind_param('s', $numero);
+            $stmt->execute();
+            $existe = $stmt->get_result()->num_rows > 0;
+            $stmt->close();
+        } while ($existe);
+        $conn->close();
+        echo json_encode(['ok' => true, 'numero' => $numero]);
+        break;
+
     /* ── Stats ── */
     case 'stats':
         $conn  = conectar();

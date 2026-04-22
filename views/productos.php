@@ -13,11 +13,31 @@ $base_url = '/DNS_Pharmacy';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/productos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        /* Animación  las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -25,7 +45,22 @@ $base_url = '/DNS_Pharmacy';
 
 <div class="main-content">
 
-    <div class="stats-row animate__animated animate__fadeInDown">
+    <div class="page-header animate__animated animate__fadeInDown">
+        <div>
+            <h2 class="page-title">Productos</h2>
+            <p class="page-subtitle">Gestión del catálogo de productos</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-categorias" onclick="abrirModalCategorias()">
+                <i class="bi bi-tags"></i> Categorías
+            </button>
+            <button class="btn-nuevo" onclick="abrirModalProducto()">
+                <i class="bi bi-plus-lg"></i> Nuevo Producto
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-row animate__animated animate__zoomIn animate__delay-1s">
         <div class="stat-card">
             <div class="stat-num" id="statTotal">0</div>
             <div class="stat-lbl">Total productos</div>
@@ -44,26 +79,10 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </div>
 
-    <div class="page-header animate__animated animate__fadeIn animate__delay-1s">
-        <div>
-            <h2 class="page-title">Productos</h2>
-            <p class="page-subtitle">Gestión del catálogo de productos</p>
-        </div>
-        <div class="header-actions">
-            <button class="btn-categorias" onclick="abrirModalCategorias()">Categorías</button>
-            <button class="btn-nuevo" onclick="abrirModalProducto()">+ Nuevo Producto</button>
-        </div>
-    </div>
-
     <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <input type="text" id="buscador" class="filtro-input" placeholder="Buscar por nombre o código de barras..." oninput="filtrarTabla()">
         <select id="filtroCategoria" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todas las categorías</option>
-            <option value="Analgésicos">Analgésicos</option>
-            <option value="Antibióticos">Antibióticos</option>
-            <option value="Vitaminas">Vitaminas</option>
-            <option value="Jarabes">Jarabes</option>
-            <option value="Higiene personal">Higiene personal</option>
         </select>
         <select id="filtroEstado" class="filtro-select" onchange="filtrarTabla()">
             <option value="">Todos los estados</option>
@@ -94,9 +113,7 @@ $base_url = '/DNS_Pharmacy';
                 </tr>
             </thead>
             <tbody id="cuerpoTabla">
-                <tr>
-                    <td colspan="11" class="tabla-vacia">No hay productos registrados.</td>
-                </tr>
+                <tr><td colspan="11" class="tabla-vacia">Cargando...</td></tr>
             </tbody>
         </table>
     </div>
@@ -105,20 +122,21 @@ $base_url = '/DNS_Pharmacy';
 
 <?php include 'layouts/footer.php'; ?>
 
-<!-- MODAL PRODUCTO - MÁS ANCHO + CAMPOS EN 3-4 COLUMNAS (RESPETANDO CAMPOS ORIGINALES) -->
+
+<!-- ══ MODAL: PRODUCTO ══ -->
 <div class="modal-overlay" id="modalProducto">
     <div class="modal-box modal-grande animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo" id="tituloModalProducto">Nuevo Producto</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalProducto')">&times;</button>
         </div>
-        <form id="formProducto" novalidate enctype="multipart/form-data">
+        <form id="formProducto" novalidate enctype="multipart/form-data" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
             <input type="hidden" id="prod_id" name="id_producto">
             <input type="hidden" id="prod_imagen_actual" name="imagen_actual">
             <div class="modal-body">
-                <!-- SECCIÓN: Información general - 3 columnas -->
+
                 <div class="form-seccion">Información general</div>
-                <div class="form-row-custom-3">
+                <div class="form-row-3">
                     <div class="form-group-custom">
                         <label>Nombre <span class="req">*</span></label>
                         <input type="text" id="prod_nombre" name="nombre" class="form-input" placeholder="Ej. Paracetamol 500mg">
@@ -133,17 +151,12 @@ $base_url = '/DNS_Pharmacy';
                         <label>Categoría <span class="req">*</span></label>
                         <select id="prod_categoria" name="id_categoria" class="form-input">
                             <option value="">Seleccionar categoría</option>
-                            <option value="1">Analgésicos</option>
-                            <option value="2">Antibióticos</option>
-                            <option value="3">Vitaminas</option>
-                            <option value="4">Jarabes</option>
-                            <option value="5">Higiene personal</option>
                         </select>
                         <span class="form-error" id="err_categoria"></span>
                     </div>
                 </div>
 
-                <div class="form-row-custom-3">
+                <div class="form-row-3">
                     <div class="form-group-custom">
                         <label>Unidad de medida <span class="req">*</span></label>
                         <select id="prod_unidad" name="unidad_medida" class="form-input">
@@ -159,16 +172,16 @@ $base_url = '/DNS_Pharmacy';
                         <span class="form-error" id="err_unidad"></span>
                     </div>
                     <div class="form-group-custom">
-                        <label>Descripción</label>
-                        <textarea id="prod_descripcion" name="descripcion" class="form-input" rows="2" placeholder="Descripción breve del producto"></textarea>
-                    </div>
-                    <div class="form-group-custom">
                         <label>Presentación</label>
                         <input type="text" id="prod_presentacion" name="presentacion" class="form-input" placeholder="Ej. Tabletas, Jarabe">
                     </div>
+                    <div class="form-group-custom">
+                        <label>Concentración</label>
+                        <input type="text" id="prod_concentracion" name="concentracion" class="form-input" placeholder="Ej. 500mg, 250ml">
+                    </div>
                 </div>
 
-                <div class="form-row-custom-3">
+                <div class="form-row-3">
                     <div class="form-group-custom">
                         <label>Marca</label>
                         <input type="text" id="prod_marca" name="marca" class="form-input" placeholder="Ej. Bayer">
@@ -178,21 +191,20 @@ $base_url = '/DNS_Pharmacy';
                         <input type="text" id="prod_laboratorio" name="laboratorio" class="form-input" placeholder="Ej. Laboratorio MK">
                     </div>
                     <div class="form-group-custom">
-                        <label>Concentración</label>
-                        <input type="text" id="prod_concentracion" name="concentracion" class="form-input" placeholder="Ej. 500mg, 250ml">
+                        <label>Descripción</label>
+                        <input type="text" id="prod_descripcion" name="descripcion" class="form-input" placeholder="Descripción breve">
                     </div>
                 </div>
 
-                <!-- SECCIÓN: Precios e inventario - 4 columnas -->
                 <div class="form-seccion">Precios e inventario</div>
-                <div class="form-row-custom-4">
+                <div class="form-row-4">
                     <div class="form-group-custom">
-                        <label>Precio de compra <span class="req">*</span></label>
+                        <label>Precio compra <span class="req">*</span></label>
                         <input type="number" id="prod_precio_compra" name="precio_compra" class="form-input" placeholder="0.00" step="0.01" min="0">
                         <span class="form-error" id="err_precio_compra"></span>
                     </div>
                     <div class="form-group-custom">
-                        <label>Precio de venta <span class="req">*</span></label>
+                        <label>Precio venta <span class="req">*</span></label>
                         <input type="number" id="prod_precio_venta" name="precio_venta" class="form-input" placeholder="0.00" step="0.01" min="0">
                         <span class="form-error" id="err_precio_venta"></span>
                     </div>
@@ -208,9 +220,8 @@ $base_url = '/DNS_Pharmacy';
                     </div>
                 </div>
 
-                <!-- SECCIÓN: Imagen y configuración - 3 columnas -->
                 <div class="form-seccion">Imagen y configuración</div>
-                <div class="form-row-custom-3">
+                <div class="form-row-custom">
                     <div class="form-group-custom">
                         <label>Imagen del producto</label>
                         <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('prod_imagen').click()">
@@ -223,7 +234,7 @@ $base_url = '/DNS_Pharmacy';
                                 <img id="img-preview-src" src="" alt="Vista previa">
                                 <div class="img-preview-info">
                                     <span id="img-preview-nombre" class="img-nombre"></span>
-                                    <button type="button" class="btn-quitar-img" onclick="event.stopPropagation(); quitarImagen()">Quitar</button>
+                                    <button type="button" class="btn-quitar-img" onclick="event.stopPropagation();quitarImagen()">Quitar</button>
                                 </div>
                             </div>
                         </div>
@@ -241,6 +252,7 @@ $base_url = '/DNS_Pharmacy';
                         </label>
                     </div>
                 </div>
+
             </div>
             <div class="modal-footer-custom">
                 <button type="button" class="btn-cancelar" onclick="cerrarModal('modalProducto')">Cancelar</button>
@@ -250,9 +262,10 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-<!-- MODAL ELIMINAR -->
+
+<!-- ══ MODAL: ELIMINAR PRODUCTO ══ -->
 <div class="modal-overlay" id="modalEliminar">
-    <div class="modal-box modal-chico animate__animated animate__headShake">
+    <div class="modal-box modal-chico animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Eliminar producto</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalEliminar')">&times;</button>
@@ -268,9 +281,10 @@ $base_url = '/DNS_Pharmacy';
     </div>
 </div>
 
-<!-- MODAL CATEGORÍAS -->
+
+<!-- ══ MODAL: CATEGORÍAS ══ -->
 <div class="modal-overlay" id="modalCategorias">
-    <div class="modal-box modal-mediano animate__animated animate__fadeInDown animate__faster">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Gestión de Categorías</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalCategorias')">&times;</button>
@@ -278,7 +292,7 @@ $base_url = '/DNS_Pharmacy';
         <div class="modal-body">
             <form id="formCategoria" novalidate>
                 <input type="hidden" id="cat_id" name="id_categoria">
-                <div class="form-row-custom-2">
+                <div class="form-row-custom">
                     <div class="form-group-custom">
                         <label>Nombre <span class="req">*</span></label>
                         <input type="text" id="cat_nombre" name="nombre" class="form-input" placeholder="Ej. Antibióticos">
@@ -294,7 +308,7 @@ $base_url = '/DNS_Pharmacy';
                         <input type="checkbox" id="cat_estado" name="estado" value="1" checked>
                         <span>Categoría activa</span>
                     </label>
-                    <div style="display:flex; gap:8px;">
+                    <div style="display:flex;gap:8px;">
                         <button type="button" class="btn-cancelar" id="btnCancelarCategoria" onclick="limpiarFormCategoria()" style="display:none;">Cancelar</button>
                         <button type="submit" class="btn-guardar" id="btnGuardarCategoria">Agregar</button>
                     </div>
@@ -304,91 +318,39 @@ $base_url = '/DNS_Pharmacy';
             <table class="tabla-categorias" id="tablaCategorias">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>#</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpoTablaCategoria">
-                    <!-- Las categorías se cargarán dinámicamente -->
+                    <tr><td colspan="5" class="tabla-vacia">Cargando...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
+
+<!-- ══ MODAL: ELIMINAR CATEGORÍA ══ -->
+<div class="modal-overlay" id="modalEliminarCategoria">
+    <div class="modal-box modal-chico animate__animated animate__zoomIn animate__faster">
+        <div class="modal-header">
+            <h5 class="modal-titulo">Eliminar categoría</h5>
+            <button class="modal-cerrar" onclick="cerrarModal('modalEliminarCategoria')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="eliminar-texto">¿Estás seguro que deseas eliminar la categoría <strong id="nombreEliminarCat"></strong>?</p>
+            <p class="eliminar-aviso">Los productos asociados quedarán sin categoría.</p>
+        </div>
+        <div class="modal-footer-custom">
+            <button type="button" class="btn-cancelar" onclick="cerrarModal('modalEliminarCategoria')">Cancelar</button>
+            <button type="button" class="btn-eliminar" id="btnConfirmarEliminarCat">Sí, eliminar</button>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="../assets/js/productos.js"></script>
-
-<script>
-    // Funciones auxiliares para la vista previa de imagen
-    function previsualizarImagen(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('img-preview-src').src = e.target.result;
-                document.getElementById('preview-imagen').style.display = 'flex';
-                document.getElementById('filePlaceholder').style.display = 'none';
-                document.getElementById('img-preview-nombre').textContent = input.files[0].name;
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function quitarImagen() {
-        document.getElementById('prod_imagen').value = '';
-        document.getElementById('preview-imagen').style.display = 'none';
-        document.getElementById('filePlaceholder').style.display = 'flex';
-        document.getElementById('img-preview-src').src = '';
-    }
-
-    // Funciones para abrir/cerrar modales
-    function abrirModalProducto() {
-        document.getElementById('modalProducto').classList.add('activo');
-        document.getElementById('tituloModalProducto').textContent = 'Nuevo Producto';
-        document.getElementById('formProducto').reset();
-        document.getElementById('prod_id').value = '';
-        document.getElementById('prod_estado').checked = true;
-        quitarImagen();
-    }
-
-    function abrirModalCategorias() {
-        document.getElementById('modalCategorias').classList.add('activo');
-        cargarCategorias();
-    }
-
-    function cerrarModal(modalId) {
-        document.getElementById(modalId).classList.remove('activo');
-    }
-
-    function limpiarFormCategoria() {
-        document.getElementById('formCategoria').reset();
-        document.getElementById('cat_id').value = '';
-        document.getElementById('btnGuardarCategoria').textContent = 'Agregar';
-        document.getElementById('btnCancelarCategoria').style.display = 'none';
-        document.getElementById('cat_estado').checked = true;
-    }
-
-    function cargarCategorias() {
-        // Aquí iría la lógica para cargar categorías desde el backend
-        console.log('Cargando categorías...');
-    }
-
-    function filtrarTabla() {
-        // Implementar lógica de filtrado
-        console.log('Filtrando tabla...');
-    }
-
-    // Cerrar modales al hacer clic fuera
-    window.onclick = function(event) {
-        if (event.target.classList.contains('modal-overlay')) {
-            event.target.classList.remove('activo');
-        }
-    }
-</script>
-
 </body>
 </html>

@@ -6,156 +6,176 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-if ($_SESSION['usuario_rol'] !== 'Administrador') {
+$base_url = '/DNS_Pharmacy';
+$usuario_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
+$usuario_rol    = $_SESSION['usuario_rol'] ?? 'Administrador';
+
+if ($usuario_rol !== 'Administrador') {
     header('Location: /DNS_Pharmacy/views/pos.php');
     exit;
 }
 
-$admin_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
+$primer_nombre = explode(' ', trim($usuario_nombre))[0];
 ?>
 <!doctype html>
 <html lang="es">
 <head>
-    <title>Inicio - DNS Pharmacy</title>
     <meta charset="utf-8">
+    <title>Dashboard - DNS Pharmacy</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/slider.css">
-    <link rel="stylesheet" href="assets/css/footer.css">
-    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/slider.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/footer.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/index.css?v=1">
 </head>
 <body>
 
-<?php include 'views/layouts/slider.php'; ?>
+<?php include __DIR__ . '/views/layouts/slider.php'; ?>
 
 <div class="main-content">
 
-    <!-- Bienvenida -->
-    <div class="dash-welcome">
-        <div class="dash-welcome-left">
-            <div class="dash-greeting">Bienvenido de vuelta,</div>
-            <div class="dash-name"><?php echo htmlspecialchars($admin_nombre); ?> 👋</div>
-            <div class="dash-sub">Panel de administración — DNS Pharmacy</div>
+    <div class="dash-header">
+        <div>
+            <h2 class="dash-title">
+                Hola, <?php echo htmlspecialchars($primer_nombre); ?> 👋
+            </h2>
+            <p class="dash-subtitle">
+                Panel de administración · <?php echo date('d/m/Y H:i'); ?>
+            </p>
         </div>
-        <div class="dash-welcome-right">
-            <div class="dash-fecha-dia">Hoy es</div>
-            <div class="dash-fecha-hora" id="dashHora">--:--</div>
-            <div class="dash-fecha-completa" id="dashFecha">cargando...</div>
+
+        <div class="dash-rol-badge">
+            <i class="bi bi-shield-check"></i>
+            <?php echo htmlspecialchars($usuario_rol); ?>
         </div>
     </div>
 
-    <!-- Banner farmacéutico -->
-    <div class="dash-banner">
-        <div class="dash-banner-icon"><i class="bi bi-capsule"></i></div>
-        <div class="dash-banner-text">
-            <h4>DNS Pharmacy — Drug Network Supply</h4>
-            <p>Sistema de gestión farmacéutica · San Salvador, El Salvador · contacto@dnspharmacy.com</p>
+    <div class="dash-stats">
+        <div class="dash-stat-card purple">
+            <div class="ds-icon"><i class="bi bi-receipt"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsVentasHoy">$0.00</div>
+                <div class="ds-lbl">Ventas hoy</div>
+            </div>
         </div>
-        <div class="dash-banner-badge"><i class="bi bi-shield-check"></i> Sistema activo</div>
-    </div>
 
-    <!-- Stats -->
-    <div class="dash-stats-grid">
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon icon-purple"><i class="bi bi-receipt"></i></div>
-            <div>
-                <div class="dash-stat-val" id="statVentasHoy">—</div>
-                <div class="dash-stat-label">Ventas hoy</div>
-                <div class="dash-stat-sub" id="statVentasSub">$0.00 recaudado</div>
+        <div class="dash-stat-card green">
+            <div class="ds-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsProductos">0</div>
+                <div class="ds-lbl">Productos activos</div>
             </div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon icon-green"><i class="bi bi-boxes"></i></div>
-            <div>
-                <div class="dash-stat-val" id="statProductos">—</div>
-                <div class="dash-stat-label">Productos activos</div>
-                <div class="dash-stat-sub" id="statProductosSub">en catálogo</div>
+
+        <div class="dash-stat-card orange">
+            <div class="ds-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsStockBajo">0</div>
+                <div class="ds-lbl">Stock bajo mínimo</div>
             </div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon icon-amber"><i class="bi bi-exclamation-triangle"></i></div>
-            <div>
-                <div class="dash-stat-val" id="statStockBajo">—</div>
-                <div class="dash-stat-label">Stock bajo</div>
-                <div class="dash-stat-sub">requieren atención</div>
-            </div>
-        </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon icon-blue"><i class="bi bi-people"></i></div>
-            <div>
-                <div class="dash-stat-val" id="statUsuarios">—</div>
-                <div class="dash-stat-label">Usuarios activos</div>
-                <div class="dash-stat-sub">en el sistema</div>
+
+        <div class="dash-stat-card blue">
+            <div class="ds-icon"><i class="bi bi-people"></i></div>
+            <div class="ds-info">
+                <div class="ds-val" id="dsUsuarios">0</div>
+                <div class="ds-lbl">Usuarios activos</div>
             </div>
         </div>
     </div>
 
-    <!-- Ventas recientes + Stock bajo -->
-    <div class="dash-row">
+    <div class="dash-section">
+        <h3 class="dash-section-title">
+            <i class="bi bi-lightning-charge-fill"></i> Acciones rápidas
+        </h3>
 
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <div class="dash-card-title"><i class="bi bi-clock-history"></i> Ventas recientes</div>
-                <a href="views/historial_ventas.php" class="dash-card-link">Ver todas <i class="bi bi-arrow-right"></i></a>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>Ticket</th>
-                        <th>Empleado</th>
-                        <th>Total</th>
-                        <th>Método</th>
-                        <th>Hora</th>
-                    </tr>
-                </thead>
-                <tbody id="dashVentasRecientes">
-                    <tr><td colspan="5" class="dash-table-empty">Cargando...</td></tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="dash-actions">
+            <a href="<?php echo $base_url; ?>/views/pos.php" class="action-card purple">
+                <i class="bi bi-display"></i>
+                <span>Punto de Venta</span>
+                <small>Abrir POS</small>
+            </a>
 
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <div class="dash-card-title"><i class="bi bi-exclamation-circle"></i> Productos con stock bajo</div>
-                <a href="views/inventario.php" class="dash-card-link">Ver inventario <i class="bi bi-arrow-right"></i></a>
-            </div>
-            <div id="dashStockBajo">
-                <div class="dash-empty">Cargando...</div>
-            </div>
-        </div>
+            <a href="<?php echo $base_url; ?>/views/productos.php" class="action-card green">
+                <i class="bi bi-box-seam"></i>
+                <span>Productos</span>
+                <small>Gestionar catálogo</small>
+            </a>
 
-    </div>
+            <a href="<?php echo $base_url; ?>/views/inventario.php" class="action-card orange">
+                <i class="bi bi-clipboard2-pulse"></i>
+                <span>Inventario</span>
+                <small>Stock y compras</small>
+            </a>
 
-    <!-- Compras recientes -->
-    <div class="dash-row-full">
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <div class="dash-card-title"><i class="bi bi-cart3"></i> Compras recientes</div>
-                <a href="views/compras.php" class="dash-card-link">Ver todas <i class="bi bi-arrow-right"></i></a>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>N° Documento</th>
-                        <th>Proveedor</th>
-                        <th>Fecha</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="dashComprasRecientes">
-                    <tr><td colspan="5" class="dash-table-empty">Cargando...</td></tr>
-                </tbody>
-            </table>
+            <a href="<?php echo $base_url; ?>/views/historial_ventas.php" class="action-card blue">
+                <i class="bi bi-clock-history"></i>
+                <span>Historial</span>
+                <small>Ver ventas</small>
+            </a>
+
+            <a href="<?php echo $base_url; ?>/views/usuarios.php" class="action-card indigo">
+                <i class="bi bi-people"></i>
+                <span>Usuarios</span>
+                <small>Gestionar accesos</small>
+            </a>
+
+            <a href="<?php echo $base_url; ?>/views/proveedores.php" class="action-card teal">
+                <i class="bi bi-building"></i>
+                <span>Proveedores</span>
+                <small>Ver proveedores</small>
+            </a>
         </div>
     </div>
 
 </div>
 
-<?php include 'views/layouts/footer.php'; ?>
+<?php include __DIR__ . '/views/layouts/footer.php'; ?>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="assets/js/index.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/DNS_Pharmacy/controllers/ProductoController.php?accion=stats')
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            document.getElementById('dsProductos').textContent = res.datos.activos ?? 0;
+            document.getElementById('dsStockBajo').textContent = res.datos.stock_bajo ?? 0;
+        })
+        .catch(function(error) {
+            console.error('Error cargando stats de productos:', error);
+        });
+
+    fetch('/DNS_Pharmacy/controllers/UsuarioController.php?accion=stats')
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            document.getElementById('dsUsuarios').textContent = res.datos.activos ?? 0;
+        })
+        .catch(function(error) {
+            console.error('Error cargando stats de usuarios:', error);
+        });
+
+    var hoy = new Date().toISOString().split('T')[0];
+
+    fetch('/DNS_Pharmacy/controllers/HistorialVentasController.php?accion=listar&desde=' + hoy + '&hasta=' + hoy)
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok || !Array.isArray(res.datos)) return;
+
+            var total = res.datos.reduce(function(suma, venta) {
+                return suma + parseFloat(venta.total || 0);
+            }, 0);
+
+            document.getElementById('dsVentasHoy').textContent = '$' + total.toFixed(2);
+        })
+        .catch(function(error) {
+            console.error('Error cargando ventas del día:', error);
+        });
+});
+</script>
+
 </body>
 </html>

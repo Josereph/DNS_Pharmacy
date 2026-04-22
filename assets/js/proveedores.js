@@ -1,4 +1,4 @@
-const CONTROLLER = '../controllers/ProveedorController.php';
+const CONTROLLER = '../controllers/Proveedorcontroller.php';
 
 /* ══════════════════════════════════════════
    RESTRICCIONES EN TIEMPO REAL (al tipear)

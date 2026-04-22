@@ -2,9 +2,8 @@
    INVENTARIO.JS - DNS Pharmacy
    IVA opcional
    ===================== */
-
-const INV_CONTROLLER  = '/DNS_Pharmacy/controllers/InventarioController.php';
-const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/ProductoController.php';
+const INV_CONTROLLER  = '/DNS_Pharmacy/controllers/Inventariocontroller.php';
+const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
 
 var productosLista = [];
 var filaContador   = 0;
@@ -184,6 +183,22 @@ function cargarProveedores() {
 function abrirModalCompra() {
     limpiarFormCompra();
     agregarFilaProducto();
+
+    // Generar número de factura automático y bloquearlo
+    fetch(INV_CONTROLLER + '?accion=generar_factura')
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!res.ok) return;
+            var campo = document.getElementById('comp_factura');
+            campo.value    = res.numero;
+            campo.readOnly = true;
+            campo.style.background  = '#f5e8f5';
+            campo.style.color       = '#841480';
+            campo.style.fontWeight  = '600';
+            campo.style.fontFamily  = "'Courier New', monospace";
+            campo.style.cursor      = 'not-allowed';
+        });
+
     abrirModal('modalCompra');
 }
 
@@ -198,6 +213,15 @@ function limpiarFormCompra() {
     document.getElementById('toggleIvaCompra').checked = false;
     calcularTotalesCompra();
     document.getElementById('comp_fecha').value = new Date().toISOString().split('T')[0];
+
+    // Resetear campo factura
+    var campo = document.getElementById('comp_factura');
+    campo.readOnly = false;
+    campo.style.background = '';
+    campo.style.color      = '';
+    campo.style.fontWeight = '';
+    campo.style.fontFamily = '';
+    campo.style.cursor     = '';
 }
 
 function agregarFilaProducto() {

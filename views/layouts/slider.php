@@ -65,7 +65,7 @@ $es_pos = ($pagina_actual === 'pos.php');
         </a>
 
         <a class="nav-link <?php echo ($pagina_actual == 'reportes.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/reportes.php">
+           href="<?php echo $views; ?>/Estadisticas.php">
             <i class="bi bi-bar-chart-line"></i>
             Reportes
         </a>
@@ -85,8 +85,8 @@ $es_pos = ($pagina_actual === 'pos.php');
 
        
 
-        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'pos.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/pos.php">
+        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'Pos.php') ? 'active' : ''; ?>"
+           href="<?php echo $views; ?>/Pos.php">
             <i class="bi bi-display"></i>
             Punto de Venta (POS)
         </a>

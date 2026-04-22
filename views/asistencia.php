@@ -20,13 +20,33 @@ $views = $base_url . '/views';
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/asistencia.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        /* Animación  las Cards al pasar el mouse */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
+        }
+        /* Efecto sutil para la tabla */
+        .tabla-card {
+            transition: transform 0.3s ease;
+        }
+        .tabla-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
 
 <?php include 'layouts/slider.php'; ?>
 
 <div class="main-content">
-    <div class="page-header">
+    <div class="page-header animate__animated animate__fadeInDown">
         <div>
             <h2 class="page-title">Asistencia</h2>
             <p class="page-subtitle">Control de entradas y salidas por código QR</p>
@@ -42,7 +62,7 @@ $views = $base_url . '/views';
     </div>
 
     <!-- KPIs -->
-    <div class="stats-row">
+    <div class="stats-row animate__animated animate__zoomIn animate__delay-1s">
         <div class="stat-card">
             <div class="stat-num" id="statTotal">0</div>
             <div class="stat-lbl">Total usuarios activos</div>
@@ -62,7 +82,7 @@ $views = $base_url . '/views';
     </div>
 
     <!-- Filtros -->
-    <div class="filtros-bar">
+    <div class="filtros-bar animate__animated animate__fadeIn animate__delay-1s">
         <input type="date" id="fechaDesde" class="filtro-input" placeholder="Fecha desde">
         <input type="date" id="fechaHasta" class="filtro-input" placeholder="Fecha hasta">
         <select id="filtroUsuario" class="filtro-select">
@@ -71,14 +91,14 @@ $views = $base_url . '/views';
     </div>
 
     <!-- Tabla historial -->
-    <div class="tabla-card">
+    <div class="tabla-card animate__animated animate__fadeInUp animate__delay-1s">
         <div class="tabla-header-bar">
             <span>Historial de asistencias</span>
             <span>DNS Pharmacy · Asistencia</span>
         </div>
         <table class="tabla-productos" id="tablaAsistencia">
             <thead>
-                
+                <tr>
                     <th>Fecha</th>
                     <th>Usuario</th>
                     <th>Entrada</th>
@@ -98,7 +118,7 @@ $views = $base_url . '/views';
 
 <!-- Modal QR existente (para mostrar QR desde tabla) -->
 <div class="modal-overlay" id="modalQR" style="display:none;">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Código QR para <span id="qrUsuarioNombre"></span></h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalQR')">&times;</button>
@@ -116,7 +136,7 @@ $views = $base_url . '/views';
 
 <!-- Nuevo Modal: Generar QR seleccionando usuario -->
 <div class="modal-overlay" id="modalGenerarQR" style="display:none;">
-    <div class="modal-box modal-mediano">
+    <div class="modal-box modal-mediano animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">
             <h5 class="modal-titulo">Generar QR para un usuario</h5>
             <button class="modal-cerrar" onclick="cerrarModal('modalGenerarQR')">&times;</button>

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
-    <link rel="stylesheet" href="../assets/css/inventario.css">
+    <link rel="stylesheet" href="../assets/css/Inventario.css">
     
    <style>
         /* Animación  las Cards al pasar el mouse */
@@ -43,7 +43,7 @@ include 'layouts/slider.php';
 
 <div class="main-content">
 
-    <div class="stats-row">
+    <div class="stats-row animate__animated animate__fadeInDown">
         <div class="stat-card">
             <div class="stat-num" id="statTotalCompras">0</div>
             <div class="stat-lbl">Compras registradas</div>
@@ -62,7 +62,7 @@ include 'layouts/slider.php';
         </div>
     </div>
 
-    <div class="inv-tabs">
+    <div class="inv-tabs animate__animated animate__fadeIn animate__delay-1s">
         <button class="inv-tab active" onclick="cambiarTab(this,'tabStock')">
             <i class="bi bi-boxes"></i> Stock actual
         </button>
@@ -71,8 +71,7 @@ include 'layouts/slider.php';
         </button>
     </div>
 
-    <!-- TAB: STOCK -->
-    <div id="tabStock" class="tab-content active-tab">
+    <div id="tabStock" class="tab-content active-tab animate__animated animate__fadeIn">
         <div class="tab-header">
             <div class="tab-filtros">
                 <input type="text" id="buscadorStock" class="filtro-input" placeholder="Buscar producto..." oninput="filtrarStock()">
@@ -106,8 +105,7 @@ include 'layouts/slider.php';
         </div>
     </div>
 
-    <!-- TAB: HISTORIAL -->
-    <div id="tabHistorial" class="tab-content">
+    <div id="tabHistorial" class="tab-content animate__animated animate__fadeIn">
         <div class="tab-header">
             <div class="tab-filtros">
                 <input type="text" id="buscadorCompras" class="filtro-input" placeholder="Buscar por N° factura o proveedor..." oninput="filtrarCompras()">
@@ -244,6 +242,6 @@ include 'layouts/slider.php';
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="../assets/js/inventario.js"></script>
+<script src="../assets/js/Inventario.js"></script>
 </body>
 </html>

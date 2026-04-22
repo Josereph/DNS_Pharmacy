@@ -1,14 +1,14 @@
 /* ══════════════════════════════════════════
    CONSTANTES Y ESTADO
 ══════════════════════════════════════════ */
-const PERFIL_CTRL = '../controllers/PerfilController.php';
+const API = '/DNS_Pharmacy/controllers/PerfilController.php';
 
-const roles = { 1: 'Administrador', 2: 'Cajero' };
-const rolesClase = { 1: 'rol-admin', 2: 'rol-cajero' };
+const roles      = { 1: 'Administrador', 2: 'Cajero' };
+const rolesClase = { 1: 'rol-admin',     2: 'rol-cajero' };
 
-let usuarioSesion   = {};
-let todasMisVentas  = [];
-let periodoActivo   = 'mes';
+let usuarioSesion  = {};
+let todasMisVentas = [];
+let misVentas      = [];
 
 /* ══════════════════════════════════════════
    INICIALIZACIÓN
@@ -20,15 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('formEditar')  ?.addEventListener('submit', guardarEdicion);
     document.getElementById('formPassword')?.addEventListener('submit', cambiarPassword);
 
-    /* Restricciones en tiempo real en el modal editar */
     aplicarRestriccionesEditar();
+
+    /* Limpiar error al tipear */
+    document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('input', () => {
+            const err = input.closest('.form-group-custom')?.querySelector('.form-error');
+            if (err) err.textContent = '';
+        });
+    });
 });
 
 /* ══════════════════════════════════════════
-   RESTRICCIONES EN TIEMPO REAL (modal editar)
+   RESTRICCIONES EN TIEMPO REAL
 ══════════════════════════════════════════ */
 function aplicarRestriccionesEditar() {
-    /* Solo letras y espacios en nombre y apellido */
+    /* Solo letras en nombre y apellido */
     ['edit_nombre', 'edit_apellido'].forEach(id => {
         document.getElementById(id)?.addEventListener('input', function () {
             this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
@@ -43,51 +50,57 @@ function aplicarRestriccionesEditar() {
 }
 
 /* ══════════════════════════════════════════
+   FETCH SEGURO — detecta HTML en vez de JSON
+══════════════════════════════════════════ */
+function fetchJSON(url, options = {}) {
+    return fetch(url, options)
+        .then(async res => {
+            const text = await res.text();
+            if (text.trimStart().startsWith('<')) {
+                console.error('El servidor devolvió HTML:', text);
+                throw new Error('Error interno del servidor. Revisa la consola.');
+            }
+            return JSON.parse(text);
+        });
+}
+
+/* ══════════════════════════════════════════
    PERFIL — CARGAR Y PINTAR
 ══════════════════════════════════════════ */
 function obtenerPerfil() {
-    fetch(PERFIL_CTRL + '?action=perfil')
-        .then(r => r.json())
+    fetchJSON(`${API}?action=perfil`)
         .then(data => {
             if (data.error) { console.error(data.mensaje); return; }
-            usuarioSesion = data.data;
+            Object.assign(usuarioSesion, data.data);
             pintarPerfil();
         })
-        .catch(e => console.error('Error al obtener perfil:', e));
+        .catch(e => console.error('Error perfil:', e));
 }
 
 function pintarPerfil() {
-    const u = usuarioSesion;
-
-    const set = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val || '—';
-    };
-
-    /* Iniciales para el avatar */
+    const u   = usuarioSesion;
     const ini = ((u.nombre?.[0] || '') + (u.apellido?.[0] || '')).toUpperCase();
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || '—'; };
 
     set('perfilNombreCompleto', `${u.nombre || ''} ${u.apellido || ''}`.trim());
     set('perfilCorreo',         u.correo);
     set('perfilTelefono',       u.telefono);
     set('perfilUltimoAcceso',   formatearFecha(u.ultimo_acceso));
 
-    /* Badge de rol */
     const rolEl = document.getElementById('perfilRol');
     if (rolEl) {
         rolEl.textContent = roles[u.id_rol] || '—';
         rolEl.className   = `badge-rol ${rolesClase[u.id_rol] || ''}`;
     }
 
-    /* Foto o avatar de iniciales */
     const fotoEl   = document.getElementById('perfilFoto');
     const avatarEl = document.getElementById('perfilAvatar');
-
-    if (u.foto_perfil && fotoEl && avatarEl) {
-        fotoEl.src           = `../uploads/perfiles/${u.foto_perfil}`;
+    if (u.foto_perfil) {
+        fotoEl.src           = `/DNS_Pharmacy/uploads/perfiles/${u.foto_perfil}`;
         fotoEl.style.display = 'block';
         avatarEl.style.display = 'none';
-    } else if (avatarEl && fotoEl) {
+    } else {
         avatarEl.textContent   = ini;
         avatarEl.style.display = 'flex';
         fotoEl.style.display   = 'none';
@@ -100,19 +113,13 @@ function pintarPerfil() {
 function previsualizarFoto(input) {
     const file = input.files[0];
     if (!file) return;
-
-    if (file.size > 2 * 1024 * 1024) {
-        alert('La imagen no debe superar 2 MB.');
-        input.value = '';
-        return;
-    }
+    if (file.size > 2 * 1024 * 1024) { alert('La imagen no debe superar 2 MB.'); input.value = ''; return; }
 
     const reader = new FileReader();
     reader.onload = e => {
-        const fotoEl   = document.getElementById('perfilFoto');
-        const avatarEl = document.getElementById('perfilAvatar');
-        if (fotoEl)   { fotoEl.src = e.target.result; fotoEl.style.display = 'block'; }
-        if (avatarEl) { avatarEl.style.display = 'none'; }
+        document.getElementById('perfilFoto').src = e.target.result;
+        document.getElementById('perfilFoto').style.display   = 'block';
+        document.getElementById('perfilAvatar').style.display = 'none';
     };
     reader.readAsDataURL(file);
     subirFoto(file);
@@ -122,11 +129,9 @@ function subirFoto(file) {
     const fd = new FormData();
     fd.append('action',      'subirFoto');
     fd.append('foto_perfil', file);
-
-    fetch(PERFIL_CTRL, { method: 'POST', body: fd })
-        .then(r => r.json())
-        .then(data => { if (data.error) alert('Error al subir la foto: ' + data.mensaje); })
-        .catch(e => console.error('Error al subir foto:', e));
+    fetchJSON(API, { method: 'POST', body: fd })
+        .then(data => { if (data.error) alert(data.mensaje); })
+        .catch(e => console.error('Error foto:', e));
 }
 
 /* ══════════════════════════════════════════
@@ -134,97 +139,68 @@ function subirFoto(file) {
 ══════════════════════════════════════════ */
 function abrirModalEditar() {
     const u = usuarioSesion;
+    document.getElementById('edit_nombre').value   = u.nombre   || '';
+    document.getElementById('edit_apellido').value = u.apellido || '';
+    document.getElementById('edit_correo').value   = u.correo   || '';
+    document.getElementById('edit_telefono').value = u.telefono || '';
 
-    document.getElementById('edit_nombre').value    = u.nombre   || '';
-    document.getElementById('edit_apellido').value  = u.apellido || '';
-    document.getElementById('edit_telefono').value  = u.telefono || '';
-
+    /* Correo: solo lectura visual */
     const correoInput = document.getElementById('edit_correo');
     if (correoInput) {
-        correoInput.value    = u.correo || '';
-        correoInput.readOnly = true;
-        correoInput.style.cssText = 'background:#f5f5f5;cursor:not-allowed;';
-        correoInput.title    = 'El correo no se puede modificar';
+        correoInput.readOnly          = true;
+        correoInput.style.background  = '#f5f5f5';
+        correoInput.style.cursor      = 'not-allowed';
+        correoInput.title             = 'El correo no se puede modificar';
     }
 
-    limpiarErroresForm('formEditar');
+    limpiarErroresModal('modalEditar');
     abrirModal('modalEditar');
 }
 
 function guardarEdicion(e) {
     e.preventDefault();
-    limpiarErroresForm('formEditar');
+    limpiarErroresModal('modalEditar');
 
     const nombre   = document.getElementById('edit_nombre').value.trim();
     const apellido = document.getElementById('edit_apellido').value.trim();
+    const correo   = document.getElementById('edit_correo').value.trim();
     const telefono = document.getElementById('edit_telefono').value.trim();
 
     let valido = true;
 
-    if (!nombre) {
-        mostrarCampoError('err_edit_nombre', 'El nombre es obligatorio.');
-        valido = false;
-    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{2,}$/.test(nombre)) {
-        mostrarCampoError('err_edit_nombre', 'Solo letras, mínimo 2 caracteres.');
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{2,30}$/.test(nombre)) {
+        document.getElementById('err_edit_nombre').textContent = 'Solo letras (2–30 caracteres)';
         valido = false;
     }
-
-    if (!apellido) {
-        mostrarCampoError('err_edit_apellido', 'El apellido es obligatorio.');
-        valido = false;
-    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{2,}$/.test(apellido)) {
-        mostrarCampoError('err_edit_apellido', 'Solo letras, mínimo 2 caracteres.');
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{2,30}$/.test(apellido)) {
+        document.getElementById('err_edit_apellido').textContent = 'Solo letras (2–30 caracteres)';
         valido = false;
     }
-
     if (telefono && !/^\d{4}-\d{4}$/.test(telefono)) {
-        mostrarCampoError('err_edit_telefono', 'Formato inválido. Ej: 7600-0000');
+        document.getElementById('err_edit_telefono').textContent = 'Formato inválido. Ej: 7600-0000';
         valido = false;
     }
 
     if (!valido) return;
 
-    /* El correo NO se edita, pero lo enviamos de sesión para que el
-       controller no lo requiera — el backend lo ignora de todas formas */
-    const fd = new FormData();
-    fd.append('action',   'actualizar');
-    fd.append('nombre',   nombre);
-    fd.append('apellido', apellido);
-    fd.append('telefono', telefono);
+    /* Usar FormData del form para incluir todos los campos (incluido correo readonly) */
+    const fd = new FormData(e.target);
+    fd.set('action', 'actualizar');
 
-    const btnGuardar = e.target.querySelector('[type="submit"]');
-    if (btnGuardar) { btnGuardar.disabled = true; btnGuardar.textContent = 'Guardando...'; }
+    const btn = e.target.querySelector('[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
 
-    fetch(PERFIL_CTRL, { method: 'POST', body: fd })
-        .then(r => {
-            /* Si la respuesta no es JSON válido, mostramos el texto crudo para debug */
-            const ct = r.headers.get('content-type') || '';
-            if (!ct.includes('application/json')) {
-                return r.text().then(txt => { throw new Error('Respuesta inesperada del servidor: ' + txt); });
-            }
-            return r.json();
-        })
+    fetchJSON(API, { method: 'POST', body: fd })
         .then(data => {
-            if (data.error) {
-                if (data.campo === 'nombre')   mostrarCampoError('err_edit_nombre',   data.mensaje);
-                if (data.campo === 'apellido') mostrarCampoError('err_edit_apellido', data.mensaje);
-                if (data.campo === 'telefono') mostrarCampoError('err_edit_telefono', data.mensaje);
-                if (!data.campo)               alert('Error: ' + data.mensaje);
-                return;
-            }
-            /* Actualizar estado local y repintar tarjeta */
-            Object.assign(usuarioSesion, { nombre, apellido, telefono });
+            if (data.error) { alert('Error: ' + data.mensaje); return; }
+
+            Object.assign(usuarioSesion, { nombre, apellido, correo, telefono });
             pintarPerfil();
             cerrarModal('modalEditar');
             mostrarToast('✓ Perfil actualizado correctamente.');
         })
-        .catch(e => {
-            console.error('Error al guardar:', e);
-            alert(e.message || 'Error de conexión al guardar.');
-        })
-        .finally(() => {
-            if (btnGuardar) { btnGuardar.disabled = false; btnGuardar.textContent = 'Guardar cambios'; }
-        });
+        .catch(e => { console.error(e); alert(e.message); })
+        .finally(() => { if (btn) { btn.disabled = false; btn.textContent = 'Guardar cambios'; } });
 }
 
 /* ══════════════════════════════════════════
@@ -232,13 +208,13 @@ function guardarEdicion(e) {
 ══════════════════════════════════════════ */
 function abrirModalPassword() {
     document.getElementById('formPassword').reset();
-    limpiarErroresForm('formPassword');
+    limpiarErroresModal('modalPassword');
     abrirModal('modalPassword');
 }
 
 function cambiarPassword(e) {
     e.preventDefault();
-    limpiarErroresForm('formPassword');
+    limpiarErroresModal('modalPassword');
 
     const actual    = document.getElementById('pass_actual').value;
     const nueva     = document.getElementById('pass_nueva').value;
@@ -247,26 +223,21 @@ function cambiarPassword(e) {
     let valido = true;
 
     if (!actual) {
-        mostrarCampoError('err_pass_actual', 'Ingresa tu contraseña actual.');
+        document.getElementById('err_pass_actual').textContent = 'Ingresa tu contraseña actual.';
         valido = false;
     }
-
-    if (!nueva) {
-        mostrarCampoError('err_pass_nueva', 'Ingresa la nueva contraseña.');
-        valido = false;
-    } else if (nueva.length < 8) {
-        mostrarCampoError('err_pass_nueva', 'Mínimo 8 caracteres.');
+    if (!nueva || nueva.length < 8) {
+        document.getElementById('err_pass_nueva').textContent = 'Mínimo 8 caracteres.';
         valido = false;
     } else if (!/[A-Z]/.test(nueva)) {
-        mostrarCampoError('err_pass_nueva', 'Debe contener al menos una mayúscula.');
+        document.getElementById('err_pass_nueva').textContent = 'Debe tener al menos una mayúscula.';
         valido = false;
     } else if (!/[0-9]/.test(nueva)) {
-        mostrarCampoError('err_pass_nueva', 'Debe contener al menos un número.');
+        document.getElementById('err_pass_nueva').textContent = 'Debe tener al menos un número.';
         valido = false;
     }
-
-    if (nueva && confirmar && nueva !== confirmar) {
-        mostrarCampoError('err_pass_confirmar', 'Las contraseñas no coinciden.');
+    if (nueva !== confirmar) {
+        document.getElementById('err_pass_confirmar').textContent = 'Las contraseñas no coinciden.';
         valido = false;
     }
 
@@ -277,108 +248,111 @@ function cambiarPassword(e) {
     fd.append('password_actual', actual);
     fd.append('password_hash',   nueva);
 
-    const btnPass = e.target.querySelector('[type="submit"]');
-    if (btnPass) { btnPass.disabled = true; btnPass.textContent = 'Actualizando...'; }
+    const btn = e.target.querySelector('[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Actualizando...'; }
 
-    fetch(PERFIL_CTRL, { method: 'POST', body: fd })
-        .then(r => {
-            const ct = r.headers.get('content-type') || '';
-            if (!ct.includes('application/json')) {
-                return r.text().then(txt => { throw new Error('Respuesta inesperada: ' + txt); });
-            }
-            return r.json();
-        })
+    fetchJSON(API, { method: 'POST', body: fd })
         .then(data => {
             if (data.error) {
-                if (data.campo === 'actual') mostrarCampoError('err_pass_actual', data.mensaje);
-                if (data.campo === 'nueva')  mostrarCampoError('err_pass_nueva',  data.mensaje);
-                if (!data.campo)             alert('Error: ' + data.mensaje);
+                if (data.campo === 'actual') document.getElementById('err_pass_actual').textContent = data.mensaje;
+                else alert('Error: ' + data.mensaje);
                 return;
             }
             cerrarModal('modalPassword');
             mostrarToast('✓ Contraseña actualizada correctamente.');
         })
-        .catch(e => {
-            console.error('Error:', e);
-            alert(e.message || 'Error de conexión.');
-        })
-        .finally(() => {
-            if (btnPass) { btnPass.disabled = false; btnPass.textContent = 'Actualizar contraseña'; }
-        });
+        .catch(e => { console.error(e); alert(e.message); })
+        .finally(() => { if (btn) { btn.disabled = false; btn.textContent = 'Actualizar contraseña'; } });
+}
+
+/* ══════════════════════════════════════════
+   MOSTRAR / OCULTAR CONTRASEÑA
+══════════════════════════════════════════ */
+function togglePass(id, btn) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    if (input.type === 'password') {
+        input.type      = 'text';
+        btn.innerHTML   = '<i class="bi bi-eye-slash"></i>';
+    } else {
+        input.type      = 'password';
+        btn.innerHTML   = '<i class="bi bi-eye"></i>';
+    }
 }
 
 /* ══════════════════════════════════════════
    VENTAS
 ══════════════════════════════════════════ */
 function cargarMisVentas() {
-    fetch(PERFIL_CTRL + '?action=ventas')
-        .then(r => r.json())
+    fetchJSON(`${API}?action=ventas`)
         .then(data => {
             if (data.error) { console.error(data.mensaje); return; }
             todasMisVentas = data.data;
-            setPeriodo(periodoActivo);
+            setPeriodo('mes');
         })
-        .catch(e => console.error('Error al cargar ventas:', e));
+        .catch(e => console.error('Error ventas:', e));
 }
 
 function setPeriodo(periodo, event) {
-    periodoActivo = periodo;
-
     /* Marcar botón activo */
-    document.querySelectorAll('.btn-periodo').forEach(b => b.classList.remove('activo'));
-    if (event?.target) event.target.classList.add('activo');
+    if (event) {
+        document.querySelectorAll('.btn-periodo').forEach(b => b.classList.remove('activo'));
+        event.target.classList.add('activo');
+    }
 
-    /* Calcular rango */
-    const hoy   = new Date();
-    let   desde = null;
+    const hoy = new Date();
+    let desde = '', hasta = hoy.toISOString().split('T')[0];
 
     if (periodo === 'hoy') {
-        desde = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+        desde = hasta;
     } else if (periodo === 'semana') {
-        const dia = hoy.getDay() || 7;
-        desde = new Date(hoy);
-        desde.setDate(hoy.getDate() - dia + 1);
-        desde.setHours(0, 0, 0, 0);
+        const d    = new Date(hoy);
+        const day  = d.getDay() || 7;
+        d.setDate(d.getDate() - day + 1);
+        desde = d.toISOString().split('T')[0];
     } else if (periodo === 'mes') {
-        desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+        desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString().split('T')[0];
+    } else if (periodo === 'todo') {
+        desde = ''; hasta = '';
     }
 
-    /* Limpiar filtros de fecha manuales */
-    const desdeInput = document.getElementById('filtroDesde');
-    const hastaInput = document.getElementById('filtroHasta');
-    if (desdeInput) desdeInput.value = '';
-    if (hastaInput) hastaInput.value = '';
-
-    filtrarMisVentas(desde, periodo === 'todo' ? null : hoy);
+    document.getElementById('filtroDesde').value = desde;
+    document.getElementById('filtroHasta').value  = hasta;
+    filtrarMisVentas();
 }
 
-function filtrarMisVentas(desdeParam, hastaParam) {
-    /* Si se llama desde los inputs de fecha */
-    if (desdeParam === undefined) {
-        const desdeVal = document.getElementById('filtroDesde')?.value;
-        const hastaVal = document.getElementById('filtroHasta')?.value;
-        desdeParam = desdeVal ? new Date(desdeVal + 'T00:00:00') : null;
-        hastaParam = hastaVal ? new Date(hastaVal + 'T23:59:59') : null;
-    }
+function filtrarMisVentas() {
+    const desde = document.getElementById('filtroDesde').value;
+    const hasta = document.getElementById('filtroHasta').value;
+    const hoy   = new Date().toISOString().split('T')[0];
 
-    const filtrado = todasMisVentas.filter(v => {
-        const fecha = new Date(v.fecha_venta);
-        if (desdeParam && fecha < desdeParam) return false;
-        if (hastaParam && fecha > hastaParam) return false;
-        return true;
+    misVentas = todasMisVentas.filter(v => {
+        const fecha = v.fecha_venta.split(' ')[0];
+        return (!desde || fecha >= desde) && (!hasta || fecha <= hasta);
     });
 
-    renderizarTablaVentas(filtrado);
-    actualizarStats(filtrado);
+    const ventasHoy = todasMisVentas.filter(v => v.fecha_venta.startsWith(hoy)).length;
+    actualizarStats(ventasHoy);
+    renderizarTabla(misVentas);
 }
 
-function renderizarTablaVentas(lista) {
+function actualizarStats(ventasHoy) {
+    const completadas    = misVentas.filter(v => v.estado === 'completada');
+    const totalVendido   = completadas.reduce((s, v) => s + parseFloat(v.total), 0);
+    const promedio       = completadas.length ? totalVendido / completadas.length : 0;
+
+    document.getElementById('statMisTickets').textContent = completadas.length;
+    document.getElementById('statMisVentas').textContent  = `$${totalVendido.toFixed(2)}`;
+    document.getElementById('statPromedio').textContent   = `$${promedio.toFixed(2)}`;
+    document.getElementById('statHoy').textContent        = ventasHoy;
+}
+
+function renderizarTabla(lista) {
     const tbody = document.getElementById('cuerpoMisVentas');
     if (!lista.length) {
-        tbody.innerHTML = '<tr><td colspan="9" class="tabla-vacia">Sin ventas en este período.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="tabla-vacia">No hay ventas en este período.</td></tr>';
         return;
     }
-
     tbody.innerHTML = lista.map((v, i) => `
         <tr>
             <td>${i + 1}</td>
@@ -388,9 +362,10 @@ function renderizarTablaVentas(lista) {
             <td class="td-monto">$${parseFloat(v.impuesto).toFixed(2)}</td>
             <td class="td-total">$${parseFloat(v.total).toFixed(2)}</td>
             <td>${badgeMetodo(v.metodo_pago)}</td>
-            <td>${badgeEstadoVenta(v.estado)}</td>
+            <td>${badgeEstado(v.estado)}</td>
             <td>
-                <button class="btn-accion btn-ver" onclick="verDetalle(${v.id_venta})">
+                <button class="btn-accion btn-ver"
+                    onclick="verDetalleVenta(${v.id_venta}, '${esc(v.numero_ticket)}')">
                     <i class="bi bi-eye"></i>
                 </button>
             </td>
@@ -398,46 +373,30 @@ function renderizarTablaVentas(lista) {
     `).join('');
 }
 
-function actualizarStats(lista) {
-    const completadas = lista.filter(v => v.estado === 'completada');
-    const totalVendido = completadas.reduce((s, v) => s + parseFloat(v.total), 0);
-    const promedio     = completadas.length ? totalVendido / completadas.length : 0;
+function verDetalleVenta(id_venta, ticket) {
+    document.getElementById('tituloDetalleVenta').textContent = `Detalle — ${ticket}`;
+    document.getElementById('cuerpoDetalleVenta').innerHTML   = '<p style="padding:16px;color:#888;">Cargando...</p>';
+    abrirModal('modalDetalleVenta');
 
-    const hoy = new Date().toDateString();
-    const ventasHoy = completadas.filter(v => new Date(v.fecha_venta).toDateString() === hoy).length;
-
-    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-
-    set('statMisTickets', completadas.length);
-    set('statMisVentas',  '$' + totalVendido.toFixed(2));
-    set('statPromedio',   '$' + promedio.toFixed(2));
-    set('statHoy',        ventasHoy);
-}
-
-function verDetalle(id_venta) {
-    fetch(`${PERFIL_CTRL}?action=detalle&id_venta=${id_venta}`)
-        .then(r => r.json())
+    fetchJSON(`${API}?action=detalle&id_venta=${id_venta}`)
         .then(data => {
-            if (data.error) { alert(data.mensaje); return; }
-
-            const venta = todasMisVentas.find(v => v.id_venta == id_venta);
-            document.getElementById('tituloDetalleVenta').textContent =
-                'Detalle — ' + (venta?.numero_ticket || '');
-
+            if (data.error) {
+                document.getElementById('cuerpoDetalleVenta').innerHTML = `<p class="form-error" style="padding:16px">${data.mensaje}</p>`;
+                return;
+            }
             const items = data.data;
-            const subtotalVenta = venta ? parseFloat(venta.subtotal).toFixed(2) : '0.00';
-            const impuesto      = venta ? parseFloat(venta.impuesto).toFixed(2)  : '0.00';
-            const total         = venta ? parseFloat(venta.total).toFixed(2)     : '0.00';
-            const cambio        = venta ? parseFloat(venta.cambio  || 0).toFixed(2) : '0.00';
+            const venta = todasMisVentas.find(v => v.id_venta == id_venta);
+
+            if (!items.length) {
+                document.getElementById('cuerpoDetalleVenta').innerHTML = '<p style="padding:16px;color:#888;">Sin detalles disponibles.</p>';
+                return;
+            }
 
             document.getElementById('cuerpoDetalleVenta').innerHTML = `
                 <table class="tabla-detalle-venta">
                     <thead>
                         <tr>
-                            <th>Producto</th>
-                            <th>Cant.</th>
-                            <th>Precio unit.</th>
-                            <th>Subtotal</th>
+                            <th>Producto</th><th>Cant.</th><th>P. Unit.</th><th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -452,73 +411,56 @@ function verDetalle(id_venta) {
                     </tbody>
                 </table>
                 <div class="totales-grid">
-                    <div class="total-row"><span>Subtotal</span><span>$${subtotalVenta}</span></div>
-                    <div class="total-row"><span>IVA (13%)</span><span>$${impuesto}</span></div>
-                    <div class="total-row total-final"><span>Total</span><span>$${total}</span></div>
-                    <div class="total-row total-cambio"><span>Cambio</span><span>$${cambio}</span></div>
+                    <div class="total-row"><span>Subtotal</span><span>$${parseFloat(venta?.subtotal||0).toFixed(2)}</span></div>
+                    <div class="total-row"><span>IVA (13%)</span><span>$${parseFloat(venta?.impuesto||0).toFixed(2)}</span></div>
+                    <div class="total-row total-final"><span>Total</span><span>$${parseFloat(venta?.total||0).toFixed(2)}</span></div>
+                    <div class="total-row total-cambio"><span>Cambio</span><span>$${parseFloat(venta?.cambio||0).toFixed(2)}</span></div>
                 </div>
             `;
-
-            abrirModal('modalDetalleVenta');
         })
-        .catch(e => console.error('Error al cargar detalle:', e));
+        .catch(e => {
+            document.getElementById('cuerpoDetalleVenta').innerHTML = `<p class="form-error" style="padding:16px">Error al cargar detalles.</p>`;
+            console.error(e);
+        });
 }
 
 /* ══════════════════════════════════════════
    HELPERS
 ══════════════════════════════════════════ */
-function abrirModal(id)  { const el = document.getElementById(id); if (el) el.style.display = 'flex'; }
-function cerrarModal(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+function abrirModal(id)  { document.getElementById(id).style.display = 'flex'; }
+function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-function mostrarCampoError(id, msg) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = msg;
-}
-
-function limpiarErroresForm(formId) {
-    document.getElementById(formId)
-        ?.querySelectorAll('.form-error')
-        .forEach(el => el.textContent = '');
+function limpiarErroresModal(modalId) {
+    document.getElementById(modalId)?.querySelectorAll('.form-error').forEach(el => el.textContent = '');
 }
 
 function formatearFecha(f) {
     if (!f) return '—';
     const d = new Date(f);
-    if (isNaN(d)) return f;
-    return d.toLocaleString('es-SV', {
-        day: '2-digit', month: 'short', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-    });
+    return isNaN(d) ? f : d.toLocaleString('es-SV');
 }
 
 function esc(str) {
-    if (!str) return '';
-    return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return String(str || '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function badgeMetodo(metodo) {
-    const map = {
-        efectivo:      'metodo-efectivo',
-        tarjeta:       'metodo-tarjeta',
-        transferencia: 'metodo-transferencia'
-    };
-    const cls = map[(metodo || '').toLowerCase()] || 'metodo-efectivo';
-    return `<span class="badge-metodo ${cls}">${esc(metodo)}</span>`;
+function badgeMetodo(m) {
+    if (!m) return '—';
+    const map = { efectivo: 'metodo-efectivo', tarjeta: 'metodo-tarjeta', transferencia: 'metodo-transferencia' };
+    const cls = map[m.toLowerCase()] || '';
+    return `<span class="badge-metodo ${cls}">${esc(m)}</span>`;
 }
 
-function badgeEstadoVenta(estado) {
-    const map = {
-        completada: 'badge-completada',
-        anulada:    'badge-anulada',
-        pendiente:  'badge-pendiente'
-    };
-    const cls = map[(estado || '').toLowerCase()] || '';
-    return `<span class="${cls}">${esc(estado)}</span>`;
+function badgeEstado(e) {
+    if (!e) return '—';
+    const map = { completada: 'badge-completada', anulada: 'badge-anulada', pendiente: 'badge-pendiente' };
+    const cls = map[e.toLowerCase()] || '';
+    return `<span class="${cls}">${esc(e)}</span>`;
 }
 
-/* Cerrar modal al hacer clic en el overlay */
+/* Cerrar modal al clicar el overlay */
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', function (e) {
         if (e.target === this) cerrarModal(this.id);
@@ -528,24 +470,24 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 /* ══════════════════════════════════════════
    TOAST DE ÉXITO
 ══════════════════════════════════════════ */
-function mostrarToast(mensaje, color) {
+function mostrarToast(mensaje) {
     let toast = document.getElementById('toastPerfil');
     if (!toast) {
         toast = document.createElement('div');
         toast.id = 'toastPerfil';
         toast.style.cssText = [
-            'position:fixed', 'bottom:28px', 'right:28px',
-            'padding:13px 22px', 'border-radius:8px',
-            'font-size:14px', 'font-weight:500', 'color:#fff',
+            'position:fixed','bottom:28px','right:28px',
+            'background:#2e7d32','color:#fff',
+            'padding:13px 22px','border-radius:8px',
+            'font-size:14px','font-weight:500',
             'box-shadow:0 4px 16px rgba(0,0,0,0.18)',
-            'z-index:9999', 'opacity:0', 'transition:opacity 0.3s',
-            "font-family:'Segoe UI',sans-serif"
+            "font-family:'Segoe UI',sans-serif",
+            'z-index:9999','opacity:0','transition:opacity 0.3s'
         ].join(';');
         document.body.appendChild(toast);
     }
-    toast.style.background = color || '#2e7d32';
-    toast.textContent      = mensaje;
-    toast.style.opacity    = '1';
+    toast.textContent   = mensaje;
+    toast.style.opacity = '1';
     clearTimeout(toast._timer);
     toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 3200);
 }
