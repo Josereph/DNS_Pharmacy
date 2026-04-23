@@ -1,4 +1,7 @@
-<?php $base_url = '/DNS_Pharmacy'; ?>
+<?php
+// Detectar la URL base automáticamente
+$base_url = '/DNS_Pharmacy';
+?>
 
 <footer>
   <div class="footer-container">
@@ -15,11 +18,11 @@
 
       <nav class="footer-nav">
         <ul>
-          <li><a href="#">Inicio</a></li>
-          <li><a href="#">Dashboard</a></li>
-          <li><a href="#">Productos</a></li>
-          <li><a href="#">Historial</a></li>
-          <li><a href="#">Reportes</a></li>
+          <li><a href="<?php echo $base_url; ?>/index.php">Inicio</a></li>
+          <li><a href="<?php echo $base_url; ?>/views/Estadisticas.php">Dashboard</a></li>
+          <li><a href="<?php echo $base_url; ?>/views/productos.php">Productos</a></li>
+          <li><a href="<?php echo $base_url; ?>/views/historial_ventas.php">Historial</a></li>
+          <li><a href="<?php echo $base_url; ?>/views/Estadisticas.php">Reportes</a></li>
         </ul>
       </nav>
 

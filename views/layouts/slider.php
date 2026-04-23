@@ -9,18 +9,19 @@ $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
 
 $rol = $_SESSION['usuario_rol'] ?? '';
 
-// En el POS el sidebar arranca oculto
-$es_pos = ($pagina_actual === 'pos.php');
+// Detectar si estamos en POS (sin importar mayúsculas/minúsculas)
+$es_pos = (strtolower($pagina_actual) === 'pos.php');
 ?>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/slider.css">
 
 <!-- Botón toggle siempre visible -->
 <button class="sidebar-toggle-btn" id="sidebarToggle" title="Mostrar / ocultar menú">
     <i class="bi bi-list" id="toggleIcon"></i>
 </button>
 
-<div class="gym-sidebar <?php echo $es_pos ? 'sidebar-hidden' : ''; ?>" id="gymSidebar">
+<div class="gym-sidebar" id="gymSidebar">
 
     <div class="logo-area">
         <img src="<?php echo $base_url; ?>/assets/img/DNS_LOGO.png" alt="DNS Pharmacy" style="height:105px;">
@@ -29,12 +30,12 @@ $es_pos = ($pagina_actual === 'pos.php');
     <nav class="nav flex-column">
 
         <?php if ($rol === 'Administrador'): ?>
-<a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
-   href="<?php echo $base_url; ?>/index.php">
-    <i class="bi bi-house-door"></i>
-    Inicio
-</a>
-<?php endif; ?>
+        <a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
+           href="<?php echo $base_url; ?>/index.php">
+            <i class="bi bi-house-door"></i>
+            Inicio
+        </a>
+        <?php endif; ?>
 
         <?php if ($rol === 'Administrador'): ?>
         <a class="nav-link <?php echo ($pagina_actual == 'usuarios.php') ? 'active' : ''; ?>"
@@ -77,15 +78,13 @@ $es_pos = ($pagina_actual === 'pos.php');
         </a>
 
         <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>"
-   href="<?php echo $views; ?>/historial_ventas.php">
-    <i class="bi bi-clock-history"></i>
-    Historial Ventas
-</a>
+           href="<?php echo $views; ?>/historial_ventas.php">
+            <i class="bi bi-clock-history"></i>
+            Historial Ventas
+        </a>
         <?php endif; ?>
 
-       
-
-        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'Pos.php') ? 'active' : ''; ?>"
+        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'Pos.php' || $pagina_actual == 'pos.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/Pos.php">
             <i class="bi bi-display"></i>
             Punto de Venta (POS)
@@ -116,30 +115,54 @@ $es_pos = ($pagina_actual === 'pos.php');
 
 <script>
 (function() {
-    var sidebar   = document.getElementById('gymSidebar');
-    var btn       = document.getElementById('sidebarToggle');
-    var icon      = document.getElementById('toggleIcon');
-    var esPos     = <?php echo $es_pos ? 'true' : 'false'; ?>;
-
-    // Estado inicial
-    var collapsed = esPos;
-    if (collapsed) {
+    var sidebar = document.getElementById('gymSidebar');
+    var btn = document.getElementById('sidebarToggle');
+    var icon = document.getElementById('toggleIcon');
+    
+    // Verificar si estamos en POS
+    var esPos = <?php echo $es_pos ? 'true' : 'false'; ?>;
+    
+    // Función para ocultar sidebar
+    function ocultarSidebar() {
+        sidebar.style.transform = 'translateX(-250px)';
         document.body.classList.add('sidebar-collapsed');
-        icon.className = 'bi bi-layout-sidebar';
+        if (icon) icon.className = 'bi bi-layout-sidebar';
+        // Guardar estado
+        localStorage.setItem('sidebar_oculto', 'true');
     }
-
-    btn.addEventListener('click', function() {
-        collapsed = !collapsed;
-
-        if (collapsed) {
-            sidebar.classList.add('sidebar-hidden');
-            document.body.classList.add('sidebar-collapsed');
-            icon.className = 'bi bi-layout-sidebar';
+    
+    // Función para mostrar sidebar
+    function mostrarSidebar() {
+        sidebar.style.transform = 'translateX(0)';
+        document.body.classList.remove('sidebar-collapsed');
+        if (icon) icon.className = 'bi bi-list';
+        // Guardar estado
+        localStorage.setItem('sidebar_oculto', 'false');
+    }
+    
+    // Si estamos en POS, ocultar el sidebar automáticamente
+    if (esPos) {
+        ocultarSidebar();
+    } else {
+        // En otras páginas, restaurar el estado anterior o mostrar
+        var estabaOculto = localStorage.getItem('sidebar_oculto');
+        if (estabaOculto === 'true') {
+            ocultarSidebar();
         } else {
-            sidebar.classList.remove('sidebar-hidden');
-            document.body.classList.remove('sidebar-collapsed');
-            icon.className = 'bi bi-list';
+            mostrarSidebar();
         }
-    });
+    }
+    
+    // Evento del botón toggle
+    if (btn) {
+        btn.addEventListener('click', function() {
+            var actualTransform = sidebar.style.transform;
+            if (actualTransform === 'translateX(-250px)' || sidebar.classList.contains('sidebar-hidden')) {
+                mostrarSidebar();
+            } else {
+                ocultarSidebar();
+            }
+        });
+    }
 })();
 </script>
