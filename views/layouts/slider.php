@@ -14,6 +14,7 @@ $es_pos = (strtolower($pagina_actual) === 'pos.php');
 ?>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/slider.css">
 
 <!-- Botón toggle siempre visible -->
 <button class="sidebar-toggle-btn" id="sidebarToggle" title="Mostrar / ocultar menú">
