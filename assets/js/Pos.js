@@ -1,6 +1,7 @@
 /* =====================
    POS.JS - DNS Pharmacy
    Con descuentos, IVA opcional
+   Y ESCÁNER AUTOMÁTICO (agrega sin clic)
    ===================== */
 const POS_CONTROLLER  = '/DNS_Pharmacy/controllers/Poscontroller.php';
 const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     mostrarFecha();
     cargarProductos();
     actualizarCarritoUI();
+    inicializarEscannerAutomatico(); // ← NUEVA FUNCIÓN
 });
 
 function mostrarFecha() {
@@ -30,6 +32,65 @@ function mostrarFecha() {
     if (el) el.textContent = new Date().toLocaleDateString('es-SV', {
         weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit'
     });
+}
+
+/* ══════════════════════════════════════════
+   ESCÁNER AUTOMÁTICO (NUEVO)
+══════════════════════════════════════════ */
+function inicializarEscannerAutomatico() {
+    var inputBusqueda = document.getElementById('buscadorPos');
+    if (!inputBusqueda) return;
+    
+    // Detectar cuando se presiona Enter (el escáner envía Enter automáticamente)
+    inputBusqueda.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            var codigo = this.value.trim();
+            
+            if (codigo === '') return;
+            
+            // Buscar producto por código de barras (exacto)
+            var producto = productos.find(p => p.codigo_barras === codigo);
+            
+            if (producto) {
+                // Agregar automáticamente al carrito
+                agregarAlCarrito(producto.id_producto);
+                // Limpiar el campo de búsqueda para el siguiente escaneo
+                this.value = '';
+                // Mostrar feedback visual (opcional)
+                mostrarToast('✓ ' + producto.nombre + ' agregado automáticamente', 'ok');
+            } else {
+                // Si no se encuentra por código exacto, buscar por nombre (búsqueda normal)
+                var productosCoincidentes = productos.filter(p => 
+                    p.nombre.toLowerCase().includes(codigo.toLowerCase()) ||
+                    p.codigo_barras.toLowerCase().includes(codigo.toLowerCase())
+                );
+                
+                if (productosCoincidentes.length === 1) {
+                    // Si solo hay un resultado, lo agregamos automáticamente
+                    agregarAlCarrito(productosCoincidentes[0].id_producto);
+                    this.value = '';
+                    mostrarToast('✓ ' + productosCoincidentes[0].nombre + ' agregado automáticamente', 'ok');
+                } else if (productosCoincidentes.length > 1) {
+                    // Múltiples resultados: mostrar en grid para selección manual
+                    mostrarToast('Múltiples productos encontrados. Selecciona uno.', 'info');
+                    // No limpiamos el campo para que pueda ver los resultados
+                } else {
+                    mostrarToast('Producto no encontrado: ' + codigo, 'error');
+                }
+            }
+        }
+    });
+    
+    // También soportar el botón de escaneo manual si existe
+    var btnScan = document.querySelector('.btn-scan');
+    if (btnScan) {
+        btnScan.addEventListener('click', function() {
+            // Enfocar el input para escanear
+            inputBusqueda.focus();
+            mostrarToast('Escanea un código de barras...', 'info');
+        });
+    }
 }
 
 /* ══════════════════════════════════════════
@@ -499,7 +560,7 @@ function mostrarToast(mensaje, tipo) {
         document.body.appendChild(toast);
     }
     toast.textContent = mensaje;
-    toast.style.background = tipo === 'error' ? '#c62828' : '#2e7d32';
+    toast.style.background = tipo === 'error' ? '#c62828' : (tipo === 'info' ? '#ff9800' : '#2e7d32');
     toast.style.opacity    = '1';
     toast.style.transform  = 'translateY(0)';
     setTimeout(function() {
