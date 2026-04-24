@@ -1,8 +1,4 @@
-/* =====================
-   HISTORIAL_VENTAS.JS - DNS Pharmacy
-   ===================== */
 
-// ✅ Usando el nombre correcto del archivo
 const HV_CONTROLLER = '/DNS_Pharmacy/controllers/HistorialventasController.php';
 
 var ventasData = [];

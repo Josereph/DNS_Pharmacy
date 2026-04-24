@@ -1,9 +1,4 @@
-/* ═══════════════════════════════════════════════
-   perfil.js — DNS Pharmacy
-   FormData se construye 100% manual en cada función
-   para evitar que campos deshabilitados o de solo
-   lectura interfieran con el envío al servidor.
-═══════════════════════════════════════════════ */
+
 
 const API = '../controllers/PerfilController.php';
 

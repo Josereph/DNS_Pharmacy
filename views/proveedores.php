@@ -130,10 +130,7 @@ $views = $base_url . '/views';
                         <span class="form-error" id="err_nit"></span>
 
                     </div>
-                    <div class="form-group-custom">
-                        <label>NRC</label>
-                        <input type="text" id="prov_nrc" name="nrc" class="form-input" placeholder="Ej. 123456-7">
-                    </div>
+                  
                 </div>
 
                 <div class="form-seccion">Configuración</div>

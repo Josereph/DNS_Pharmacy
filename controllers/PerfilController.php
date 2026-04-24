@@ -30,12 +30,7 @@ switch ($action) {
         break;
 
     /* ── Detalle de venta ── */
-    case 'detalle':
-        $id_venta = (int) ($_GET['id_venta'] ?? 0);
-        $detalle  = $model->obtenerDetalle($id_venta);
-        echo json_encode(['error' => false, 'data' => $detalle]);
-        break;
-
+   
     /* ── Actualizar nombre, apellido, telefono ── */
     case 'actualizar':
         $nombre   = trim($_POST['nombre']   ?? '');

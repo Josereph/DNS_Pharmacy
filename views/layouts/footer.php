@@ -42,11 +42,12 @@ $base_url = '/DNS_Pharmacy';
           <div class="devcore-modal">
             <p class="devcore-title">Equipo DevCore</p>
             <ul>
+              <li></li>
+              <li>Arturo Hernandez</li>
+              <li>Joseph Crespin</li>
+              <li>Rene Orellana</li>
+              <li>Carlos Mejia</li>
               <li>Lisseth Portillo</li>
-              <li>Arturo</li>
-              <li>Joseph</li>
-              <li>Rene</li>
-              <li>CHarly</li>
             </ul>
           </div>
         </div>

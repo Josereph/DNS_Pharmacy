@@ -1,7 +1,4 @@
-/* =====================
-   USUARIOS.JS - DNS Pharmacy
-   Conectado a BD via fetch
-   ===================== */
+
 
 const USR_CONTROLLER = '/DNS_Pharmacy/controllers/Usuariocontroller.php';
 

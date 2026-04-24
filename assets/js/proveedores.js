@@ -150,15 +150,7 @@ function guardarProveedor(e) {
         valido = false;
     }
 
-    /* ── NRC (obligatorio, formato 000000-0) ── */
-    const nrc = document.getElementById('prov_nrc').value.trim();
-    if (!nrc) {
-        document.getElementById('err_nrc').textContent = 'El NRC es obligatorio.';
-        valido = false;
-    } else if (!/^\d{1,6}-\d{1}$/.test(nrc)) {
-        document.getElementById('err_nrc').textContent = 'Formato inválido. Ej: 123456-7';
-        valido = false;
-    }
+   
 
     if (!valido) return;
 
@@ -172,7 +164,7 @@ function guardarProveedor(e) {
     formData.append('correo',          correo);
     formData.append('direccion',       direccion);
     formData.append('nit',             nit);
-    formData.append('nrc',             nrc);
+    
     formData.append('estado',          document.getElementById('prov_estado').checked ? '1' : '0');
 
     fetch(CONTROLLER, { method: 'POST', body: formData })
@@ -278,7 +270,7 @@ function abrirModalProveedor(id) {
     document.getElementById('prov_correo').value    = p.correo           || '';
     document.getElementById('prov_direccion').value = p.direccion        || '';
     document.getElementById('prov_nit').value       = p.nit              || '';
-    document.getElementById('prov_nrc').value       = p.nrc              || '';
+    
     document.getElementById('prov_estado').checked  = p.estado == 1;
     limpiarErrores();
     abrirModal('modalProveedor');
@@ -297,7 +289,6 @@ function verProveedor(id) {
             <div class="detalle-item" style="grid-column:1/-1"><label>Dirección</label><span>${esc(p.direccion || '—')}</span></div>
             <hr class="detalle-divider">
             <div class="detalle-item"><label>NIT</label><span>${esc(p.nit || '—')}</span></div>
-            <div class="detalle-item"><label>NRC</label><span>${esc(p.nrc || '—')}</span></div>
             <hr class="detalle-divider">
             <div class="detalle-item"><label>Estado</label><span>${badgeEstado(p.estado)}</span></div>
             <div class="detalle-item"><label>Registrado</label><span>${formatearFecha(p.created_at)}</span></div>
