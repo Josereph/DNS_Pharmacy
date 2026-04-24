@@ -1,7 +1,6 @@
 /* =====================
    POS.JS - DNS Pharmacy
    Con descuentos, IVA opcional
-   Y ESCÁNER AUTOMÁTICO (agrega sin clic)
    ===================== */
 const POS_CONTROLLER  = '/DNS_Pharmacy/controllers/Poscontroller.php';
 const PROD_CONTROLLER = '/DNS_Pharmacy/controllers/Productocontroller.php';
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     mostrarFecha();
     cargarProductos();
     actualizarCarritoUI();
-    inicializarEscannerAutomatico(); // ← NUEVA FUNCIÓN
+    iniciarScanner();
 });
 
 function mostrarFecha() {
@@ -35,61 +34,86 @@ function mostrarFecha() {
 }
 
 /* ══════════════════════════════════════════
-   ESCÁNER AUTOMÁTICO (NUEVO)
+   ESCÁNER DE CÓDIGO DE BARRAS
+   La pistola manda caracteres muy rápido
+   (< 100ms entre teclas) + Enter al final.
+   Al detectar Enter agrega el producto
+   directo al carrito.
 ══════════════════════════════════════════ */
-function inicializarEscannerAutomatico() {
-    var inputBusqueda = document.getElementById('buscadorPos');
-    if (!inputBusqueda) return;
-    
-    // Detectar cuando se presiona Enter (el escáner envía Enter automáticamente)
-    inputBusqueda.addEventListener('keypress', function(e) {
+var _bufferScanner = '';
+var _timerScanner  = null;
+
+function iniciarScanner() {
+    document.addEventListener('keydown', function(e) {
+
+        // Si el foco está en otro input distinto al buscador, ignorar
+        var activo     = document.activeElement;
+        var esBuscador = activo && activo.id === 'buscadorPos';
+        var esOtroInput = activo
+            && (activo.tagName === 'INPUT' || activo.tagName === 'TEXTAREA' || activo.tagName === 'SELECT')
+            && !esBuscador;
+        if (esOtroInput) return;
+
         if (e.key === 'Enter') {
-            e.preventDefault();
-            var codigo = this.value.trim();
-            
-            if (codigo === '') return;
-            
-            // Buscar producto por código de barras (exacto)
-            var producto = productos.find(p => p.codigo_barras === codigo);
-            
-            if (producto) {
-                // Agregar automáticamente al carrito
-                agregarAlCarrito(producto.id_producto);
-                // Limpiar el campo de búsqueda para el siguiente escaneo
-                this.value = '';
-                // Mostrar feedback visual (opcional)
-                mostrarToast('✓ ' + producto.nombre + ' agregado automáticamente', 'ok');
-            } else {
-                // Si no se encuentra por código exacto, buscar por nombre (búsqueda normal)
-                var productosCoincidentes = productos.filter(p => 
-                    p.nombre.toLowerCase().includes(codigo.toLowerCase()) ||
-                    p.codigo_barras.toLowerCase().includes(codigo.toLowerCase())
-                );
-                
-                if (productosCoincidentes.length === 1) {
-                    // Si solo hay un resultado, lo agregamos automáticamente
-                    agregarAlCarrito(productosCoincidentes[0].id_producto);
-                    this.value = '';
-                    mostrarToast('✓ ' + productosCoincidentes[0].nombre + ' agregado automáticamente', 'ok');
-                } else if (productosCoincidentes.length > 1) {
-                    // Múltiples resultados: mostrar en grid para selección manual
-                    mostrarToast('Múltiples productos encontrados. Selecciona uno.', 'info');
-                    // No limpiamos el campo para que pueda ver los resultados
-                } else {
-                    mostrarToast('Producto no encontrado: ' + codigo, 'error');
-                }
+            var codigo = _bufferScanner.trim();
+            _bufferScanner = '';
+            clearTimeout(_timerScanner);
+
+            if (codigo.length >= 3) {
+                procesarCodigoEscaneado(codigo);
+                // Limpiar buscador si tenía el foco
+                var buscador = document.getElementById('buscadorPos');
+                if (buscador) buscador.value = '';
             }
+            return;
+        }
+
+        // Acumular carácter
+        if (e.key.length === 1) {
+            _bufferScanner += e.key;
+            clearTimeout(_timerScanner);
+            // Si pasan 100ms sin otra tecla → escritura manual, limpiar buffer
+            _timerScanner = setTimeout(function() {
+                _bufferScanner = '';
+            }, 100);
         }
     });
-    
-    // También soportar el botón de escaneo manual si existe
-    var btnScan = document.querySelector('.btn-scan');
-    if (btnScan) {
-        btnScan.addEventListener('click', function() {
-            // Enfocar el input para escanear
-            inputBusqueda.focus();
-            mostrarToast('Escanea un código de barras...', 'info');
-        });
+}
+
+function procesarCodigoEscaneado(codigo) {
+    var prod = productos.find(function(p) {
+        return String(p.codigo_barras).trim() === String(codigo).trim();
+    });
+
+    if (!prod) {
+        mostrarToast('Código no encontrado: ' + codigo, 'error');
+        // Poner el código en el buscador para que el cajero lo vea
+        var buscador = document.getElementById('buscadorPos');
+        if (buscador) { buscador.value = codigo; buscarProducto(); }
+        return;
+    }
+
+    if (parseInt(prod.stock_actual) <= 0) {
+        mostrarToast(prod.nombre + ' — Sin stock disponible.', 'error');
+        return;
+    }
+
+    // Agregar al carrito directamente
+    agregarAlCarrito(prod.id_producto);
+
+    // Flash verde en el buscador como confirmación visual
+    var buscador = document.getElementById('buscadorPos');
+    if (buscador) {
+        buscador.value            = '✓  ' + prod.nombre;
+        buscador.style.background = '#e8f5e9';
+        buscador.style.color      = '#2e7d32';
+        buscador.style.fontWeight = '600';
+        setTimeout(function() {
+            buscador.value            = '';
+            buscador.style.background = '';
+            buscador.style.color      = '';
+            buscador.style.fontWeight = '';
+        }, 1200);
     }
 }
 
@@ -560,7 +584,7 @@ function mostrarToast(mensaje, tipo) {
         document.body.appendChild(toast);
     }
     toast.textContent = mensaje;
-    toast.style.background = tipo === 'error' ? '#c62828' : (tipo === 'info' ? '#ff9800' : '#2e7d32');
+    toast.style.background = tipo === 'error' ? '#c62828' : '#2e7d32';
     toast.style.opacity    = '1';
     toast.style.transform  = 'translateY(0)';
     setTimeout(function() {
