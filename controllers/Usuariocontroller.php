@@ -53,7 +53,7 @@ switch ($accion) {
         $telefono = trim($_POST['telefono']      ?? '') ?: null;
         $id_rol   = intval($_POST['id_rol']      ?? 0);
         $password = trim($_POST['password_hash'] ?? '');
-        $estado   = isset($_POST['estado'])      ? 1 : 0;
+        $estado   = isset($_POST['estado']) && $_POST['estado'] == '1' ? 1 : 0;
 
         if (!$nombre || !$apellido || !$correo || !$id_rol) {
             echo json_encode(['ok' => false, 'mensaje' => 'Faltan campos obligatorios.']);
@@ -79,41 +79,59 @@ switch ($accion) {
         $stmtCheck->close();
 
         if ($id > 0) {
-            // Editar
-            if ($password) {
+            // ── EDITAR ──
+            if (!empty($password)) {
+                // Con nueva contraseña
+                if (strlen($password) < 6) {
+                    $conn->close();
+                    echo json_encode(['ok' => false, 'mensaje' => 'La contraseña debe tener al menos 6 caracteres.']);
+                    break;
+                }
                 $hash = password_hash($password, PASSWORD_BCRYPT);
-                $stmt = $conn->prepare("UPDATE usuarios SET nombre=?,apellido=?,correo=?,telefono=?,id_rol=?,password_hash=?,estado=? WHERE id_usuario=?");
-                $stmt->bind_param('ssssiisi', $nombre, $apellido, $correo, $telefono, $id_rol, $hash, $estado, $id);
+                $stmt = $conn->prepare(
+                    "UPDATE usuarios SET nombre=?, apellido=?, correo=?, telefono=?, id_rol=?, password_hash=?, estado=? WHERE id_usuario=?"
+                );
+                // s  s       s       s         i       s              i       i
+                $stmt->bind_param('ssssisis', $nombre, $apellido, $correo, $telefono, $id_rol, $hash, $estado, $id);
             } else {
-                $stmt = $conn->prepare("UPDATE usuarios SET nombre=?,apellido=?,correo=?,telefono=?,id_rol=?,estado=? WHERE id_usuario=?");
-                $stmt->bind_param('ssssiis', $nombre, $apellido, $correo, $telefono, $id_rol, $estado, $id);
+                // Sin cambiar contraseña
+                $stmt = $conn->prepare(
+                    "UPDATE usuarios SET nombre=?, apellido=?, correo=?, telefono=?, id_rol=?, estado=? WHERE id_usuario=?"
+                );
+                // s  s       s       s         i       i       i
+                $stmt->bind_param('ssssiіi', $nombre, $apellido, $correo, $telefono, $id_rol, $estado, $id);
             }
+
             $stmt->execute();
             $ok = $stmt->affected_rows >= 0;
             $stmt->close();
             $conn->close();
             echo json_encode(['ok' => $ok, 'mensaje' => $ok ? 'Usuario actualizado.' : 'Error al actualizar.']);
+
         } else {
-            // Crear — contraseña obligatoria
+            // ── CREAR ──
             if (!$password || strlen($password) < 6) {
                 $conn->close();
                 echo json_encode(['ok' => false, 'mensaje' => 'La contraseña debe tener al menos 6 caracteres.']);
                 break;
             }
             $hash = password_hash($password, PASSWORD_BCRYPT);
-            $stmt = $conn->prepare("INSERT INTO usuarios (id_rol,nombre,apellido,correo,password_hash,telefono,estado) VALUES (?,?,?,?,?,?,?)");
+            $stmt = $conn->prepare(
+                "INSERT INTO usuarios (id_rol, nombre, apellido, correo, password_hash, telefono, estado) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            );
+            // i  s       s         s       s              s         i
             $stmt->bind_param('isssssi', $id_rol, $nombre, $apellido, $correo, $hash, $telefono, $estado);
             $stmt->execute();
             $nuevoId = $conn->insert_id;
             $stmt->close();
             $conn->close();
-            echo json_encode(['ok' => $nuevoId > 0, 'mensaje' => 'Usuario creado.', 'id' => $nuevoId]);
+            echo json_encode(['ok' => $nuevoId > 0, 'mensaje' => $nuevoId > 0 ? 'Usuario creado.' : 'Error al crear usuario.', 'id' => $nuevoId]);
         }
         break;
 
     /* ── Eliminar usuario ── */
     case 'eliminar':
-        $id         = intval($_POST['id_usuario']      ?? 0);
+        $id         = intval($_POST['id_usuario'] ?? 0);
         $id_session = intval($_SESSION['usuario_id']);
 
         if ($id === $id_session) {
