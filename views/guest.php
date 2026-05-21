@@ -155,11 +155,10 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </section>
 
-    <!-- ==================== FOOTER INTEGRADO ==================== -->
+    <!-- ==================== FOOTER ==================== -->
     <footer class="guest-footer">
         <div class="container">
             <div class="footer-grid">
-                <!-- Columna 1 - Logo y descripción -->
                 <div class="footer-col">
                     <div class="footer-logo">
                         <img src="<?php echo $base_url; ?>/assets/img/DNS_LOGO.png" alt="DNS Pharmacy" class="footer-logo-img">
@@ -180,7 +179,6 @@ $base_url = '/DNS_Pharmacy';
                     </div>
                 </div>
 
-                <!-- Columna 2 - Enlaces rápidos -->
                 <div class="footer-col">
                     <h4>Enlaces rápidos</h4>
                     <ul class="footer-links">
@@ -191,7 +189,6 @@ $base_url = '/DNS_Pharmacy';
                     </ul>
                 </div>
 
-                <!-- Columna 3 - Contacto adicional -->
                 <div class="footer-col">
                     <h4>Contáctanos</h4>
                     <div class="footer-contact-item">
@@ -218,7 +215,48 @@ $base_url = '/DNS_Pharmacy';
         </div>
     </footer>
 
+</div><!-- fin guest-wrapper -->
+
+<!-- ==================== CHATBOT DNSBOT ==================== -->
+<button id="dns-chat-btn" title="Habla con DNSBot">💊</button>
+
+<div id="dns-chat-window">
+    <div id="dns-chat-header">
+        <div class="dns-avatar">🤖</div>
+        <div class="dns-info">
+            <strong>DNSBot</strong>
+            <span>Asistente de DNS Pharmacy</span>
+        </div>
+        <button id="dns-chat-close" title="Cerrar">✕</button>
+    </div>
+
+    <div id="dns-chat-chips">
+        <span class="dns-chip" onclick="dnsChip(this)">¿Qué medicamentos tienen?</span>
+        <span class="dns-chip" onclick="dnsChip(this)">¿Tienen analgésicos?</span>
+        <span class="dns-chip" onclick="dnsChip(this)">¿Cuáles son los precios?</span>
+        <span class="dns-chip" onclick="dnsChip(this)">¿Qué hay en stock?</span>
+    </div>
+
+    <div id="dns-chat-messages">
+        <div class="dns-msg dns-bot">
+            👋 ¡Hola! Soy <strong>DNSBot</strong>, el asistente de DNS Pharmacy.<br>
+            Puedo ayudarte a consultar <strong>medicamentos disponibles</strong>,
+            <strong>precios</strong> y <strong>stock</strong>. ¿En qué te ayudo?
+        </div>
+    </div>
+
+    <div id="dns-chat-footer">
+        <input
+            type="text"
+            id="dns-chat-input"
+            placeholder="Escribe tu pregunta..."
+            maxlength="300"
+            autocomplete="off"
+        />
+        <button id="dns-chat-send" title="Enviar">➤</button>
+    </div>
 </div>
+<!-- ==================== FIN CHATBOT ==================== -->
 
 <script src="../assets/js/guest.js"></script>
 </body>
