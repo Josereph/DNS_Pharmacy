@@ -6,7 +6,8 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$base_url = '';
+$base_url      = '';
+$usuario_rol   = $_SESSION['usuario_rol'] ?? '';
 
 // Incluir conexión a la base de datos
 require_once __DIR__ . '/../config/database.php';
@@ -34,25 +35,6 @@ if (!$conn) {
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/footer.css">
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/historial_ventas.css">
 
-    <style>
-        .stat-card {
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            cursor: pointer;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 14px 28px rgba(0,0,0,0.10), 0 10px 10px rgba(0,0,0,0.08);
-        }
-
-        .tabla-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .tabla-card:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-    </style>
 </head>
 <body>
 
@@ -209,14 +191,53 @@ if (!$conn) {
             <div class="modal-footer-custom">
                 <button type="button" class="btn-cancelar" onclick="cerrarModal('modalDetalle')">Cerrar</button>
                 <button type="button" class="btn-imprimir" onclick="imprimirDetalle()"><i class="bi bi-printer"></i> Imprimir</button>
+                <button type="button" class="btn-anular" id="btnAnularVenta" onclick="solicitarAnulacion()" style="display:none">
+                    <i class="bi bi-x-circle"></i> Anular Venta
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
+    <script>
+        window.USUARIO_ROL = '<?php echo htmlspecialchars($usuario_rol); ?>';
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="<?php echo $base_url; ?>/assets/js/historial_ventas.js"></script>
+
+    <!-- Modal confirmación de anulación -->
+    <div class="modal-overlay" id="modalAnular">
+        <div class="modal-box" style="max-width:460px">
+            <div class="modal-header" style="background:linear-gradient(135deg,#dc3545,#c82333)">
+                <h5 class="modal-titulo"><i class="bi bi-exclamation-triangle-fill"></i> Confirmar Anulación</h5>
+                <button class="modal-cerrar" onclick="cerrarModal('modalAnular')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center;padding:12px 0 8px">
+                    <i class="bi bi-x-octagon" style="font-size:48px;color:#dc3545"></i>
+                    <p style="margin:16px 0 6px;font-size:15px;font-weight:600;color:#333">
+                        ¿Anular el ticket <strong id="txtTicketAnular"></strong>?
+                    </p>
+                    <p style="font-size:13px;color:#666;margin-bottom:16px">
+                        Esta acción devolverá los productos al inventario y marcará la venta como <strong>Anulada</strong>. No se puede deshacer.
+                    </p>
+                    <div style="margin-bottom:12px;text-align:left">
+                        <label style="font-size:13px;font-weight:600;color:#555;display:block;margin-bottom:6px">Motivo (opcional)</label>
+                        <input type="text" id="motivoAnulacion" maxlength="255"
+                               placeholder="Ej: Error en productos ingresados"
+                               style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;outline:none;box-sizing:border-box">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-cancelar" onclick="cerrarModal('modalAnular')">Cancelar</button>
+                <button type="button" id="btnConfirmarAnulacion" class="btn-anular" onclick="ejecutarAnulacion()">
+                    <i class="bi bi-x-circle"></i> Sí, anular venta
+                </button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

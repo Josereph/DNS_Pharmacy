@@ -400,3 +400,60 @@
     .modal-mediano { max-width: 100%; }
     .page-header { flex-direction: column; gap: 10px; }
 }
+
+/* ══════════════════════════════════════
+   BOTÓN ANULAR VENTA
+══════════════════════════════════════ */
+.btn-anular {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s, transform 0.15s;
+}
+.btn-anular:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+.btn-anular:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ══════════════════════════════════════
+   FILA ANULADA EN TABLA
+══════════════════════════════════════ */
+.tabla-ventas tbody tr[data-estado="anulada"] {
+    background: #fff5f5;
+    opacity: 0.82;
+}
+.tabla-ventas tbody tr[data-estado="anulada"] .td-total {
+    color: #c62828;
+    text-decoration: line-through;
+}
+
+/* ══════════════════════════════════════
+   ESTILOS STAT-CARD / TABLA-CARD
+   (movidos desde <style> inline en la vista)
+══════════════════════════════════════ */
+.stat-card {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+}
+.stat-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.10), 0 10px 10px rgba(0,0,0,0.08);
+}
+.tabla-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tabla-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}

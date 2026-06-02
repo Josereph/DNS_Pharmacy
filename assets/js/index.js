@@ -21,7 +21,7 @@ function iniciarReloj() {
 
 /* ── Stats ── */
 function cargarStats() {
-    fetch(window.BASE_URL + '/controllers/IndexController.php?action=stats')
+    fetch((window.BASE_URL || '') + '/controllers/Indexcontroller.php?action=stats')
         .then(r => r.json())
         .then(data => {
             if (data.error) return;
@@ -38,7 +38,7 @@ function cargarStats() {
 
 /* ── Ventas recientes ── */
 function cargarVentasRecientes() {
-    fetch(window.BASE_URL + '/controllers/IndexController.php?action=ventas_recientes')
+    fetch((window.BASE_URL || '') + '/controllers/Indexcontroller.php?action=ventas_recientes')
         .then(r => r.json())
         .then(data => {
             const tbody = document.getElementById('dashVentasRecientes');
@@ -61,7 +61,7 @@ function cargarVentasRecientes() {
 
 /* ── Stock bajo ── */
 function cargarStockBajo() {
-    fetch(window.BASE_URL + '/controllers/IndexController.php?action=stock_bajo')
+    fetch((window.BASE_URL || '') + '/controllers/Indexcontroller.php?action=stock_bajo')
         .then(r => r.json())
         .then(data => {
             const cont = document.getElementById('dashStockBajo');
@@ -92,7 +92,7 @@ function cargarStockBajo() {
 
 /* ── Compras recientes ── */
 function cargarComprasRecientes() {
-    fetch(window.BASE_URL + '/controllers/IndexController.php?action=compras_recientes')
+    fetch((window.BASE_URL || '') + '/controllers/Indexcontroller.php?action=compras_recientes')
         .then(r => r.json())
         .then(data => {
             const tbody = document.getElementById('dashComprasRecientes');

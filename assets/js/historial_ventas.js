@@ -2,9 +2,11 @@
    HISTORIAL_VENTAS.JS - DNS Pharmacy
    ===================== */
 
-const HV_CONTROLLER = window.BASE_URL + '/controllers/HistorialventasController.php';
+const HV_CONTROLLER = (window.BASE_URL || '') + '/controllers/HistorialventasController.php';
 
-var ventasData = [];
+var ventasData        = [];
+var ventaActivaId     = null;   // ID de la venta abierta en el modal de detalle
+var ventaActivaTicket = null;   // Nro. ticket de la venta abierta
 
 /* ══════════════════════════════════════════
    INIT
@@ -158,10 +160,12 @@ function actualizarContador(visible, total) {
    VER DETALLE
 ══════════════════════════════════════════ */
 function verDetalle(id) {
+    ventaActivaId = id;
     fetch(HV_CONTROLLER + '?accion=detalle&id=' + id)
         .then(function(r) { return r.json(); })
         .then(function(res) {
             if (!res.ok) { mostrarToast(res.mensaje, 'error'); return; }
+            ventaActivaTicket = res.datos.venta.numero_ticket;
             renderizarDetalle(res.datos);
             abrirModal('modalDetalle');
         });
@@ -199,9 +203,71 @@ function renderizarDetalle(d) {
              + '</div>';
 
     document.getElementById('cuerpoDetalle').innerHTML = html;
+
+    /* Mostrar botón Anular solo si: estado completada + usuario es Admin */
+    var btnAnular = document.getElementById('btnAnularVenta');
+    if (btnAnular) {
+        var esAdmin     = (typeof window.USUARIO_ROL !== 'undefined') && window.USUARIO_ROL === 'Administrador';
+        var completada  = (v.estado === 'completada');
+        btnAnular.style.display = (esAdmin && completada) ? 'inline-flex' : 'none';
+    }
 }
 
 function imprimirDetalle() { window.print(); }
+
+/* ══════════════════════════════════════════
+   ANULACIÓN DE VENTA
+══════════════════════════════════════════ */
+function solicitarAnulacion() {
+    if (!ventaActivaId || !ventaActivaTicket) return;
+    document.getElementById('txtTicketAnular').textContent = ventaActivaTicket;
+    document.getElementById('motivoAnulacion').value = '';
+    cerrarModal('modalDetalle');
+    abrirModal('modalAnular');
+}
+
+function ejecutarAnulacion() {
+    if (!ventaActivaId) return;
+
+    var btn    = document.getElementById('btnConfirmarAnulacion');
+    var motivo = document.getElementById('motivoAnulacion').value.trim();
+
+    btn.disabled   = true;
+    btn.innerHTML  = '<i class="bi bi-hourglass-split"></i> Anulando...';
+
+    var fd = new FormData();
+    fd.append('accion',   'anular');
+    fd.append('id_venta', ventaActivaId);
+    fd.append('motivo',   motivo);
+
+    fetch(HV_CONTROLLER, { method: 'POST', body: fd })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="bi bi-x-circle"></i> Sí, anular venta';
+
+            cerrarModal('modalAnular');
+
+            if (res.ok) {
+                mostrarToast(res.mensaje, 'ok');
+                /* Recargar la tabla para reflejar el nuevo estado */
+                var desde = document.getElementById('filtroDesde').value;
+                var hasta = document.getElementById('filtroHasta').value;
+                cargarVentas(desde, hasta);
+            } else {
+                mostrarToast(res.mensaje, 'error');
+            }
+
+            ventaActivaId     = null;
+            ventaActivaTicket = null;
+        })
+        .catch(function(e) {
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="bi bi-x-circle"></i> Sí, anular venta';
+            mostrarToast('Error de conexión al intentar anular.', 'error');
+            console.error('Error anulación:', e);
+        });
+}
 
 function generarPDFHistorial() {
     var desde = document.getElementById('filtroDesde').value;
