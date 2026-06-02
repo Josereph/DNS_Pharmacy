@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-define('GEMINI_API_KEY', 'AIzaSyBkR6UEuAgHca_Zo2iNa92kdzQDx-uAEDU');
+define('GEMINI_API_KEY', 'AIzaSyApKib4MyiDXnN6nAv_-2RSOdXLx5s6xVE');
 define('GEMINI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

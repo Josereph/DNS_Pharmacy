@@ -22,10 +22,29 @@
 
 .pos-topbar { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:linear-gradient(135deg,#841480,#6a1066); flex-shrink:0; }
 .pos-topbar-left { display:flex; flex-direction:column; gap:2px; }
+.pos-topbar-right { display:flex; align-items:center; gap:10px; }
 .pos-title { font-size:16px; font-weight:600; color:#fff; }
 .pos-date  { font-size:11px; color:rgba(255,255,255,0.7); }
 .turno-badge { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); padding:5px 12px; border-radius:20px; font-size:12px; color:#fff; }
 .turno-badge i { font-size:8px; color:#70ab32; }
+
+/* Botón revertir en topbar */
+.btn-revertir {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+}
+.btn-revertir:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
 
 .pos-search-row { padding:14px 16px 10px; flex-shrink:0; background:#fff; border-bottom:1px solid #eee; }
 .pos-search-box { display:flex; align-items:center; gap:10px; border:1.5px solid #e8d5e8; border-radius:8px; padding:0 14px; background:#fdf8fd; transition:border .2s; }
@@ -89,40 +108,23 @@
 .total-row { display:flex; justify-content:space-between; font-size:13px; color:#888; padding:3px 0; }
 .total-final { font-size:16px; font-weight:700; color:#841480; padding-top:8px; border-top:1px solid #e8d5e8; margin-top:4px; }
 
-/* Fila descuento */
 .descuento-row { color:#e65100 !important; }
 .descuento-label { display:flex; align-items:center; gap:5px; font-size:12px; }
 .descuento-label i { font-size:11px; }
 .descuento-val { color:#e65100; font-weight:600; }
 
-/* Botón descuento */
 .descuento-btn-wrap { padding:6px 14px; flex-shrink:0; }
 .btn-descuento {
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1.5px dashed #e8d5e8;
-    background: #fdf8fd;
-    color: #841480;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: all .2s;
+    width: 100%; padding: 8px; border-radius: 6px;
+    border: 1.5px dashed #e8d5e8; background: #fdf8fd;
+    color: #841480; font-size: 12px; font-weight: 500;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 6px; transition: all .2s;
 }
 .btn-descuento:hover:not(:disabled) { border-color:#841480; background:#f5e8f5; }
 .btn-descuento:disabled { opacity:.4; cursor:not-allowed; }
-.btn-descuento.btn-descuento-activo {
-    border-style: solid;
-    border-color: #e65100;
-    background: #fff3e0;
-    color: #e65100;
-}
+.btn-descuento.btn-descuento-activo { border-style:solid; border-color:#e65100; background:#fff3e0; color:#e65100; }
 
-/* IVA Toggle */
 .iva-toggle { display:flex; justify-content:space-between; align-items:center; padding:6px 10px; margin:4px 0; background:#fdf5fd; border-radius:6px; border:1px solid #e8d5e8; }
 .iva-label { font-size:12px; font-weight:500; color:#841480; margin:0; }
 .switch { position:relative; display:inline-block; width:36px; height:20px; margin:0; }
@@ -133,7 +135,6 @@
 .switch input:checked + .slider-switch:before { transform:translateX(16px); }
 .iva-row { transition:opacity .2s; }
 
-/* Método pago */
 .pay-section { padding:10px 14px; flex-shrink:0; }
 .pay-label { font-size:11px; font-weight:600; color:#aaa; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
 .pay-btns { display:flex; gap:6px; }
@@ -157,7 +158,7 @@
 .btn-cobrar:disabled { opacity:.4; cursor:not-allowed; }
 
 /* ══════════════════════════════════════
-   MODAL DESCUENTO
+   MODALES
 ══════════════════════════════════════ */
 .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.55); z-index:1050; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; }
 .modal-overlay.activo { display:flex !important; }
@@ -167,6 +168,7 @@
 
 .modal-descuento { max-width:400px; }
 .modal-ticket    { max-width:400px; }
+.modal-mediano   { max-width:520px; }
 
 .modal-header { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:linear-gradient(135deg,#841480,#6a1066); border-bottom:3px solid #70ab32; border-radius:10px 10px 0 0; flex-shrink:0; }
 .modal-titulo { font-size:15px; font-weight:600; color:#fff; margin:0; display:flex; align-items:center; gap:8px; }
@@ -175,122 +177,39 @@
 .modal-body { padding:20px; overflow-y:auto; flex:1; min-height:0; }
 .modal-footer-custom { display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid #f0e6f0; background:#fff; border-radius:0 0 10px 10px; flex-shrink:0; }
 
-/* Tabs tipo descuento */
+/* Descuento */
 .descuento-tipo-tabs { display:flex; gap:8px; margin-bottom:18px; }
-.tipo-tab {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1.5px solid #e8d5e8;
-    background: #fdf8fd;
-    color: #888;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: all .2s;
-}
-.tipo-tab.active {
-    background: #841480;
-    border-color: #841480;
-    color: #ffffff;
-}
+.tipo-tab { flex:1; padding:10px; border-radius:8px; border:1.5px solid #e8d5e8; background:#fdf8fd; color:#888; font-size:13px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all .2s; }
+.tipo-tab.active { background:#841480; border-color:#841480; color:#fff; }
 .tipo-tab:hover:not(.active) { border-color:#841480; color:#841480; }
 
-/* Input descuento */
-.descuento-input-wrap {
-    display: flex;
-    align-items: center;
-    border: 1.5px solid #e8d5e8;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 6px;
-    transition: border .2s;
-}
-.descuento-input-wrap:focus-within { border-color: #841480; }
-
-.descuento-prefix {
-    padding: 12px 16px;
-    background: #f5e8f5;
-    color: #841480;
-    font-size: 16px;
-    font-weight: 700;
-    border-right: 1px solid #e8d5e8;
-    min-width: 48px;
-    text-align: center;
-}
-
-.descuento-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    padding: 12px 16px;
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-    background: #fdf8fd;
-    text-align: center;
-}
+.descuento-input-wrap { display:flex; align-items:center; border:1.5px solid #e8d5e8; border-radius:8px; overflow:hidden; margin-bottom:6px; transition:border .2s; }
+.descuento-input-wrap:focus-within { border-color:#841480; }
+.descuento-prefix { padding:12px 16px; background:#f5e8f5; color:#841480; font-size:16px; font-weight:700; border-right:1px solid #e8d5e8; min-width:48px; text-align:center; }
+.descuento-input { flex:1; border:none; outline:none; padding:12px 16px; font-size:20px; font-weight:600; color:#333; background:#fdf8fd; text-align:center; }
 
 .form-error { font-size:11px; color:#c62828; min-height:14px; display:block; margin-bottom:8px; }
 
-/* Preview descuento */
-.descuento-preview {
-    background: #fdf5fd;
-    border: 1px solid #e8d5e8;
-    border-radius: 8px;
-    padding: 14px;
-    margin-bottom: 14px;
-}
-
-.preview-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: #666;
-    padding: 3px 0;
-}
-
+.descuento-preview { background:#fdf5fd; border:1px solid #e8d5e8; border-radius:8px; padding:14px; margin-bottom:14px; }
+.preview-row { display:flex; justify-content:space-between; font-size:13px; color:#666; padding:3px 0; }
 .descuento-preview-val .text-descuento { color:#e65100; font-weight:600; }
-
 .preview-divider { border:none; border-top:1px dashed #e8d5e8; margin:8px 0; }
+.preview-total { font-size:15px; font-weight:700; color:#841480; }
 
-.preview-total {
-    font-size: 15px;
-    font-weight: 700;
-    color: #841480;
-}
-
-/* Accesos rápidos */
-.descuento-rapidos { }
 .rapidos-label { font-size:11px; font-weight:600; color:#aaa; text-transform:uppercase; letter-spacing:.06em; display:block; margin-bottom:8px; }
 .rapidos-btns { display:flex; gap:6px; flex-wrap:wrap; }
-.rapidos-btns button {
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1.5px solid #e8d5e8;
-    background: #fdf8fd;
-    color: #841480;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .2s;
-}
+.rapidos-btns button { padding:6px 14px; border-radius:20px; border:1.5px solid #e8d5e8; background:#fdf8fd; color:#841480; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; }
 .rapidos-btns button:hover { background:#841480; color:#fff; border-color:#841480; }
 
-/* Botones footer modal descuento */
 .btn-cancelar { background:#fff; color:#555; border:1.5px solid #ddd; padding:8px 18px; border-radius:6px; font-size:13px; cursor:pointer; transition:all .2s; }
 .btn-cancelar:hover { border-color:#c62828; color:#c62828; }
 .btn-aplicar-desc { background:linear-gradient(135deg,#841480,#6a1066); color:#fff; border:none; padding:8px 20px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; transition:opacity .2s; }
 .btn-aplicar-desc:hover { opacity:.9; }
 
-/* Ticket */
 .btn-guardar  { background:linear-gradient(135deg,#841480,#6a1066); color:#fff; border:none; padding:8px 18px; border-radius:6px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px; }
 .btn-imprimir { background:#185FA5; color:#fff; border:none; padding:8px 18px; border-radius:6px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px; }
 
+/* Ticket */
 .ticket-paper { font-family:'Courier New',monospace; font-size:12px; color:#222; text-align:center; padding:10px; }
 .ticket-empresa { font-size:16px; font-weight:700; margin-bottom:2px; }
 .ticket-sub { font-size:11px; color:#555; margin-bottom:6px; }
@@ -304,48 +223,81 @@
 .ticket-total-final { font-size:15px; font-weight:700; }
 .ticket-footer { font-size:11px; color:#555; margin-top:4px; }
 
+/* ══════════════════════════════════════
+   MODAL REVERSIÓN
+══════════════════════════════════════ */
+.rev-loading { text-align:center; color:#bbb; padding:24px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.rev-empty   { text-align:center; color:#bbb; padding:32px; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+.rev-empty i { font-size:28px; }
+
+/* Botón última venta */
+.btn-revertir-ultima {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 2px solid #c62828;
+    background: linear-gradient(135deg, #fce4ec, #fff8f8);
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: all .2s;
+    text-align: left;
+}
+.btn-revertir-ultima:hover { background:#fce4ec; box-shadow:0 4px 12px rgba(198,40,40,0.15); }
+.rev-ultima-left  { display:flex; align-items:center; gap:12px; }
+.rev-ultima-left > i { font-size:22px; color:#c62828; }
+.rev-ultima-label { font-size:13px; font-weight:600; color:#c62828; }
+.rev-ultima-info  { font-size:11px; color:#888; font-family:'Courier New',monospace; margin-top:2px; }
+.rev-ultima-icon  { font-size:20px; color:#c62828; }
+
+.rev-seccion-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:#aaa; margin-bottom:10px; }
+
+/* Items */
+.rev-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #f0e6f0;
+    background: #fdf8fd;
+    margin-bottom: 6px;
+    gap: 10px;
+    transition: background .15s;
+}
+.rev-item:hover { background:#f5e8f5; }
+.rev-item-anulada { opacity:.5; }
+.rev-item-ticket { font-family:'Courier New',monospace; font-size:12px; font-weight:600; color:#841480; }
+.rev-item-meta   { display:flex; align-items:center; gap:8px; margin-top:3px; font-size:11px; color:#aaa; flex-wrap:wrap; }
+.rev-item-right  { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.rev-item-total  { font-size:14px; font-weight:700; color:#841480; }
+
+.btn-rev-item {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 12px; border-radius: 6px; border: none;
+    background: #c62828; color: #fff; font-size: 11px;
+    font-weight: 500; cursor: pointer; white-space: nowrap; transition: opacity .2s;
+}
+.btn-rev-item:hover { opacity:.85; }
+.rev-ya-anulada { font-size:11px; color:#bbb; }
+
+/* Badges reutilizados */
+.badge-efectivo      { background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500; }
+.badge-tarjeta       { background:#e3f2fd; color:#1565c0; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500; }
+.badge-transferencia { background:#fff3e0; color:#e65100; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500; }
+.badge-anulada-rev   { background:#fce4ec; color:#c62828; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500; }
+
+/* Print */
 @media print {
     body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
-    
-    /* Hide ALL elements (including sidebar, main UI, and scripts) */
     body > * { display: none !important; }
-    
-    /* ONLY show the ticket modal */
-    body > #modalTicket {
-        position: static !important;
-        background: transparent !important;
-        padding: 0 !important;
-        display: block !important;
-        margin: 0 !important;
-    }
-    
-    #modalTicket .modal-box {
-        box-shadow: none !important;
-        border: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        animation: none !important;
-    }
-    
-    #modalTicket .modal-header,
-    #modalTicket .modal-footer-custom {
-        display: none !important;
-    }
-    
-    #modalTicket .modal-body {
-        padding: 0 !important;
-        overflow: visible !important;
-    }
-
-    /* Ticket styling for thermal printer */
-    .ticket-paper { 
-        width: 100% !important; /* Let the printer driver determine the actual physical width */
-        margin: 0 !important; 
-        padding: 0 !important; 
-    }
-    
+    body > #modalTicket { position: static !important; background: transparent !important; padding: 0 !important; display: block !important; margin: 0 !important; }
+    #modalTicket .modal-box { box-shadow:none !important; border:none !important; margin:0 !important; padding:0 !important; max-width:100% !important; width:100% !important; animation:none !important; }
+    #modalTicket .modal-header, #modalTicket .modal-footer-custom { display: none !important; }
+    #modalTicket .modal-body { padding: 0 !important; overflow: visible !important; }
+    .ticket-paper { width: 100% !important; margin: 0 !important; padding: 0 !important; }
     @page { margin: 0; }
 }
 
