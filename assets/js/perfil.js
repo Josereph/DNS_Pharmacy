@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 
+=======
+/* ═══════════════════════════════════════════════
+   perfil.js — DNS Pharmacy
+   COMPLETAMENTE FUNCIONAL
+═══════════════════════════════════════════════ */
+>>>>>>> origin/FrontEnd2
 
-const API = '../controllers/PerfilController.php';
+const API = '/DNS_Pharmacy/controllers/PerfilController.php';
 
 let misVentas      = [];
 let todasMisVentas = [];
-const usuarioSesion = {};
+let usuarioSesion = {};
 const roles      = { 1: 'Administrador', 2: 'Cajero' };
 const rolesClase = { 1: 'rol-admin', 2: 'rol-cajero' };
 
@@ -98,7 +105,6 @@ function subirFoto(file) {
    MODAL EDITAR PERFIL
 ══════════════════════════════════ */
 function abrirModalEditar() {
-    // Llenar campos con datos actuales del usuario en sesión
     const nombre   = document.getElementById('edit_nombre');
     const apellido = document.getElementById('edit_apellido');
     const telefono = document.getElementById('edit_telefono');
@@ -111,46 +117,40 @@ function abrirModalEditar() {
 
     limpiarErrores(['err_edit_nombre', 'err_edit_apellido', 'err_edit_telefono']);
     abrirModal('modalEditar');
-
-    // Foco en nombre después de que el modal se muestre
     setTimeout(() => nombre.focus(), 100);
 }
 
 function guardarEdicion() {
     limpiarErrores(['err_edit_nombre', 'err_edit_apellido', 'err_edit_telefono']);
 
-    // Leer valores DIRECTAMENTE de los campos, no del form
     const nombre   = document.getElementById('edit_nombre').value.trim();
     const apellido = document.getElementById('edit_apellido').value.trim();
     const telefono = document.getElementById('edit_telefono').value.trim();
 
     let valido = true;
 
-    /* Validar nombre */
     if (!nombre) {
         setError('err_edit_nombre', 'El nombre es obligatorio.');
         valido = false;
     } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u.test(nombre)) {
-        setError('err_edit_nombre', 'Solo se permiten letras, sin números ni símbolos.');
+        setError('err_edit_nombre', 'Solo se permiten letras.');
         valido = false;
     } else if (nombre.length < 2 || nombre.length > 50) {
         setError('err_edit_nombre', 'Debe tener entre 2 y 50 caracteres.');
         valido = false;
     }
 
-    /* Validar apellido */
     if (!apellido) {
         setError('err_edit_apellido', 'El apellido es obligatorio.');
         valido = false;
     } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u.test(apellido)) {
-        setError('err_edit_apellido', 'Solo se permiten letras, sin números ni símbolos.');
+        setError('err_edit_apellido', 'Solo se permiten letras.');
         valido = false;
     } else if (apellido.length < 2 || apellido.length > 50) {
         setError('err_edit_apellido', 'Debe tener entre 2 y 50 caracteres.');
         valido = false;
     }
 
-    /* Validar teléfono — opcional, pero si viene debe tener 8 dígitos */
     if (telefono !== '') {
         const soloDigitos = telefono.replace(/\D/g, '');
         if (soloDigitos.length !== 8) {
@@ -161,29 +161,26 @@ function guardarEdicion() {
 
     if (!valido) return;
 
-    /* Construir FormData MANUALMENTE — sin pasar el form completo */
     const fd = new FormData();
     fd.append('action',   'actualizar');
     fd.append('nombre',   nombre);
     fd.append('apellido', apellido);
     fd.append('telefono', telefono);
-    /* El correo NO se incluye — no se edita */
 
     fetch(API, { method: 'POST', body: fd })
         .then(async r => {
             const texto = await r.text();
             try { return JSON.parse(texto); }
-            catch { throw new Error('Respuesta inválida del servidor: ' + texto.slice(0, 200)); }
+            catch { throw new Error('Respuesta inválida: ' + texto.slice(0, 200)); }
         })
         .then(data => {
             if (data.error) {
-                if (data.campo === 'nombre')   setError('err_edit_nombre',   data.mensaje);
+                if (data.campo === 'nombre')   setError('err_edit_nombre', data.mensaje);
                 if (data.campo === 'apellido') setError('err_edit_apellido', data.mensaje);
                 if (data.campo === 'telefono') setError('err_edit_telefono', data.mensaje);
                 if (!data.campo) mostrarToast(data.mensaje, 'error');
                 return;
             }
-            /* Actualizar objeto local sin recargar la página */
             Object.assign(usuarioSesion, { nombre, apellido, telefono });
             pintarPerfil();
             cerrarModal('modalEditar');
@@ -191,7 +188,7 @@ function guardarEdicion() {
         })
         .catch(e => {
             console.error('Error al guardar perfil:', e);
-            mostrarToast('Error de conexión. Revisa la consola (F12).', 'error');
+            mostrarToast('Error de conexión.', 'error');
         });
 }
 
@@ -244,7 +241,6 @@ function guardarPassword() {
     fd.append('action',          'cambiarPassword');
     fd.append('password_actual', actual);
     fd.append('password_nuevo',  nueva);
-    /* Nota: el campo se llama 'password_nuevo' en el controller */
 
     fetch(API, { method: 'POST', body: fd })
         .then(async r => {
@@ -255,7 +251,7 @@ function guardarPassword() {
         .then(data => {
             if (data.error) {
                 if (data.campo === 'actual') setError('err_pass_actual', data.mensaje);
-                if (data.campo === 'nueva')  setError('err_pass_nueva',  data.mensaje);
+                if (data.campo === 'nueva')  setError('err_pass_nueva', data.mensaje);
                 if (!data.campo) mostrarToast(data.mensaje, 'error');
                 return;
             }
@@ -264,7 +260,7 @@ function guardarPassword() {
         })
         .catch(e => {
             console.error('Error contraseña:', e);
-            mostrarToast('Error de conexión. Revisa la consola (F12).', 'error');
+            mostrarToast('Error de conexión.', 'error');
         });
 }
 
@@ -311,7 +307,7 @@ function actualizarStats(ventasHoy) {
 function renderizarTabla(lista) {
     const tbody = document.getElementById('cuerpoMisVentas');
     if (!lista.length) {
-        tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">No hay ventas en el período seleccionado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">No hay ventas en el período seleccionado.懈</table>`;
         return;
     }
     tbody.innerHTML = lista.map((v, i) => `
@@ -325,8 +321,7 @@ function renderizarTabla(lista) {
             <td>${badgeMetodo(v.metodo_pago)}</td>
             <td>${badgeEstado(v.estado)}</td>
             <td>
-                <button class="btn-accion btn-ver"
-                        onclick="verDetalleVenta(${v.id_venta}, '${esc(v.numero_ticket)}')">
+                <button class="btn-accion btn-ver" onclick="verDetalleVenta(${v.id_venta})">
                     <i class="bi bi-receipt"></i>
                 </button>
             </td>
@@ -334,44 +329,140 @@ function renderizarTabla(lista) {
     `).join('');
 }
 
-function verDetalleVenta(id, ticket) {
-    document.getElementById('tituloDetalleVenta').textContent = `Ticket ${ticket}`;
-    fetch(`${API}?action=detalle&id_venta=${id}`)
-        .then(r => r.json())
+/* ══════════════════════════════════
+   DETALLE DE VENTA - CORREGIDO
+══════════════════════════════════ */
+function verDetalleVenta(id) {
+    console.log("Ver detalle venta ID:", id);
+    
+    if (!id) {
+        mostrarToast('ID de venta inválido', 'error');
+        return;
+    }
+    
+    // Abrir modal y mostrar loading
+    const cuerpo = document.getElementById('cuerpoDetalleVenta');
+    const titulo = document.getElementById('tituloDetalleVenta');
+    
+    if (titulo) titulo.textContent = 'Cargando ticket...';
+    if (cuerpo) cuerpo.innerHTML = '<div style="text-align:center;padding:40px;"><i class="bi bi-hourglass-split"></i> Cargando detalles...</div>';
+    
+    abrirModal('modalDetalleVenta');
+    
+    // Buscar el ticket número de la venta
+    const venta = todasMisVentas.find(v => v.id_venta == id);
+    const ticketNum = venta ? venta.numero_ticket : '#' + id;
+    if (titulo) titulo.textContent = `Ticket ${ticketNum}`;
+    
+    // Hacer la petición al servidor
+    const url = `${API}?action=detalle&id_venta=${id}`;
+    console.log("URL llamada:", url);
+    
+    fetch(url)
+        .then(response => {
+            console.log("Respuesta status:", response.status);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            if (data.error) return;
-            const venta = todasMisVentas.find(v => v.id_venta == id);
-            document.getElementById('cuerpoDetalleVenta').innerHTML = `
-                <table class="tabla-detalle-venta">
-                    <thead>
+            console.log("Datos recibidos:", data);
+            
+            if (data.error) {
+                mostrarToast(data.mensaje || 'Error al cargar detalle', 'error');
+                if (cuerpo) {
+                    cuerpo.innerHTML = `<div style="text-align:center;padding:40px;color:#c62828;">
+                        <i class="bi bi-exclamation-triangle"></i> ${data.mensaje || 'Error al cargar el detalle'}
+                    </div>`;
+                }
+                return;
+            }
+            
+            if (!data.data || data.data.length === 0) {
+                if (cuerpo) {
+                    cuerpo.innerHTML = '<div style="text-align:center;padding:40px;">No hay productos en esta venta</div>';
+                }
+                return;
+            }
+            
+            // Construir HTML de productos
+            let productosHtml = `
+                <table class="table table-sm">
+                    <thead class="table-light">
                         <tr>
                             <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio unit.</th>
-                            <th>Subtotal</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-end">Precio</th>
+                            <th class="text-end">Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${data.data.map(d => `
-                            <tr>
-                                <td>${esc(d.nombre)}</td>
-                                <td>${d.cantidad}</td>
-                                <td>$${parseFloat(d.precio_unitario).toFixed(2)}</td>
-                                <td><strong>$${parseFloat(d.subtotal).toFixed(2)}</strong></td>
-                            </tr>
-                        `).join('')}
+            `;
+            
+            data.data.forEach(item => {
+                productosHtml += `
+                    <tr>
+                        <td>${esc(item.nombre)}</td>
+                        <td class="text-center">${item.cantidad}</td>
+                        <td class="text-end">$${parseFloat(item.precio_unitario).toFixed(2)}</td>
+                        <td class="text-end"><strong>$${parseFloat(item.subtotal).toFixed(2)}</strong></td>
+                    </tr>
+                `;
+            });
+            
+            productosHtml += `
                     </tbody>
                 </table>
-                ${venta ? `
-                <div class="totales-grid">
-                    <div class="total-row"><span>Subtotal</span><span>$${parseFloat(venta.subtotal).toFixed(2)}</span></div>
-                    <div class="total-row"><span>Impuesto</span><span>$${parseFloat(venta.impuesto).toFixed(2)}</span></div>
-                    <div class="total-row total-final"><span>Total</span><span>$${parseFloat(venta.total).toFixed(2)}</span></div>
-                    <div class="total-row"><span>Monto recibido</span><span>$${parseFloat(venta.monto_recibido).toFixed(2)}</span></div>
-                    <div class="total-row total-cambio"><span>Cambio</span><span>$${parseFloat(venta.cambio).toFixed(2)}</span></div>
-                </div>` : ''}
             `;
-            abrirModal('modalDetalleVenta');
+            
+            // Agregar totales si tenemos la venta
+            if (venta) {
+                productosHtml += `
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal:</span>
+                                <span>$${parseFloat(venta.subtotal).toFixed(2)}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Impuesto:</span>
+                                <span>$${parseFloat(venta.impuesto).toFixed(2)}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>TOTAL:</span>
+                                <span>$${parseFloat(venta.total).toFixed(2)}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2 text-muted">
+                                <span>Monto recibido:</span>
+                                <span>$${parseFloat(venta.monto_recibido).toFixed(2)}</span>
+                            </div>
+                            <div class="d-flex justify-content-between text-success">
+                                <span>Cambio:</span>
+                                <span>$${parseFloat(venta.cambio).toFixed(2)}</span>
+                            </div>
+                            <div class="mt-2 small text-muted">
+                                Método de pago: ${venta.metodo_pago || 'N/A'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (cuerpo) {
+                cuerpo.innerHTML = productosHtml;
+            }
+        })
+        .catch(error => {
+            console.error('Error detalle:', error);
+            mostrarToast('Error de conexión al cargar el detalle', 'error');
+            if (cuerpo) {
+                cuerpo.innerHTML = `<div style="text-align:center;padding:40px;color:#c62828;">
+                    <i class="bi bi-wifi-off"></i> Error de conexión.<br>
+                    <small>${error.message}</small>
+                </div>`;
+            }
         });
 }
 
@@ -407,22 +498,18 @@ function setPeriodo(periodo, ev) {
 
 /* ══════════════════════════════════
    VALIDACIÓN EN TIEMPO REAL
-   Bloquea caracteres inválidos mientras el usuario escribe
 ══════════════════════════════════ */
 function iniciarValidacionEnTiempoReal() {
-    /* Nombre: solo letras y espacios, máx 50 */
     document.getElementById('edit_nombre')?.addEventListener('input', function () {
         this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '').slice(0, 50);
         setError('err_edit_nombre', '');
     });
 
-    /* Apellido: solo letras y espacios, máx 50 */
     document.getElementById('edit_apellido')?.addEventListener('input', function () {
         this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '').slice(0, 50);
         setError('err_edit_apellido', '');
     });
 
-    /* Teléfono: solo dígitos, máx 8 */
     document.getElementById('edit_telefono')?.addEventListener('input', function () {
         this.value = this.value.replace(/\D/g, '').slice(0, 8);
         if (this.value.length > 0 && this.value.length < 8) {
@@ -432,10 +519,9 @@ function iniciarValidacionEnTiempoReal() {
         }
     });
 
-    /* Contraseñas: limpiar error al escribir */
     const passErrores = {
-        pass_actual:    'err_pass_actual',
-        pass_nueva:     'err_pass_nueva',
+        pass_actual: 'err_pass_actual',
+        pass_nueva: 'err_pass_nueva',
         pass_confirmar: 'err_pass_confirmar'
     };
     Object.entries(passErrores).forEach(([inputId, errId]) => {
@@ -444,46 +530,32 @@ function iniciarValidacionEnTiempoReal() {
 }
 
 /* ══════════════════════════════════
-   TOAST (notificación flotante)
+   TOAST
 ══════════════════════════════════ */
 function mostrarToast(mensaje, tipo = 'exito') {
-    /* Eliminar toast anterior */
     document.getElementById('perfilToast')?.remove();
 
-    /* Inyectar keyframes solo una vez */
     if (!document.getElementById('toastStyle')) {
         const s = document.createElement('style');
         s.id = 'toastStyle';
         s.textContent = `
-            @keyframes toastIn  { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
+            @keyframes toastIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
             @keyframes toastOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-12px); } }
         `;
         document.head.appendChild(s);
     }
 
-    const colores = {
-        exito: '#70ab32',
-        error: '#c62828'
-    };
+    const colores = { exito: '#70ab32', error: '#c62828' };
 
     const toast = document.createElement('div');
     toast.id = 'perfilToast';
     toast.style.cssText = `
-        position: fixed;
-        top: 24px;
-        right: 24px;
-        z-index: 99999;
-        background: ${colores[tipo] || colores.exito};
-        color: #ffffff;
-        padding: 14px 22px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.22);
-        animation: toastIn 0.3s ease forwards;
-        max-width: 340px;
-        line-height: 1.5;
-        font-family: 'Segoe UI', sans-serif;
+        position: fixed; top: 24px; right: 24px; z-index: 99999;
+        background: ${colores[tipo] || colores.exito}; color: #ffffff;
+        padding: 14px 22px; border-radius: 8px; font-size: 14px;
+        font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+        animation: toastIn 0.3s ease forwards; max-width: 340px;
+        line-height: 1.5; font-family: 'Segoe UI', sans-serif;
         pointer-events: none;
     `;
     toast.textContent = mensaje;
@@ -500,7 +572,7 @@ function mostrarToast(mensaje, tipo = 'exito') {
 ══════════════════════════════════ */
 function togglePass(inputId, btn) {
     const input = document.getElementById(inputId);
-    const icon  = btn.querySelector('i');
+    const icon = btn.querySelector('i');
     if (input.type === 'password') {
         input.type = 'text';
         if (icon) icon.className = 'bi bi-eye-slash';
@@ -513,11 +585,11 @@ function togglePass(inputId, btn) {
 /* ══════════════════════════════════
    MODALES
 ══════════════════════════════════ */
-function abrirModal(id)  { document.getElementById(id).style.display = 'flex'; }
+function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
 function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', function (e) {
+    overlay.addEventListener('click', function(e) {
         if (e.target === this) cerrarModal(this.id);
     });
 });
@@ -543,27 +615,27 @@ function formatearFecha(f) {
 function esc(str) {
     if (!str) return '';
     return String(str)
-        .replace(/&/g,  '&amp;')
-        .replace(/</g,  '&lt;')
-        .replace(/>/g,  '&gt;')
-        .replace(/"/g,  '&quot;')
-        .replace(/'/g,  '&#39;');
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 function badgeMetodo(m) {
     const map = {
-        efectivo:      `<span class="badge-metodo metodo-efectivo">Efectivo</span>`,
-        tarjeta:       `<span class="badge-metodo metodo-tarjeta">Tarjeta</span>`,
-        transferencia: `<span class="badge-metodo metodo-transferencia">Transferencia</span>`
+        efectivo: '<span class="badge-metodo metodo-efectivo">Efectivo</span>',
+        tarjeta: '<span class="badge-metodo metodo-tarjeta">Tarjeta</span>',
+        transferencia: '<span class="badge-metodo metodo-transferencia">Transferencia</span>'
     };
     return map[m] || `<span class="badge-metodo">${esc(m)}</span>`;
 }
 
 function badgeEstado(e) {
     const map = {
-        completada: `<span class="badge-completada">Completada</span>`,
-        anulada:    `<span class="badge-anulada">Anulada</span>`,
-        pendiente:  `<span class="badge-pendiente">Pendiente</span>`
+        completada: '<span class="badge-completada">Completada</span>',
+        anulada: '<span class="badge-anulada">Anulada</span>',
+        pendiente: '<span class="badge-pendiente">Pendiente</span>'
     };
     return map[e] || esc(e);
 }

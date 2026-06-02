@@ -34,19 +34,41 @@ class PerfilModel {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function obtenerDetalle($id_venta) {
-        $stmt = $this->conn->prepare(
-            "SELECT dv.id_detalle_venta, dv.id_venta, dv.id_producto,
-                    dv.id_lote, dv.cantidad, dv.precio_unitario, dv.subtotal,
-                    p.nombre
-             FROM detalle_venta dv
-             INNER JOIN productos p ON dv.id_producto = p.id_producto
-             WHERE dv.id_venta = ?"
-        );
-        $stmt->bind_param('i', $id_venta);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+public function obtenerDetalle($id_venta) {
+    // Verificar que el ID sea válido
+    if ($id_venta <= 0) {
+        return [];
     }
+    
+    // Consulta para obtener los detalles
+    $sql = "SELECT dv.id_detalle_venta, dv.id_venta, dv.id_producto,
+                   dv.cantidad, dv.precio_unitario, dv.subtotal,
+                   p.nombre as nombre_producto
+            FROM detalle_venta dv
+            LEFT JOIN productos p ON dv.id_producto = p.id_producto
+            WHERE dv.id_venta = ?";
+    
+    $stmt = $this->conn->prepare($sql);
+    if (!$stmt) {
+        return [];
+    }
+    
+    $stmt->bind_param('i', $id_venta);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    
+    $detalles = [];
+    while ($row = $resultado->fetch_assoc()) {
+        $detalles[] = [
+            'nombre' => $row['nombre_producto'] ?? 'Producto',
+            'cantidad' => $row['cantidad'],
+            'precio_unitario' => $row['precio_unitario'],
+            'subtotal' => $row['subtotal']
+        ];
+    }
+    
+    return $detalles;
+}
 
     /* Solo actualiza nombre, apellido, telefono — el correo NUNCA se toca */
     public function actualizarPerfil($id_usuario, $nombre, $apellido, $telefono) {

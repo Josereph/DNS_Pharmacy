@@ -9,9 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/Pos.css">
-    
+
     <style>
-        /* Animación para las Cards al pasar el mouse */
         .producto-card {
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
@@ -20,13 +19,8 @@
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.08);
         }
-        /* Efecto sutil para el carrito */
-        .cart-items {
-            transition: transform 0.3s ease;
-        }
-        .cart-items:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
+        .cart-items { transition: transform 0.3s ease; }
+        .cart-items:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -55,6 +49,11 @@ include 'layouts/slider.php';
                     <i class="bi bi-circle-fill"></i>
                     <span>Turno activo</span>
                 </div>
+                <!-- BOTÓN REVERTIR -->
+                <button class="btn-revertir" onclick="abrirModalReversion()" title="Revertir venta">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Revertir
+                </button>
             </div>
         </div>
 
@@ -108,8 +107,6 @@ include 'layouts/slider.php';
                 <span>Subtotal</span>
                 <span id="totalSubtotal">$0.00</span>
             </div>
-
-            <!-- Descuento aplicado -->
             <div class="total-row descuento-row" id="descuentoRow" style="display:none;">
                 <span class="descuento-label">
                     <i class="bi bi-tag-fill"></i>
@@ -117,8 +114,6 @@ include 'layouts/slider.php';
                 </span>
                 <span id="totalDescuento" class="descuento-val">-$0.00</span>
             </div>
-
-            <!-- Toggle IVA -->
             <div class="iva-toggle">
                 <span class="iva-label">Aplicar IVA (13%)</span>
                 <label class="switch">
@@ -187,27 +182,20 @@ include 'layouts/slider.php';
             <button class="modal-cerrar" onclick="cerrarModalDescuento()">&times;</button>
         </div>
         <div class="modal-body">
-
             <div class="descuento-tipo-tabs">
                 <button class="tipo-tab active" data-tipo="porcentaje" onclick="seleccionarTipoDescuento(this, 'porcentaje')">
-                    <i class="bi bi-percent"></i>
-                    Porcentaje
+                    <i class="bi bi-percent"></i> Porcentaje
                 </button>
                 <button class="tipo-tab" data-tipo="monto" onclick="seleccionarTipoDescuento(this, 'monto')">
-                    <i class="bi bi-currency-dollar"></i>
-                    Monto fijo
+                    <i class="bi bi-currency-dollar"></i> Monto fijo
                 </button>
             </div>
-
             <div class="descuento-input-wrap">
                 <div class="descuento-prefix" id="descuentoPrefix">%</div>
                 <input type="number" id="inputDescuento" class="descuento-input"
-                       placeholder="0" min="0" step="0.01"
-                       oninput="previsualizarDescuento()">
+                       placeholder="0" min="0" step="0.01" oninput="previsualizarDescuento()">
             </div>
-
             <span class="form-error" id="errDescuento"></span>
-
             <div class="descuento-preview" id="descuentoPreview">
                 <div class="preview-row">
                     <span>Subtotal original</span>
@@ -223,7 +211,6 @@ include 'layouts/slider.php';
                     <span id="prevTotal">$0.00</span>
                 </div>
             </div>
-
             <div class="descuento-rapidos" id="rapidosPorcentaje">
                 <span class="rapidos-label">Accesos rápidos</span>
                 <div class="rapidos-btns">
@@ -235,7 +222,6 @@ include 'layouts/slider.php';
                     <button onclick="aplicarRapido(50)">50%</button>
                 </div>
             </div>
-
         </div>
         <div class="modal-footer-custom">
             <button class="btn-cancelar" onclick="quitarDescuento()">
@@ -290,6 +276,46 @@ include 'layouts/slider.php';
         </div>
     </div>
 </div>
+
+
+<!-- ══ MODAL: REVERSIÓN ══ -->
+<div class="modal-overlay" id="modalReversion">
+    <div class="modal-box modal-mediano">
+        <div class="modal-header">
+            <h5 class="modal-titulo">
+                <i class="bi bi-arrow-counterclockwise"></i> Revertir Venta
+            </h5>
+            <button class="modal-cerrar" onclick="cerrarModalReversion()">&times;</button>
+        </div>
+        <div class="modal-body">
+
+            <!-- Botón 1 clic — última venta -->
+            <button class="btn-revertir-ultima" id="btnRevertirUltima" style="display:none">
+                <div class="rev-ultima-left">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    <div>
+                        <div class="rev-ultima-label">Revertir última venta</div>
+                        <div class="rev-ultima-info">
+                            <span id="ultimaTicket"></span> · <span id="ultimaTotal"></span>
+                        </div>
+                    </div>
+                </div>
+                <i class="bi bi-arrow-counterclockwise rev-ultima-icon"></i>
+            </button>
+
+            <!-- Lista ventas de hoy -->
+            <div class="rev-seccion-label">Ventas de hoy</div>
+            <div id="revLista">
+                <div class="rev-loading"><i class="bi bi-arrow-repeat"></i> Cargando...</div>
+            </div>
+
+        </div>
+        <div class="modal-footer-custom">
+            <button class="btn-cancelar" onclick="cerrarModalReversion()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="../assets/js/Pos.js"></script>
