@@ -1,10 +1,13 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
-$base_url = '/DNS_Pharmacy';
+
+$base_url = '';
+$views = $base_url . '/views';
 ?>
 <!doctype html>
 <html lang="es">
@@ -77,6 +80,7 @@ $base_url = '/DNS_Pharmacy';
 <?php include 'layouts/footer.php'; ?>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 
@@ -84,6 +88,8 @@ $base_url = '/DNS_Pharmacy';
 =======
 >>>>>>> origin/BackEnd1
 >>>>>>> FrontEnd1
+=======
+>>>>>>> 3408827ad2d894f10c2307078627855c16ff108e
 <div class="modal-overlay" id="modalProveedor">
     <div class="modal-box modal-grande animate__animated animate__zoomIn animate__faster">
         <div class="modal-header">

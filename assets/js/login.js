@@ -1,86 +1,78 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form          = document.getElementById('loginForm');
-    const email         = document.getElementById('email');
-    const password      = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    const emailError    = document.getElementById('emailError');
-    const passwordError = document.getElementById('passwordError');
+/* =====================
+   LOGIN.JS - DNS Pharmacy
+   ===================== */
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    var form          = document.getElementById('loginForm');
+    var email         = document.getElementById('email');
+    var password      = document.getElementById('password');
+    var toggleBtn     = document.getElementById('togglePassword');
+    var toggleIcon    = document.getElementById('toggleIcon');
+    var emailError    = document.getElementById('emailError');
+    var passwordError = document.getElementById('passwordError');
 
     /* ── Helpers ── */
-    function setError(input, errorElement, message) {
-        input.closest('.input-wrapper').classList.add('input-error');
-        errorElement.textContent = message;
+    function setError(wrap, msgEl, msg) {
+        wrap.classList.add('field-error');
+        msgEl.textContent = msg;
     }
 
-    function clearError(input, errorElement) {
-        input.closest('.input-wrapper').classList.remove('input-error');
-        errorElement.textContent = '';
+    function clearError(wrap, msgEl) {
+        wrap.classList.remove('field-error');
+        msgEl.textContent = '';
     }
 
-    function limpiarAlertaGeneral() {
-        const alerta = document.getElementById('alertaGeneral');
-        if (alerta) alerta.remove();
+    function getWrap(input) { return input.closest('.field-wrap'); }
+
+    function limpiarAlerta() {
+        var al = document.getElementById('alertaGeneral');
+        if (al) al.remove();
     }
 
     /* ── Validaciones ── */
     function validateEmail() {
-        const value = email.value.trim();
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (value === '') {
-            setError(email, emailError, 'El correo electrónico es obligatorio.');
-            return false;
-        }
-        if (!regex.test(value)) {
-            setError(email, emailError, 'Ingresa un correo electrónico válido.');
-            return false;
-        }
-
-        clearError(email, emailError);
+        var value = email.value.trim();
+        var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!value) { setError(getWrap(email), emailError, 'El correo electrónico es obligatorio.'); return false; }
+        if (!regex.test(value)) { setError(getWrap(email), emailError, 'Ingresa un correo electrónico válido.'); return false; }
+        clearError(getWrap(email), emailError);
         return true;
     }
 
     function validatePassword() {
-        const value = password.value.trim();
-
-        if (value === '') {
-            setError(password, passwordError, 'La contraseña es obligatoria.');
-            return false;
-        }
-        if (value.length < 6) {
-            setError(password, passwordError, 'La contraseña debe tener al menos 6 caracteres.');
-            return false;
-        }
-
-        clearError(password, passwordError);
+        var value = password.value.trim();
+        if (!value) { setError(getWrap(password), passwordError, 'La contraseña es obligatoria.'); return false; }
+        if (value.length < 6) { setError(getWrap(password), passwordError, 'La contraseña debe tener al menos 6 caracteres.'); return false; }
+        clearError(getWrap(password), passwordError);
         return true;
     }
 
-    /* ── Eventos en tiempo real ── */
-    email.addEventListener('input', () => {
-        validateEmail();
-        limpiarAlertaGeneral();
-    });
+    /* ── Eventos tiempo real ── */
+    email.addEventListener('input', function() { validateEmail(); limpiarAlerta(); });
+    password.addEventListener('input', function() { validatePassword(); limpiarAlerta(); });
 
-    password.addEventListener('input', () => {
-        validatePassword();
-        limpiarAlertaGeneral();
-    });
-
-    /* ── Mostrar / ocultar contraseña ── */
-    togglePassword.addEventListener('click', () => {
-        const esPassword = password.getAttribute('type') === 'password';
-        password.setAttribute('type', esPassword ? 'text' : 'password');
-        togglePassword.textContent = esPassword ? 'Ocultar' : 'Ver';
+    /* ── Toggle contraseña ── */
+    toggleBtn.addEventListener('click', function() {
+        var esPass = password.getAttribute('type') === 'password';
+        password.setAttribute('type', esPass ? 'text' : 'password');
+        toggleIcon.className = esPass ? 'bi bi-eye-slash' : 'bi bi-eye';
     });
 
     /* ── Submit ── */
-    form.addEventListener('submit', (e) => {
-        const emailValido    = validateEmail();
-        const passwordValido = validatePassword();
+    form.addEventListener('submit', function(e) {
+        var emailOk    = validateEmail();
+        var passwordOk = validatePassword();
+        if (!emailOk || !passwordOk) { e.preventDefault(); return; }
 
-        if (!emailValido || !passwordValido) {
-            e.preventDefault();
+        // Feedback visual en el botón
+        var btn  = document.getElementById('btnLogin');
+        var text = document.getElementById('btnText');
+        if (btn && text) {
+            text.textContent = 'Verificando...';
+            btn.disabled     = true;
+            btn.style.opacity = '0.8';
         }
     });
+
 });

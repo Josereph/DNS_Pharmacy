@@ -1,14 +1,22 @@
 <?php
 $pagina_actual = basename($_SERVER['PHP_SELF']);
-$base_url = '/DNS_Pharmacy';
+$base_url = '';
+?>
+<script>
+    window.BASE_URL = "<?php echo $base_url; ?>";
+</script>
+<?php
+
 $views = $base_url . '/views';
 
 $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Usuario';
 $admin_rol    = $_SESSION['usuario_rol']    ?? 'Sin rol';
 $admin_ini    = strtoupper(substr($admin_nombre, 0, 2));
 
+$rol = $_SESSION['usuario_rol'] ?? '';
+
 // En el POS el sidebar arranca oculto
-$es_pos = ($pagina_actual === 'pos.php');
+$es_pos = ($pagina_actual === 'Pos.php');
 ?>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -26,12 +34,15 @@ $es_pos = ($pagina_actual === 'pos.php');
 
     <nav class="nav flex-column">
 
-        <a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
-           href="<?php echo $base_url; ?>/index.php">
-            <i class="bi bi-house-door"></i>
-            Inicio
-        </a>
+        <?php if ($rol === 'Administrador'): ?>
+<a class="nav-link <?php echo ($pagina_actual == 'index.php') ? 'active' : ''; ?>"
+   href="<?php echo $base_url; ?>/index.php">
+    <i class="bi bi-house-door"></i>
+    Inicio
+</a>
+<?php endif; ?>
 
+        <?php if ($rol === 'Administrador'): ?>
         <a class="nav-link <?php echo ($pagina_actual == 'usuarios.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/usuarios.php">
             <i class="bi bi-people"></i>
@@ -59,14 +70,8 @@ $es_pos = ($pagina_actual === 'pos.php');
             Inventario
         </a>
 
-        <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/historial_ventas.php">
-            <i class="bi bi-clock-history"></i>
-            Historial Ventas
-        </a>
-
         <a class="nav-link <?php echo ($pagina_actual == 'reportes.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/reportes.php">
+           href="<?php echo $views; ?>/Estadisticas.php">
             <i class="bi bi-bar-chart-line"></i>
             Reportes
         </a>
@@ -77,8 +82,17 @@ $es_pos = ($pagina_actual === 'pos.php');
             Asistencia
         </a>
 
-        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'pos.php') ? 'active' : ''; ?>"
-           href="<?php echo $views; ?>/pos.php">
+        <a class="nav-link <?php echo ($pagina_actual == 'historial_ventas.php') ? 'active' : ''; ?>"
+   href="<?php echo $views; ?>/historial_ventas.php">
+    <i class="bi bi-clock-history"></i>
+    Historial Ventas
+</a>
+        <?php endif; ?>
+
+       
+
+        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'Pos.php') ? 'active' : ''; ?>"
+           href="<?php echo $views; ?>/Pos.php">
             <i class="bi bi-display"></i>
             Punto de Venta (POS)
         </a>

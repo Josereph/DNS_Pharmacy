@@ -1,0 +1,184 @@
+=========================================================
+SOLUCIONES PARA EL MÓDULO DE PRODUCTOS (DNS PHARMACY)
+=========================================================
+Hola, aquí tienes las instrucciones y el código que debes reemplazar 
+para solucionar el problema que impide agregar o editar productos.
+
+El error principal ocurre porque al guardar en la base de datos (PHP), 
+la función que enlaza los datos (`bind_param`) tiene una letra "i" extra 
+en su configuración, lo que hace que MySQL rechace la solicitud. Además, 
+hay un pequeño ajuste en JavaScript para asegurar que la ruta al controlador sea correcta.
+
+Sigue estos 3 pasos:
+
+---------------------------------------------------------
+PASO 1: Corregir "insertar" en models/Productomodel.php
+---------------------------------------------------------
+Abre el archivo "models/Productomodel.php" y busca la función "public function insertar".
+Aproximadamente en la línea 73, verás esta línea de código:
+
+$stmt->bind_param(
+    'issssssddiisiisi',
+
+Cámbiala por esta línea (le quitamos una letra 'i' que sobraba, debe ser 'issssssddiisisi'):
+
+$stmt->bind_param(
+    'issssssddiisisi',
+
+Así quedará el bloque completo para que te guíes:
+
+$stmt->bind_param(
+    'issssssddiisisi',
+    $datos['id_categoria'],
+    $datos['codigo_barras'],
+    $datos['nombre'],
+    $datos['descripcion'],
+    $datos['presentacion'],
+    $datos['marca'],
+    $datos['laboratorio'],
+    $datos['precio_compra'],
+    $datos['precio_venta'],
+    $datos['stock_actual'],
+    $datos['stock_minimo'],
+    $datos['unidad_medida'],
+    $datos['requiere_receta'],
+    $datos['imagen_url'],
+    $datos['estado']
+);
+
+
+---------------------------------------------------------
+PASO 2: Corregir "actualizar" en models/Productomodel.php
+---------------------------------------------------------
+En el mismo archivo "models/Productomodel.php", baja hasta la función "public function actualizar".
+Aproximadamente en la línea 120, verás esta línea:
+
+$stmt->bind_param(
+    'issssssddiisiisii',
+
+Cámbiala por esta otra (de nuevo, quitando la 'i' extra, debe ser 'issssssddiisisii'):
+
+$stmt->bind_param(
+    'issssssddiisisii',
+
+Así quedará el bloque completo para guiarte:
+
+$stmt->bind_param(
+    'issssssddiisisii',
+    $datos['id_categoria'],
+    $datos['codigo_barras'],
+    $datos['nombre'],
+    $datos['descripcion'],
+    $datos['presentacion'],
+    $datos['marca'],
+    $datos['laboratorio'],
+    $datos['precio_compra'],
+    $datos['precio_venta'],
+    $datos['stock_actual'],
+    $datos['stock_minimo'],
+    $datos['unidad_medida'],
+    $datos['requiere_receta'],
+    $datos['imagen_url'],
+    $datos['estado'],
+    $datos['id_producto']
+);
+
+
+---------------------------------------------------------
+PASO 3: Corregir la ruta en assets/js/productos.js
+---------------------------------------------------------
+Abre el archivo "assets/js/productos.js" y ve a la línea 5, casi al principio.
+Verás esto:
+
+const CONTROLLER = window.BASE_URL + '/controllers/Productocontroller.php';
+
+Como "window.BASE_URL" a veces no está definido, esto genera una ruta como "undefined/controllers/...", lo que hace que falle. Cámbialo por esto:
+
+const CONTROLLER = (window.BASE_URL || '') + '/controllers/Productocontroller.php';
+
+
+
+
+
+
+
+
+
+=========================================================
+SOLUCIONES PARA EL MÓDULO DE PERFIL (En tu Host de InfinityFree)
+=========================================================
+Como me comentas que estás trabajando en tu host, necesitas hacer estos dos pasos para que el perfil guarde la información correctamente en tu base de datos de InfinityFree:
+
+---------------------------------------------------------
+PASO 1: Agregar la columna "foto_perfil" en tu Base de Datos
+---------------------------------------------------------
+El perfil usa la tabla "usuarios", pero en tu base de datos de InfinityFree falta una columna para guardar el nombre de la imagen. 
+1. Entra a tu panel de InfinityFree y abre phpMyAdmin.
+2. Selecciona tu base de datos (if0_41679603_...).
+3. Ve a la pestaña "SQL" (arriba).
+4. Pega el siguiente código y presiona Continuar (Go):
+
+ALTER TABLE usuarios ADD COLUMN foto_perfil VARCHAR(255) NULL DEFAULT NULL AFTER telefono;
+
+---------------------------------------------------------
+PASO 2: Corregir la ruta en assets/js/perfil.js
+---------------------------------------------------------
+Al igual que con productos, el archivo de JavaScript del perfil tiene problemas buscando la ruta cuando estás en el servidor.
+Abre tu archivo "assets/js/perfil.js" y busca en la línea 9 esto:
+
+const API = window.BASE_URL + '/controllers/PerfilController.php';
+
+Cámbialo por esto (agregando la validación de BASE_URL):
+
+const API = (window.BASE_URL || '') + '/controllers/PerfilController.php';
+
+
+=========================================================
+¡Listo! Guarda los cambios, sube el archivo perfil.js a tu host y tu perfil funcionará a la perfección.
+=========================================================
+
+
+=========================================================
+SOLUCIONES PARA EL ERROR 404 AL INICIAR SESIÓN (EMPLEADOS/CAJEROS)
+=========================================================
+El problema por el que te sale un error 404 (página no encontrada) cuando inicias sesión como cajero/empleado se debe a una diferencia de mayúsculas. El servidor Linux de InfinityFree es muy estricto con esto: el archivo real se llama "Pos.php" (con "P" mayúscula), pero el código estaba intentando redirigir a "pos.php" (con minúscula).
+
+Sigue estos pasos en tus archivos y luego súbelos a tu host:
+
+---------------------------------------------------------
+1. En el archivo "views/Bienvenida.php"
+---------------------------------------------------------
+Busca la línea 15 aproximadamente:
+: $base_url . '/views/pos.php';
+
+Cámbiala por (nota la P mayúscula en Pos.php):
+: $base_url . '/views/Pos.php';
+
+---------------------------------------------------------
+2. En el archivo "index.php" (en la carpeta principal)
+---------------------------------------------------------
+Busca la línea 14 (justo arriba en la validación del rol):
+header('Location: /views/pos.php');
+
+Cámbiala por:
+header('Location: /views/Pos.php');
+
+Baja más en ese mismo archivo "index.php" (línea 96 aprox) en el botón de Punto de Venta:
+<a href="<?php echo $base_url; ?>/views/pos.php" class="action-card purple">
+
+Cámbiala por:
+<a href="<?php echo $base_url; ?>/views/Pos.php" class="action-card purple">
+
+---------------------------------------------------------
+3. En el archivo "views/layouts/slider.php"
+---------------------------------------------------------
+Busca la línea 19:
+$es_pos = ($pagina_actual === 'pos.php');
+
+Cámbiala por:
+$es_pos = ($pagina_actual === 'Pos.php');
+
+
+=========================================================
+¡Listo! Sube esos 3 archivos modificados (Bienvenida.php, index.php y slider.php) a tu host en InfinityFree y ya te dejará entrar sin el error 404.
+=========================================================

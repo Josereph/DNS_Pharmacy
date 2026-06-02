@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
-$base_url = '/DNS_Pharmacy';
+$base_url = '';
 ?>
 <!doctype html>
 <html lang="es">

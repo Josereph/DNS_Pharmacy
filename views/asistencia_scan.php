@@ -36,17 +36,7 @@
         </div>
     </div>
 
-    <div class="manual-section">
-        <div class="manual-title"><i class="bi bi-pencil-square"></i> Registro manual</div>
-        <div class="manual-inputs">
-            <input type="text" id="manualUid" class="manual-input" placeholder="ID del usuario">
-            <input type="text" id="manualToken" class="manual-input" placeholder="Token del QR">
-            <button class="btn btn-primary" onclick="registrarManual()"><i class="bi bi-check-lg"></i> Registrar</button>
-        </div>
-        <div class="text-muted" style="font-size: 0.7rem; color: #94a3b8; text-align: center;">
-            <i class="bi bi-info-circle"></i> Usa este método si la cámara no funciona
-        </div>
-    </div>
+    
 </div>
 
 <!-- Modal resultado -->

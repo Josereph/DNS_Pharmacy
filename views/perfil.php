@@ -1,4 +1,14 @@
+<?php
+session_start();
 
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /views/Login.php');
+    exit;
+}
+
+$base_url = '';
+$views = $base_url . '/views';
+?>
 <!doctype html>
 <html lang="es">
 <head>

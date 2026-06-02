@@ -1,0 +1,148 @@
+/* =====================
+   INDEX / DASHBOARD - DNS Pharmacy
+   ===================== */
+
+.main-content { background: #f8f7fc; min-height: 100vh; }
+
+/* ── Header ── */
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #70ab32;
+}
+
+.dash-title { font-size: 22px; font-weight: 600; color: #841480; margin: 0; }
+.dash-subtitle { font-size: 12px; color: #aaa; margin: 3px 0 0; }
+
+.dash-rol-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f5e8f5;
+    color: #841480;
+    border: 1px solid #e8d5e8;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ── Stats ── */
+.dash-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.dash-stat-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(132,20,128,0.07);
+    border: 1px solid #eee;
+    transition: transform .2s, box-shadow .2s;
+    border-left: 4px solid transparent;
+}
+
+.dash-stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+
+.dash-stat-card.purple { border-left-color: #841480; }
+.dash-stat-card.green  { border-left-color: #70ab32; }
+.dash-stat-card.orange { border-left-color: #f57c00; }
+.dash-stat-card.blue   { border-left-color: #1565c0; }
+
+.ds-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.dash-stat-card.purple .ds-icon { background: #f5e8f5; color: #841480; }
+.dash-stat-card.green  .ds-icon { background: #e8f5e9; color: #70ab32; }
+.dash-stat-card.orange .ds-icon { background: #fff3e0; color: #f57c00; }
+.dash-stat-card.blue   .ds-icon { background: #e3f2fd; color: #1565c0; }
+
+.ds-val { font-size: 22px; font-weight: 700; color: #333; line-height: 1; }
+.ds-lbl { font-size: 12px; color: #aaa; margin-top: 4px; }
+
+/* ── Sección ── */
+.dash-section { margin-bottom: 28px; }
+.dash-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #841480;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.dash-section-title i { color: #70ab32; }
+
+/* ── Action cards ── */
+.dash-actions {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+}
+
+.action-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px 14px;
+    text-align: center;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all .2s;
+    color: #555;
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    text-decoration: none !important;
+}
+
+.action-card i { font-size: 26px; }
+.action-card span { font-size: 13px; font-weight: 600; color: #333; }
+.action-card small { font-size: 11px; color: #aaa; }
+
+/* Colores por tipo */
+.action-card.purple i { color: #841480; }
+.action-card.purple:hover { border-color: #841480; background: #fdf5fd; }
+
+.action-card.green i { color: #70ab32; }
+.action-card.green:hover { border-color: #70ab32; background: #f5faf0; }
+
+.action-card.orange i { color: #f57c00; }
+.action-card.orange:hover { border-color: #f57c00; background: #fff8f0; }
+
+.action-card.blue i { color: #1565c0; }
+.action-card.blue:hover { border-color: #1565c0; background: #f0f4ff; }
+
+.action-card.indigo i { color: #5c35b5; }
+.action-card.indigo:hover { border-color: #5c35b5; background: #f5f0ff; }
+
+.action-card.teal i { color: #00796b; }
+.action-card.teal:hover { border-color: #00796b; background: #f0faf8; }
+
+/* ── Responsive ── */
+@media (max-width: 1100px) { .dash-actions { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px)  { .dash-stats { grid-template-columns: repeat(2, 1fr); } .dash-actions { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .dash-header { flex-direction: column; align-items: flex-start; gap: 12px; } .dash-actions { grid-template-columns: repeat(2, 1fr); } }

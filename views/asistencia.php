@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /views/Login.php');
+    exit;
+}
+
+$base_url = '';
+$views = $base_url . '/views';
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -9,6 +20,10 @@
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/asistencia.css">
+
+
+
+    
 </head>
 <body>
 
@@ -67,7 +82,7 @@
         </div>
         <table class="tabla-productos" id="tablaAsistencia">
             <thead>
-                32
+                
                     <th>Fecha</th>
                     <th>Usuario</th>
                     <th>Entrada</th>

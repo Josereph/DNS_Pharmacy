@@ -1,3 +1,5 @@
+
+
 <?php
 /**
  * ExportarReportePDF.php — DNS Pharmacy
@@ -15,7 +17,7 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
 
@@ -1180,6 +1182,14 @@ $mpdf->SetFooter(
 $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
 $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 
+<<<<<<< HEAD
 $nombreArchivo = 'DNS_Pharmacy_Reporte_' . date('Y-m-d_H-i-s') . '.pdf';
 $mpdf->Output($nombreArchivo, 'D');
 exit;
+=======
+// Nombre del archivo
+$nombreArchivo = 'DNS_Pharmacy_Reporte_' . date('Y-m-d') . '.pdf';
+
+$mpdf->Output($nombreArchivo, 'D');   // 'D' = fuerza descarga, 'I' = abre en navegador
+
+>>>>>>> 3408827ad2d894f10c2307078627855c16ff108e

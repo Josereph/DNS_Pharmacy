@@ -9,10 +9,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="../assets/css/slider.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="../assets/css/inventario.css">
 
     <style>
         /* Animación de las cards al pasar el mouse */
+=======
+    <link rel="stylesheet" href="../assets/css/Inventario.css">
+    
+   <style>
+        /* Animación  las Cards al pasar el mouse */
+>>>>>>> 3408827ad2d894f10c2307078627855c16ff108e
         .stat-card {
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
@@ -38,7 +45,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /DNS_Pharmacy/views/Login.php');
+    header('Location: /views/Login.php');
     exit;
 }
 include 'layouts/slider.php';
@@ -296,6 +303,6 @@ include 'layouts/slider.php';
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="../assets/js/inventario.js"></script>
+<script src="../assets/js/Inventario.js"></script>
 </body>
 </html>
