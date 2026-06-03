@@ -90,6 +90,12 @@ $es_pos = (strtolower($pagina_actual) === 'pos.php');
             Punto de Venta (POS)
         </a>
 
+        <a class="nav-link nav-link-pos-inline <?php echo ($pagina_actual == 'herramientas.php' || $pagina_actual == 'Herramientas.php') ? 'active' : ''; ?>"
+           href="<?php echo $views; ?>/Herramientas.php">
+
+            Herramientas
+        </a>
+
         <a class="nav-link <?php echo ($pagina_actual == 'perfil.php') ? 'active' : ''; ?>"
            href="<?php echo $views; ?>/perfil.php">
             <i class="bi bi-gear"></i>
